@@ -1,0 +1,217 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Fjalla One", sans-serif;
+}
+
+li {
+  font-family: "Fjalla One", sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+#hero-image {
+  height: 10vh;
+  width: 100%;
+  display: block;
+  background-color: cornflowerblue;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-button {
+  display: block;
+  height: 3rem;
+  width: auto;
+  margin: 1rem 3rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: cornflowerblue;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#wrapper-calculator-individual-or-compare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper-toggler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12vw;
+  height: 5rem;
+  margin: 1rem 0;
+  padding: 0 1rem;
+  border: 2px solid cornflowerblue;
+  text-transform: uppercase;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+#player-name-text-input {
+  margin: 3rem 0 0 0;
+  border-radius: 0.2rem;
+  height: 3rem;
+  font-size: 2.8rem;
+  border: none;
+  border-bottom: 2px solid cornflowerblue;
+}
+
+.wrapper-calculator-form {
+  margin: 1.5rem 0 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+}
+
+#player-name-text-input:focus {
+  outline: none;
+}
+
+#calculcator-submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  font-size: 1.7rem;
+  margin: 2rem 0 0 0;
+  padding: 1rem;
+  background-color: cornflowerblue;
+  border: 3px solid cornflowerblue;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#calculcator-submit-button:hover {
+  color: cornflowerblue;
+  background-color: white;
+}
+
+.wrapper-calculator-form-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wrapper-calculator-form-inner label {
+  text-transform: capitalize;
+  margin: 1rem 3rem;
+  font-size: 2.5rem;
+  color: cornflowerblue;
+}
+
+.wrapper-calculator-form-inner option {
+  text-transform: capitalize;
+  font-size: 1.5rem;
+  color: cornflowerblue;
+}
+
+.wrapper-calculator-form-inner select {
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: cornflowerblue;
+  height: 1.8rem;
+  border-radius: 0.3rem 0.3rem 0 0;
+}
+
+#photao-container {
+  background-color: cornflowerblue;
+  clip-path: circle(35% at 200px 125px);
+  border: 3px solid rgb(100, 149, 237);
+  position: relative;
+  width: 400px;
+  height: 250px;
+}
+
+.wrapper-calculator-results {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  column-gap: 1rem;
+  width: 95%;
+}
+
+.wrapper-calculator-player-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  height: auto;
+  background-color: cornflowerblue;
+  color: white;
+  padding: 1.5rem 0;
+}
+
+.player-image {
+  width: 150px;
+  height: auto;
+  background-color: rgb(139, 174, 238);
+  border-radius: 3rem;
+}
+
+.wrapper-calculator-player-card-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.wrapper-calculator-player-card-data > #player-name {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+.wrapper-calculator-player-card-data > #player-rank {
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  font-size: 3rem;
+}
+
+.calculator-results {
+}
+
+.calculator-name-fetcher {
+  width: 100%;
+  z-index: 10;
+  top: 50%;
+  position: absolute;
+}
+
+.calculator-name-fetcher-player {
+  display: flex;
+  align-items: center;
+  height: 7vh;
+  width: 100%;
+  z-index: 11;
+  color: white;
+  background-color: cornflowerblue;
+  font-size: 2rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  border-bottom: 3px solid white;
+  padding: 0 1rem;
+}
+
+.calculator-name-fetcher-player:hover {
+  color: cornflowerblue;
+  background-color: white;
+  border-bottom: 3px solid cornflowerblue;
+}
