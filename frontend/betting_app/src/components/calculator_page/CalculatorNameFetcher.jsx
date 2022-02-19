@@ -4,7 +4,6 @@ import { CalculatorContext } from "./CalculatorContext";
 export default function CalculatorNameFetcher(props) {
   const { playersReached } = useContext(CalculatorContext);
   let players = playersReached;
-  console.log(players);
   return (
     <div className="calculator-name-fetcher">
       {players.map((player) => (

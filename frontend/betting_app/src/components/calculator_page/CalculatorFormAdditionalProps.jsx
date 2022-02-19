@@ -28,6 +28,7 @@ export default function CalculatorFormAdditionalProps() {
           <CalculatorFormSelect
             selectProperty={selectProperty}
             selectPropertyValues={selectProperty.values}
+            key={selectProperty.name}
           />
         ))}
       </div>
