@@ -1,8 +1,12 @@
-from flask import url_for, flash, redirect, request, jsonify
-from backend_betting_app import app
-import pandas as pd
-import json
 from flask_cors import CORS
+import json
+import pandas as pd
+from backend_betting_app import app
+from flask import url_for, flash, redirect, request, jsonify
+import sys
+sys.path.append(
+    r'C:\Users\milan\Desktop\szakdolgozat2022\backend\src')
+from Players import Players
 
 CORS(app)
 
@@ -17,12 +21,9 @@ def home():
 def get_basic_player_data():
     data = request.get_json(force=True)
     playerName = data['playerName']
-    df = pd.read_csv(
-        r'C:\Users\milan\Desktop\szakdolgozat2022\backend\webscraper\players.csv')
-    df.set_index('surName', inplace=True, drop=False)
-    returnData = {"firstName": df.loc[playerName, 'firstName'],
-                  "surName": playerName, "rank": df.loc[playerName, "rank"], "flag": f"https://countryflagsapi.com/png/{df.loc[playerName, 'nationality'].lower()}"}
-    return json.dumps(returnData)
+    playerGetter = Players()
+    playerData = playerGetter.getBasicPlayerData(playerName)
+    return json.dumps(playerData)
 
 
 @app.route("/get_reached_players", methods=["POST"])
