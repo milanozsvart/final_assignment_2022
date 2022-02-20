@@ -7,6 +7,7 @@ import sys
 sys.path.append(
     r'C:\Users\milan\Desktop\szakdolgozat2022\backend\src')
 from Players import Players
+from StatsCalculator import StatsCalculator
 
 CORS(app)
 
@@ -20,7 +21,11 @@ def get_basic_player_data():
     data = request.get_json(force=True)
     playerName = data['playerName']
     playerGetter = Players()
+    matchesGetter = StatsCalculator(playerName)
     playerData = playerGetter.getBasicPlayerData(playerName)
+    matchesGetter.bestPerformance()
+    playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
+    print(playerMatchesData)
     return json.dumps(playerData)
 
 
