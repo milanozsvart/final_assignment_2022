@@ -159,6 +159,23 @@ main {
   padding: 1.5rem 0;
 }
 
+.wrapper-calculator-player-card:hover {
+  animation: player-card-animation 0.1s ease-in-out;
+  box-shadow: 8px 8px 8px 8px rgb(80, 79, 79);
+  width: 105%;
+  cursor: pointer;
+}
+
+@keyframes player-card-animation {
+  from {
+    box-shadow: none;
+    width: 100%;
+  } to {
+    box-shadow: 8px 8px 8px 8px rgb(80, 79, 79);
+    width: 105%;
+  }
+}
+
 .player-image {
   width: 150px;
   height: auto;
