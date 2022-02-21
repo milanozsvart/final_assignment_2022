@@ -32,12 +32,13 @@ class StatsCalculator():
         self.setIndexOfDataFrame('Loser')
         matchesCount += sum(self.df.index == self.player)
         lostMatches += sum(self.df.index == self.player)
-        return {"allMatches": matchesCount, "wonMatches": wonMatches, "lostMatches": lostMatches}
+        return {"allMatches": str(matchesCount), "wonMatches": str(wonMatches), "lostMatches": str(lostMatches)}
 
     def bestPerformance(self):
         tournaments = list(set(self.df['Tier'].tolist()))
         playerMatches = self.df.loc[self.player, ['Round', 'Tier']]
         self.setIndexOfDataFrame(['Winner', 'Tier'])
+        self.bestPerformanceInTournamentTypes = {}
         for tournament in tournaments:
             bestForTournamentType = 0
             try:
@@ -46,5 +47,9 @@ class StatsCalculator():
                     bestForTournamentType = max(bestForTournamentType, self.roundsHierarchy[match])
             except:
                 continue
-            print(bestForTournamentType)
+            for round in self.roundsHierarchy.keys():
+                if self.roundsHierarchy[round] == bestForTournamentType:
+                    self.bestPerformanceInTournamentTypes[tournament] = round
+                    break
+        return self.bestPerformanceInTournamentTypes
 

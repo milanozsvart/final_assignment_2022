@@ -23,10 +23,11 @@ def get_basic_player_data():
     playerGetter = Players()
     matchesGetter = StatsCalculator(playerName)
     playerData = playerGetter.getBasicPlayerData(playerName)
-    matchesGetter.bestPerformance()
+    bestPerformance = matchesGetter.bestPerformance()
     playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
-    print(playerMatchesData)
-    return json.dumps(playerData)
+    playerMatchesData['bestPerformance'] = bestPerformance
+    fullPlayerStats = {**playerMatchesData, **playerData}
+    return json.dumps(fullPlayerStats)
 
 
 @app.route("/get_reached_players", methods=["POST"])
