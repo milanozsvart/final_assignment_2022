@@ -1,6 +1,7 @@
 import { React, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import CalculatorPerformanceStats from "./CalculatorPerformanceStats";
 
 export default function CalculatorResultsStats(props) {
   const resultsRef = useRef(null);
@@ -20,29 +21,12 @@ export default function CalculatorResultsStats(props) {
         (opponentRanks) => {
           return (
             <div className="performance-stats">
-              <FontAwesomeIcon
-                icon={faCircleInfo}
-                className="circle-info-player-stats"
+              <CalculatorPerformanceStats
+                performanceBetweenRanks={
+                  props.currentPlayerData.performanceBetweenRanks
+                }
+                opponentRanks={opponentRanks}
               />
-              <div className="performance-stats-ranks">
-                {"Opponent's rank: " + opponentRanks}
-              </div>
-              <div className="performance-stats-section">
-                {Object.keys(
-                  props.currentPlayerData.performanceBetweenRanks[opponentRanks]
-                ).map((data) => (
-                  <div className="perfromance-stats-individual">
-                    <div>{data}</div>
-                    <div>
-                      {
-                        props.currentPlayerData.performanceBetweenRanks[
-                          opponentRanks
-                        ][data]
-                      }
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           );
         }

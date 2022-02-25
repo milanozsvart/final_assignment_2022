@@ -308,3 +308,23 @@ main {
   right: 3.5%;
   cursor: pointer;
 }
+
+.get-player-matches {
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 0%;
+  right: -7.8rem;
+  color: white;
+  background-color: rgb(115, 157, 235);
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+  z-index: 10;
+  transition: all 0.2s ease-in;
+}
+
+
+.get-player-matches p:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
