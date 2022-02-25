@@ -3,3 +3,6 @@ node_modules/
 public/
 __pycache__/
 .vscode/
+players.csv
+players_old.csv
+players_old_v2.csv

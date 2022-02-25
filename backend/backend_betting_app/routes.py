@@ -27,6 +27,8 @@ def get_basic_player_data():
     playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
     playerMatchesData['bestPerformance'] = bestPerformance
     fullPlayerStats = {**playerMatchesData, **playerData}
+    performanceBetweenRanks = matchesGetter.performanceAgainstRank()
+    fullPlayerStats['performanceBetweenRanks'] = performanceBetweenRanks
     return json.dumps(fullPlayerStats)
 
 

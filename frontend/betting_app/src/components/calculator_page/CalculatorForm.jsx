@@ -1,15 +1,12 @@
-import { React, useContext, useRef } from "react";
+import { React, useContext } from "react";
 import { CalculatorContext } from "./CalculatorContext";
 import CalculatorFormAdditionalProps from "./CalculatorFormAdditionalProps";
 import CalculatorResults from "./CalculatorResults";
-import CalculatorNameFetcher from "./CalculatorNameFetcher";
 import CalculatorPlayerInput from "./CalculatorPlayerInput";
 
 export default function CalculatorForm() {
   const { formState, setFormState, setCurrentPlayerData } =
     useContext(CalculatorContext);
-
-  const playerNameRef = useRef();
 
   async function fetchPlayerData(playerName) {
     const requestOptions = {

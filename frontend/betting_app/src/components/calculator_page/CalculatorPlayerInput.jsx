@@ -21,7 +21,7 @@ export default function CalculatorPlayerInput(props) {
     setPlayersReached(data["values"]);
   }
 
-  if (calculationType == "individual") {
+  if (calculationType === "individual") {
     return (
       <div className="wrapper-calculator-form">
         <input

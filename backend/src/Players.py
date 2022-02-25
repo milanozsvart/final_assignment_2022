@@ -30,11 +30,11 @@ class Players():
         data = {}
         for property in propertiesToCheck:
             try:
-                data[property] = self.getDataBasedOnProperty(
-                    property, ownerOfPoperty)
+                data[property] = str(self.getDataBasedOnProperty(
+                    property, ownerOfPoperty))
             except:
-                data[property] = self.setDataBasedOnProperty(
-                    property, ownerOfPoperty)
+                data[property] = str(self.setDataBasedOnProperty(
+                    property, ownerOfPoperty))
         return data
 
     def getReachedPlayers(self, playerNamePart):

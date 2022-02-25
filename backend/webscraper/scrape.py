@@ -12,7 +12,8 @@ attributesDict = {
     'picture': {'className': 'picture.player-headshot__photo img.object-fit-cover-picture__img', 'type': 'img', 'dataAttribute': 'src'}
 }
 
-source = requests.get('https://www.wtatennis.com/sitemap/players.xml').text
+#source = requests.get('https://www.wtatennis.com/sitemap/players.xml').text
+source = open('players.xml', 'r')
 
 soup = BeautifulSoup(source, 'lxml')
 outPutFile = open("players.csv", "a+", encoding="utf-8")
