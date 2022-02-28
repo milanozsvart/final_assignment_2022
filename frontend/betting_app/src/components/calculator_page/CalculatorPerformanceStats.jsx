@@ -1,8 +1,10 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorPerformanceStats(props) {
+  const { currentPlayerData } = useContext(CalculatorContext);
   const opponentRanks = props.opponentRanks;
   const performanceBetweenRanks = props.performanceBetweenRanks;
 
@@ -10,6 +12,7 @@ export default function CalculatorPerformanceStats(props) {
   const [visibilityStyle, setVisibilityStyle] = useState({
     opacity: 0,
   });
+  const [playerMatches, setPlayerMatches] = useState([]);
 
   const handleVisibility = () => {
     if (visibility === 1) {
@@ -20,6 +23,25 @@ export default function CalculatorPerformanceStats(props) {
       setVisibilityStyle({ opacity: 1 });
     }
   };
+
+  async function fetchPlayerMatches(event) {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerName: currentPlayerData.surName,
+        opponentRanks: opponentRanks,
+        category: event.currentTarget.id,
+      }),
+    };
+    const response = await fetch(
+      "http://127.0.0.1:5000/get_matches_data",
+      requestOptions
+    );
+    const data = await response.json();
+    setPlayerMatches(data);
+  }
+
   return (
     <>
       <FontAwesomeIcon
@@ -28,10 +50,18 @@ export default function CalculatorPerformanceStats(props) {
         onClick={handleVisibility}
       />
       <div className="get-player-matches" style={visibilityStyle}>
-        <p>All matches</p>
-        <p>Matches won</p>
-        <p>Matches won 2-0</p>
-        <p>Matches lost</p>
+        <p onClick={fetchPlayerMatches} id="all">
+          All matches
+        </p>
+        <p onClick={fetchPlayerMatches} id="won">
+          Matches won
+        </p>
+        <p onClick={fetchPlayerMatches} id="won-2-0">
+          Matches won 2-0
+        </p>
+        <p onClick={fetchPlayerMatches} id="lost">
+          Matches lost
+        </p>
       </div>
       <div className="performance-stats-ranks">
         {"Opponent's rank: " + opponentRanks}

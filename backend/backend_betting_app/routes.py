@@ -39,3 +39,9 @@ def get_reached_players():
     playerGetter = Players()
     reachedPlayers = playerGetter.getReachedPlayers(partOfPlayerName)
     return json.dumps(reachedPlayers)
+
+
+@app.route("/get_matches_data", methods=["POST"])
+def get_matches_data():
+    data = request.get_json(force=True)
+    statCalculator = StatsCalculator(data['playerName'])

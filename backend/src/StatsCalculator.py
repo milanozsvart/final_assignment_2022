@@ -108,3 +108,15 @@ class StatsCalculator():
 
         return matchesOfPlayer
 
+    def getPlayerMatchesAgainstOpponents(self, ranks, category):
+        ranks = self.getRanksFromString(ranks)
+        startingRank = int(ranks[0])
+        endingRank = int(ranks[1])
+        if "won" in category:
+            self.setIndexOfDataFrame('Winner')
+            playersDf = self.df.loc[self.player]
+            playersDf = playersDf[playersDf['LRank'] >
+                                  startingRank and playersDf['Lrank'] < endingRank]
+
+    def getRanksFromString(self, ranks):
+        return ranks.split("-")
