@@ -19,6 +19,9 @@ export function CalculatorState(props) {
   const [formState, setFormState] = useState(0);
   const [currentPlayerData, setCurrentPlayerData] = useState({});
   const [playersReached, setPlayersReached] = useState([]);
+  const [playerMatches, setPlayerMatches] = useState([]);
+  const [opponentRanks, setOpponentRanks] = useState("");
+  const [categorySelected, setCategorySelected] = useState("");
   return (
     <CalculatorContext.Provider
       value={{
@@ -36,6 +39,12 @@ export function CalculatorState(props) {
         setCurrentPlayerData,
         playersReached,
         setPlayersReached,
+        playerMatches,
+        setPlayerMatches,
+        opponentRanks,
+        setOpponentRanks,
+        categorySelected,
+        setCategorySelected,
       }}
     >
       {props.children}

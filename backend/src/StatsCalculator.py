@@ -77,6 +77,7 @@ class StatsCalculator():
         for startingRank, endingRank in zip(self.startingRanks, self.endingRanks):
             self.result[f"{startingRank}-{endingRank}"] = self.performanceBetweenRanks(
                 startingRank, endingRank)
+        print(self.result)
         return self.result
 
     def performanceBetweenRanks(self, startingRank, endingRank):
@@ -88,14 +89,14 @@ class StatsCalculator():
         matchesOfPlayer = self.getPlayerMatches()
         for match in matchesOfPlayer:
             if(match["Comment"] == "Completed"):
-                if match["WRank"] < endingRank and match["WRank"] > startingRank:
+                if match["WRank"] <= endingRank and match["WRank"] >= startingRank:
                     allMatches += 1
 
         self.setIndexOfDataFrame('Winner')
         matchesOfPlayer = self.getPlayerMatches()
         for match in matchesOfPlayer:
             if(match["Comment"] == "Completed"):
-                if match["LRank"] < endingRank and match["LRank"] > startingRank:
+                if match["LRank"] <= endingRank and match["LRank"] >= startingRank:
                     allMatches += 1
                     numberOfWins += 1
                     if float(match["Lsets"]) < 1:
@@ -104,19 +105,37 @@ class StatsCalculator():
 
     def getPlayerMatches(self):
         matchesOfPlayer = self.df.loc[[self.player], [
-            "Wsets", "Lsets", "Comment", "B365W", "B365L", "WRank", "LRank"]].to_dict("records")
+            "Wsets", "Lsets", "Comment", "WRank", "LRank", "Lsets"]].to_dict("records")
 
         return matchesOfPlayer
 
     def getPlayerMatchesAgainstOpponents(self, ranks, category):
         ranks = self.getRanksFromString(ranks)
-        startingRank = int(ranks[0])
-        endingRank = int(ranks[1])
+        self.startingRank = int(ranks[0])
+        self.endingRank = int(ranks[1])
         if "won" in category:
-            self.setIndexOfDataFrame('Winner')
-            playersDf = self.df.loc[self.player]
-            playersDf = playersDf[playersDf['LRank'] >
-                                  startingRank and playersDf['Lrank'] < endingRank]
+            playersDf = self.playerMatchesWithRank('Winner', 'LRank')
+            if "2-0" in category:
+                playersDf = playersDf[playersDf['Lsets'] == 0]
+                return playersDf.to_dict("records")
+            return playersDf.to_dict("records")
+        elif "lost" in category:
+            playersDf = self.playerMatchesWithRank('Loser', 'WRank')
+            return playersDf.to_dict("records")
+        else:
+            playersDf = pd.concat([self.playerMatchesWithRank(
+                'Winner', 'LRank'), self.playerMatchesWithRank('Loser', 'WRank')])
+            return playersDf.to_dict("records")
+
+    def playerMatchesWithRank(self, result, rankToCheck):
+        self.setIndexOfDataFrame(result)
+        playersDf = self.df.loc[self.player]
+        playersDf = playersDf[(playersDf[rankToCheck] >= self.startingRank) &
+                              (playersDf[rankToCheck] <= self.endingRank) & (playersDf['Comment'] == 'Completed')]
+        playersDf = playersDf[['Winner', 'Loser', 'Date',
+                               'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+
+        return playersDf
 
     def getRanksFromString(self, ranks):
         return ranks.split("-")

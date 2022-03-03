@@ -4,27 +4,35 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorPerformanceStats(props) {
-  const { currentPlayerData } = useContext(CalculatorContext);
+  const {
+    currentPlayerData,
+    setPlayerMatches,
+    setOpponentRanks,
+    setCategorySelected,
+  } = useContext(CalculatorContext);
   const opponentRanks = props.opponentRanks;
   const performanceBetweenRanks = props.performanceBetweenRanks;
 
   const [visibility, setVisibility] = useState(0);
   const [visibilityStyle, setVisibilityStyle] = useState({
     opacity: 0,
+    visibility: "hidden",
   });
-  const [playerMatches, setPlayerMatches] = useState([]);
 
   const handleVisibility = () => {
     if (visibility === 1) {
       setVisibility(0);
-      setVisibilityStyle({ opacity: 0 });
+      setVisibilityStyle({ opacity: 0, visibility: "hidden" });
     } else {
       setVisibility(1);
-      setVisibilityStyle({ opacity: 1 });
+      setVisibilityStyle({ opacity: 1, visibility: "visible" });
     }
   };
 
   async function fetchPlayerMatches(event) {
+    handleVisibility()
+    setOpponentRanks(opponentRanks);
+    setCategorySelected(event.currentTarget.textContent);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },

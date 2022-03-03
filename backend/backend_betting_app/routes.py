@@ -45,3 +45,6 @@ def get_reached_players():
 def get_matches_data():
     data = request.get_json(force=True)
     statCalculator = StatsCalculator(data['playerName'])
+    matches = statCalculator.getPlayerMatchesAgainstOpponents(
+        data['opponentRanks'], data['category'])
+    return jsonify(matches)
