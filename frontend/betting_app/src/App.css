@@ -333,13 +333,55 @@ main {
 
 .player-matches {
   display: grid;
-  grid-template-columns: 17% 16% 23% 8% 23% 8% 5%;
+  grid-template-columns: 14% 16% 25% 8% 25% 8% 8%;
   margin: 1rem;
   color: cornflowerblue
+}
+
+.player-matches p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.3rem;
 }
 
 .player-matches-header {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.winner {
+  border: 2px solid rgb(93, 168, 93);
+  color: rgb(93, 168, 93);
+  background-color: white;
+}
+
+.loser {
+  border: 2px solid red;
+  color: red;
+  background-color: white;
+}
+
+#match-result {
+  border-top: 2px solid cornflowerblue;
+  border-bottom: 2px solid cornflowerblue;
+}
+
+#current-player-loser {
+  background-color: red;
+  color: white;
+}
+
+#current-player-winner {
+  background-color: rgb(93, 168, 93);
+  color: white;
+}
+
+.player-matches-data-header p{
+  background-color: cornflowerblue;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

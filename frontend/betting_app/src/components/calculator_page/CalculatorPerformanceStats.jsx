@@ -76,7 +76,10 @@ export default function CalculatorPerformanceStats(props) {
       </div>
       <div className="performance-stats-section">
         {Object.keys(performanceBetweenRanks[opponentRanks]).map((label) => (
-          <div className="perfromance-stats-individual">
+          <div
+            className="perfromance-stats-individual"
+            key={label + "performance-stats-individual"}
+          >
             <div>{label}</div>
             <div>{performanceBetweenRanks[opponentRanks][label]}</div>
           </div>

@@ -22,7 +22,10 @@ export default function CalculatorResultsStats(props) {
         {Object.keys(props.currentPlayerData.performanceBetweenRanks).map(
           (opponentRanks) => {
             return (
-              <div className="performance-stats">
+              <div
+                className="performance-stats"
+                key={opponentRanks + "-performance-stats"}
+              >
                 <CalculatorPerformanceStats
                   performanceBetweenRanks={
                     props.currentPlayerData.performanceBetweenRanks

@@ -13,6 +13,8 @@ export default function CalculationTypeToggler(props) {
     compareStyle,
     setCompareStyle,
     setPlayersReached,
+    setOpponentRanks,
+    setCategorySelected,
   } = useContext(CalculatorContext);
   const handleCalculationType = (event) => {
     let propertyForChange = event.currentTarget.innerText.toLowerCase();
@@ -39,6 +41,8 @@ export default function CalculationTypeToggler(props) {
   const deinitializeState = () => {
     setFormState(0);
     setPlayersReached([]);
+    setOpponentRanks("");
+    setCategorySelected("");
   };
   return (
     <div id="wrapper-calculator-individual-or-compare">
