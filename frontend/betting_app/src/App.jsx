@@ -1,7 +1,7 @@
 import "./App.css";
 import TopComponent from "./components/TopComponent";
 import Calculator from "./components/calculator_page/Calculator";
-import Home from "./components/Home";
+import Home from "./components/home_page/Home";
 import Players from "./components/Players"
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 function App() {

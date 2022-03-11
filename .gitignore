@@ -6,3 +6,6 @@ __pycache__/
 players.csv
 players_old.csv
 players_old_v2.csv
+todayMatches.json
+todaysOdds.json
+sandbox.py

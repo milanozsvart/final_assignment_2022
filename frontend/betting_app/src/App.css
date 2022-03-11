@@ -133,6 +133,7 @@ main {
 
 .wrapper-calculator-results {
   display: grid;
+  align-items: center;
   grid-template-columns: 30% 70%;
   column-gap: 1rem;
   width: 95%;
@@ -151,6 +152,7 @@ main {
   padding: 1.5rem 0;
   border-radius: 0.5rem;
   transition: transform .25s;
+  height: 85vh;
   animation: player-card-animation 0.25s ease-in-out;
 }
 
@@ -381,6 +383,39 @@ main {
 .player-matches-data-header p{
   background-color: cornflowerblue;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-page-matches-wrapper {
+  width: 75vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.home-page-matches-wrapper > h1 {
+  color: cornflowerblue;
+}
+
+.todays-matches-container {
+  width: 90%;
+  margin-top: 2rem;
+}
+
+.match-container {
+  color: cornflowerblue;
+  font-size: 1.5rem;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 17% 17% 17% 17% 17% 7.5% 7.5%;
+  padding: 1rem 0;
+  border: 2px solid cornflowerblue;
+}
+
+.match-container > span {
   display: flex;
   align-items: center;
   justify-content: center;

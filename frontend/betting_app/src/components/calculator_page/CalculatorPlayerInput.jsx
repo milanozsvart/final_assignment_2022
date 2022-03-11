@@ -1,9 +1,10 @@
-import { React, useContext, useRef } from "react";
+import { React, useContext, useRef, useEffect } from "react";
 import CalculatorNameFetcher from "./CalculatorNameFetcher";
 import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorPlayerInput(props) {
-  const { calculationType, setPlayersReached } = useContext(CalculatorContext);
+  const { calculationType, setPlayersReached, setPlayerMatches } =
+    useContext(CalculatorContext);
 
   const playerNameRef = useRef();
 
