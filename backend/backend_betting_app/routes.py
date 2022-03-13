@@ -1,15 +1,13 @@
-import sys
-sys.path.append(
-    r'C:\Users\milan\Desktop\szakdolgozat2022\backend\src')
+from backend_betting_app.models import Match, User
 from Players import Players
-from StatsCalculator import StatsCalculator
-import requests
-from backend_betting_app.models import Match
 from flask_cors import CORS
 import json
 import pandas as pd
 from backend_betting_app import db
 from backend_betting_app import app
+from backend_betting_app import bcrypt
+from StatsCalculator import StatsCalculator
+import requests
 from datetime import datetime
 from flask import url_for, flash, redirect, request, jsonify
 
@@ -113,3 +111,31 @@ def get_today_odds():
         f.write(response.text)
     print(response.text)
     return response
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json(force=True)
+    hashedPassword = bcrypt.generate_password_hash(
+        data["password"]).decode('utf-8')
+    db.create_all()
+    exists = db.session.query(db.exists().where(
+        User.email == data["email"])).scalar()
+    if not exists:
+        db.session.add(User(email=data["email"], password=hashedPassword))
+        db.session.commit()
+        print(User.query.all())
+        return {"message": f"Account created for {data['email']}", "successful": True}
+    else:
+        return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json(force=True)
+    print(data)
+    user = User.query.filter_by(email=data["email"]).first()
+    if user and bcrypt.check_password_hash(user.password, data["password"]):
+        return {"message": f"Account created for {data['email']}", "successful": True}
+    else:
+        return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}

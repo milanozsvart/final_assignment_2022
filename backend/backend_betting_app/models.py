@@ -1,4 +1,5 @@
 from backend_betting_app import db
+from datetime import datetime
 
 
 class Match(db.Model):
@@ -18,3 +19,14 @@ class Match(db.Model):
 class Dates(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    dateJoined = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow())
+
+    def __repr__(self):
+        return f"User({self.email}, {self.password}, {self.dateJoined}"
