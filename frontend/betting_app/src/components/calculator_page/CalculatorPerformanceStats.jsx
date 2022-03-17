@@ -37,7 +37,7 @@ export default function CalculatorPerformanceStats(props) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        playerName: currentPlayerData.surName,
+        playerName: props.surName,
         opponentRanks: opponentRanks,
         category: event.currentTarget.id,
       }),

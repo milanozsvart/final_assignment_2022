@@ -17,20 +17,47 @@ CORS(app)
 
 
 @app.route("/")
+def home():
+    pass
+
+
 @app.route("/get_basic_player_data", methods=["POST"])
 def get_basic_player_data():
     data = request.get_json(force=True)
     playerName = data['playerName']
-    playerGetter = Players()
-    matchesGetter = StatsCalculator(playerName)
-    playerData = playerGetter.getBasicPlayerData(playerName)
-    bestPerformance = matchesGetter.bestPerformance()
-    playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
-    playerMatchesData['bestPerformance'] = bestPerformance
-    fullPlayerStats = {**playerMatchesData, **playerData}
-    performanceBetweenRanks = matchesGetter.performanceAgainstRank()
-    fullPlayerStats['performanceBetweenRanks'] = performanceBetweenRanks
-    return json.dumps(fullPlayerStats)
+    print(playerName)
+    stats = {}
+    if isinstance(playerName, list):
+        players = playerName
+        i = 0
+        for player in players:
+            playerGetter = Players()
+            matchesGetter = StatsCalculator(player)
+            playerData = playerGetter.getBasicPlayerData(player)
+            bestPerformance = matchesGetter.bestPerformance()
+            playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
+            playerMatchesData['bestPerformance'] = bestPerformance
+            fullPlayerStats = {**playerMatchesData, **playerData}
+            otherPlayer = players[(i+1) % 2]
+            opponentsRank = playerGetter.getBasicPlayerData(otherPlayer)[
+                "rank"]
+            matchesGetter.startingRanks = [max(1, int(opponentsRank) - 8)]
+            matchesGetter.endingRanks = [min(1000, int(opponentsRank) + 10)]
+            performanceBetweenRanks = matchesGetter.performanceAgainstRank()
+            fullPlayerStats['performanceBetweenRanks'] = performanceBetweenRanks
+            stats[i] = fullPlayerStats
+            i = i+1
+    else:
+        playerGetter = Players()
+        matchesGetter = StatsCalculator(playerName)
+        playerData = playerGetter.getBasicPlayerData(playerName)
+        bestPerformance = matchesGetter.bestPerformance()
+        playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
+        playerMatchesData['bestPerformance'] = bestPerformance
+        stats = {**playerMatchesData, **playerData}
+        performanceBetweenRanks = matchesGetter.performanceAgainstRank()
+        stats['performanceBetweenRanks'] = performanceBetweenRanks
+    return json.dumps(stats)
 
 
 @app.route("/get_reached_players", methods=["POST"])
@@ -133,7 +160,6 @@ def register():
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json(force=True)
-    print(data)
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
         return {"message": f"Account created for {data['email']}", "successful": True}

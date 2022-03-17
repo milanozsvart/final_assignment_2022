@@ -4,6 +4,7 @@ import { CalculatorContext } from "./CalculatorContext";
 export default function CalculatorPlayerMatches() {
   const { playerMatches, opponentRanks, categorySelected, currentPlayerData } =
     useContext(CalculatorContext);
+
   return (
     <div>
       <div
@@ -68,3 +69,5 @@ export default function CalculatorPlayerMatches() {
     </div>
   );
 }
+  
+

@@ -7,10 +7,7 @@ import { useForm } from "react-hook-form";
 
 export default function LoginForm(props) {
   let visibility = props.loginFormVisibility;
-  const pwRef = useRef("");
-  const [pwVisible, setPwVisible] = useState(false);
-  const [pwFieldType, setPwFieldType] = useState("password");
-  const [iconType, setIconType] = useState(faEye);
+  const [iconTypeFirst, setIconTypeFirst] = useState(faEye);
 
   const {
     register,
@@ -18,15 +15,17 @@ export default function LoginForm(props) {
     formState: { errors },
   } = useForm();
 
-  const handlePwVisible = () => {
-    if (pwVisible) {
-      setPwFieldType("password");
-      setIconType(faEye);
+  const handlePwVisible = (event) => {
+    const parentDiv = event.currentTarget.parentNode;
+    const pwInput = parentDiv.querySelector("input");
+
+    if (pwInput.type == "text") {
+      pwInput.type = "password";
+      setIconTypeFirst(faEye);
     } else {
-      setPwFieldType("text");
-      setIconType(faEyeSlash);
+      pwInput.type = "text";
+      setIconTypeFirst(faEyeSlash);
     }
-    setPwVisible(!pwVisible);
   };
 
   async function login(data) {
@@ -69,25 +68,23 @@ export default function LoginForm(props) {
           <h3>Log in to your account!</h3>
           <input
             type="email"
-            name="email"
-            id="email-textField"
             {...register("email", { required: true })}
             placeholder="Enter your email..."
           />
-          {errors.email && "Problem"}
           <br />
-          <input
-            type={pwFieldType}
-            id="password-textField"
-            {...register("password", { required: true })}
-            placeholder="Enter your password..."
-          />
-          {errors.password1?.type}
-          <FontAwesomeIcon
-            icon={iconType}
-            className="eye"
-            onClick={handlePwVisible}
-          />
+          <div className="visible-password" id="first-password">
+            <input
+              type="password"
+              {...register("password", { required: true })}
+              placeholder="Enter your password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeFirst}
+              className="eye"
+              onClick={handlePwVisible}
+              id="first-password-eye"
+            />
+          </div>
           <br />
           <button type="submit" id="login-button">
             Login

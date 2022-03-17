@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons";
@@ -12,6 +12,30 @@ export default function RegisterForm(props) {
     watch,
     formState: { errors },
   } = useForm();
+
+  const [iconTypeFirst, setIconTypeFirst] = useState(faEye);
+  const [iconTypeSecond, setIconTypeSecond] = useState(faEye);
+
+  const handlePwVisible = (event) => {
+    const parentDiv = event.currentTarget.parentNode;
+    const pwInput = parentDiv.querySelector("input");
+
+    if (pwInput.type == "text") {
+      pwInput.type = "password";
+      if (parentDiv.id === "first") {
+        setIconTypeFirst(faEye);
+      } else {
+        setIconTypeSecond(faEye);
+      }
+    } else {
+      pwInput.type = "text";
+      if (parentDiv.id === "first") {
+        setIconTypeFirst(faEyeSlash);
+      } else {
+        setIconTypeSecond(faEyeSlash);
+      }
+    }
+  };
 
   async function onSubmit(data) {
     delete data.confirmPassword;
@@ -50,24 +74,37 @@ export default function RegisterForm(props) {
             placeholder="Enter your email..."
           />
           <br />
-          <input
-            type="password"
-            name="password"
-            {...register("password", { required: true })}
-            id="password-textField"
-            placeholder="Enter a password..."
-          />
+          <div className="visible-password" id="first">
+            <input
+              type="password"
+              name="password"
+              {...register("password", { required: true })}
+              id="password-textField"
+              placeholder="Enter a password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeFirst}
+              className="eye"
+              onClick={handlePwVisible}
+            />
+          </div>
           <br />
-          <input
-            type="password"
-            name="passwordRepeat"
-            id="password-textField"
-            {...register("confirmPassword", {
-              validate: (value) => value === watch("password"),
-            })}
-            placeholder="Confirm your password..."
-          />
-          <FontAwesomeIcon icon={faEye} className="eye" />
+          <div className="visible-password" id="second">
+            <input
+              type="password"
+              name="passwordRepeat"
+              id="password-textField"
+              {...register("confirmPassword", {
+                validate: (value) => value === watch("password"),
+              })}
+              placeholder="Confirm your password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeSecond}
+              className="eye"
+              onClick={handlePwVisible}
+            />
+          </div>
           <br />
           <button type="submit" id="register-btn">
             Register

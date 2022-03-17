@@ -5,10 +5,15 @@ import CalculatorResults from "./CalculatorResults";
 import CalculatorPlayerInput from "./CalculatorPlayerInput";
 
 export default function CalculatorForm() {
-  const { formState, setFormState, setCurrentPlayerData } =
-    useContext(CalculatorContext);
+  const {
+    formState,
+    setFormState,
+    setCurrentPlayerData,
+    setComparePlayerStats,
+  } = useContext(CalculatorContext);
 
   async function fetchPlayerData(playerName) {
+    console.log(playerName);
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,7 +24,12 @@ export default function CalculatorForm() {
       requestOptions
     );
     const data = await response.json();
-    setCurrentPlayerData(data);
+    console.log(data);
+    if (Array.isArray(playerName)) {
+      setComparePlayerStats(data);
+    } else {
+      setCurrentPlayerData(data);
+    }
   }
 
   const handleSubmitButton = (playerName) => {

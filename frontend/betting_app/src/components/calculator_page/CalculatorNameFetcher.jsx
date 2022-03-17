@@ -4,17 +4,40 @@ import { CalculatorContext } from "./CalculatorContext";
 export default function CalculatorNameFetcher(props) {
   const { playersReached } = useContext(CalculatorContext);
   let players = playersReached;
-  return (
-    <div className="calculator-name-fetcher">
-      {players.map((player) => (
-        <div
-          className="calculator-name-fetcher-player"
-          key={player.split(",")[0].trim()}
-          onClick={() => props.handleSubmitButton(player.split(",")[0].trim())}
-        >
-          {player}
-        </div>
-      ))}
-    </div>
-  );
+  if (
+    props.currentRef == props.currentInput &&
+    props.currentInput == "purePlayer"
+  ) {
+    return (
+      <div className="calculator-name-fetcher">
+        {players.map((player) => (
+          <div
+            className="calculator-name-fetcher-player"
+            key={player.split(",")[0].trim()}
+            onClick={() =>
+              props.handleSubmitButton(player.split(",")[0].trim())
+            }
+          >
+            {player}
+          </div>
+        ))}
+      </div>
+    );
+  } else if (props.currentRef == props.currentInput) {
+    return (
+      <div className="calculator-name-fetcher">
+        {players.map((player) => (
+          <div
+            className="calculator-name-fetcher-player"
+            key={player.split(",")[0].trim()}
+            onClick={() => props.handleSubmitButton(props.currentRef, player)}
+          >
+            {player}
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    return null;
+  }
 }

@@ -140,6 +140,12 @@ main {
   margin: 0 0 3rem 0;
 }
 
+#compare-results {
+  grid-template-columns: 25% 50% 25%;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 .wrapper-calculator-player-card {
   display: flex;
   align-items: center;
@@ -209,10 +215,14 @@ main {
   grid-template-columns: 32% 68%;
 }
 
+.calculator-player-input {
+  position: relative;
+}
+
 .calculator-name-fetcher {
   width: 100%;
   z-index: 10;
-  top: 50%;
+  top: 110%;
   position: absolute;
 }
 
@@ -422,22 +432,22 @@ main {
 }
 
 #login-btn {
-  position: fixed;
+  position: absolute;
+  text-transform: uppercase;
   top: 12vh;
   right: 7vh;
   background-color: cornflowerblue;
   padding: 0.5em 1.6rem;
   font-size: 1.4rem;
   color: white;
-  border-radius: 0.5rem;
   cursor: pointer;
-  border: 3px solid cornflowerblue;
+  border: 2px solid cornflowerblue;
 }
 
 #login-btn:hover {
   background-color: white;
   color: cornflowerblue;
-  border: 3px solid cornflowerblue;
+  border: 2px solid cornflowerblue;
 }
 
 form {
@@ -484,10 +494,17 @@ form h2 {
 
 .eye {
   position: absolute;
-  bottom: 26.4%;
-  right: 10%;
+  right: 6.5%;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.747);
+}
+
+.visible-password {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative
 }
 
 #register-offer, #register-form-inner {
@@ -529,4 +546,13 @@ form h2 {
   background-color: rgba(0, 128, 0, 0.2);
   padding: 0.2rem;
   border: 1px solid rgb(1, 107, 1);
+}
+
+#compare-results-ranks {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: 45% 45%;
+  column-gap: 1rem;
+  margin: 1rem;
 }

@@ -8,6 +8,8 @@ class StatsCalculator():
         self.player = player.lower()
         self.setIndexOfDataFrame('Winner')
         self.definePlayer()
+        self.startingRanks = [1, 11, 26, 51, 76, 111]
+        self.endingRanks = [10, 25, 50, 75, 100, 500]
         self.roundsHierarchy = {'1st Round': 1, '2nd Round': 2, '3rd Round': 3, '4th Round': 4,  'Quarterfinals': 5,  'Semifinals': 6,  'The Final': 7}
 
     def cleanUpTournamentData(self):
@@ -70,8 +72,6 @@ class StatsCalculator():
         return bestForTournamentType
 
     def performanceAgainstRank(self):
-        self.startingRanks = [1, 11, 26, 51, 76, 111]
-        self.endingRanks = [10, 25, 50, 75, 100, 500]
         self.result = {}
 
         for startingRank, endingRank in zip(self.startingRanks, self.endingRanks):
