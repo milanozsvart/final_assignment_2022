@@ -4,7 +4,8 @@ import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorPlayerInput(props) {
   const [currentInput, setCurrentInput] = useState();
-  const { calculationType, setPlayersReached } = useContext(CalculatorContext);
+  const { calculationType, setPlayersReached, setPlayer } =
+    useContext(CalculatorContext);
 
   const playerNameRef = useRef();
 
@@ -66,7 +67,10 @@ export default function CalculatorPlayerInput(props) {
         </div>
         <div
           id="calculcator-submit-button"
-          onClick={() => props.handleSubmitButton(playerNameRef.current.value)}
+          onClick={() => {
+            setPlayer(playerNameRef.current.value);
+            props.handleSubmitButton();
+          }}
         >
           submit
         </div>
@@ -109,12 +113,13 @@ export default function CalculatorPlayerInput(props) {
         </div>
         <div
           id="calculcator-submit-button"
-          onClick={() =>
-            props.handleSubmitButton([
+          onClick={() => {
+            setPlayer([
               player1Ref.current.value.split(",")[0].trim(),
               player2Ref.current.value.split(",")[0].trim(),
-            ])
-          }
+            ]);
+            props.handleSubmitButton();
+          }}
         >
           submit
         </div>

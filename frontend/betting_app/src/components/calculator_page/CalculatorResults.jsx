@@ -12,7 +12,6 @@ export default function CalculatorResults() {
   useEffect(() => {
     resultsRef.current.scrollIntoView({ behavior: "smooth" });
   }, []);
-
   if (calculationType === "individual") {
     return (
       <div className="wrapper-calculator-results" ref={resultsRef}>

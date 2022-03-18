@@ -57,7 +57,11 @@ export default function LoginForm(props) {
           visibility ? { visibility: "visible" } : { visibility: "hidden" }
         }
       >
-        <form id="login-form" onSubmit={handleSubmit(login)}>
+        <form
+          id="login-form"
+          className="login-register"
+          onSubmit={handleSubmit(login)}
+        >
           <div id="register-offer">
             <h2>Not a member?</h2>
             <div id="register-btn" onClick={props.toggleRegisterForm}>

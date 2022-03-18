@@ -62,7 +62,11 @@ export default function RegisterForm(props) {
         props.visibility ? { visibility: "visible" } : { visibility: "hidden" }
       }
     >
-      <form id="register-form" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        id="register-form"
+        className="login-register"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <span ref={messageRef}></span>
         <div id="register-form-inner">
           <p id="or-sign">OR</p>

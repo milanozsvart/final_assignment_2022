@@ -2,7 +2,7 @@ import { React, useContext } from "react";
 import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorNameFetcher(props) {
-  const { playersReached } = useContext(CalculatorContext);
+  const { playersReached, setPlayer } = useContext(CalculatorContext);
   let players = playersReached;
   if (
     props.currentRef == props.currentInput &&
@@ -14,9 +14,10 @@ export default function CalculatorNameFetcher(props) {
           <div
             className="calculator-name-fetcher-player"
             key={player.split(",")[0].trim()}
-            onClick={() =>
-              props.handleSubmitButton(player.split(",")[0].trim())
-            }
+            onClick={() => {
+              setPlayer(player.split(",")[0].trim());
+              props.handleSubmitButton();
+            }}
           >
             {player}
           </div>

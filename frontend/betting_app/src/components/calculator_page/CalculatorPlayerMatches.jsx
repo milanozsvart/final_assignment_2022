@@ -1,5 +1,6 @@
 import { React, useContext } from "react";
 import { CalculatorContext } from "./CalculatorContext";
+import { Textfit } from "react-textfit";
 
 export default function CalculatorPlayerMatches() {
   const { playerMatches, opponentRanks, categorySelected, currentPlayerData } =
@@ -27,21 +28,43 @@ export default function CalculatorPlayerMatches() {
             : { visibility: "hidden" }
         }
       >
-        <p>{"Date"}</p>
-        <p>{"Tier"}</p>
-        <p>{"Winner"}</p>
-        <p>{"Result"}</p>
-        <p>{"Loser"}</p>
-        <p>{"W odds"}</p>
-        <p>{"L odds"}</p>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"Date"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"Tier"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"Winner"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"Result"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"Loser"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"W odds"}
+        </Textfit>
+        <Textfit mode="single" max={16} className="individual-match-property">
+          {"L odds"}
+        </Textfit>
       </div>
       {playerMatches.map((match) => {
         return (
           <div className="player-matches" key={match["Date"]}>
             <p>{match["Date"]}</p>
-            <p>{match["Tier"]}</p>
-            <p
-              className="winner"
+            <Textfit
+              mode="single"
+              max={16}
+              className="individual-match-property"
+            >
+              {match["Tier"]}
+            </Textfit>
+            <Textfit
+              mode="single"
+              max={16}
+              className="winner individual-match-property"
               id={
                 match["Winner"].includes(currentPlayerData.surName)
                   ? "current-player-winner"
@@ -49,10 +72,12 @@ export default function CalculatorPlayerMatches() {
               }
             >
               {match["Winner"] + " (" + match["WRank"] + ")"}
-            </p>
+            </Textfit>
             <p id="match-result">{match["Wsets"] + ":" + match["Lsets"]}</p>
-            <p
-              className="loser"
+            <Textfit
+              mode="single"
+              max={16}
+              className="loser individual-match-property"
               id={
                 match["Loser"].includes(currentPlayerData.surName)
                   ? "current-player-loser"
@@ -60,7 +85,7 @@ export default function CalculatorPlayerMatches() {
               }
             >
               {match["Loser"] + " (" + match["LRank"] + ")"}
-            </p>
+            </Textfit>
             <p>{match["B365W"]}</p>
             <p>{match["B365L"]}</p>
           </div>

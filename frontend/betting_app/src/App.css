@@ -120,7 +120,7 @@ main {
   color: cornflowerblue;
 }
 
-.wrapper-calculator-form-inner select {
+.wrapper-calculator-form-inner select, .wrapper-calculator-form-inner input {
   text-transform: capitalize;
   display: flex;
   align-items: center;
@@ -194,12 +194,13 @@ main {
   width: 75%;
 }
 
-.wrapper-calculator-player-card-data > #player-name {
+.wrapper-calculator-player-card-data  #player-name {
   font-size: 2rem;
   margin: 1rem 0;
+  text-align: center;
 }
 
-.wrapper-calculator-player-card-data > #player-rank {
+.wrapper-calculator-player-card-data  #player-rank {
   position: absolute;
   top: 5%;
   right: 5%;
@@ -350,11 +351,11 @@ main {
   color: cornflowerblue
 }
 
-.player-matches p {
+.player-matches p, .individual-match-property {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.3rem;
+  margin: 0 0.2rem;
 }
 
 .player-matches-header {
@@ -390,7 +391,7 @@ main {
   color: white;
 }
 
-.player-matches-data-header p{
+.player-matches-data-header .individual-match-property{
   background-color: cornflowerblue;
   color: white;
   display: flex;
@@ -450,7 +451,7 @@ main {
   border: 2px solid cornflowerblue;
 }
 
-form {
+.login-register {
   position: fixed;
   width: 20vw;
   height: auto;
@@ -468,12 +469,12 @@ form {
   border-radius: 0.6rem;
 }
 
-form  input {
+.login-register input {
   font-size: 1.1rem;
   width: 90%;
 }
 
-form  button, #register-btn, #login-button {
+.login-register button, #register-btn, #login-button {
   background-color: white;
   color: cornflowerblue;
   border: none;
@@ -483,12 +484,12 @@ form  button, #register-btn, #login-button {
   cursor: pointer;
 }
 
-form h3 {
+.login-register h3 {
   color: white;
   margin: 1rem 0;
 }
 
-form h2 {
+.login-register h2 {
   color: white;
 }
 

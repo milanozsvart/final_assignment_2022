@@ -1,4 +1,4 @@
-import { React, useContext } from "react";
+import { React, useContext, useEffect } from "react";
 import { CalculatorContext } from "./CalculatorContext";
 import CalculatorFormAdditionalProps from "./CalculatorFormAdditionalProps";
 import CalculatorResults from "./CalculatorResults";
@@ -10,37 +10,39 @@ export default function CalculatorForm() {
     setFormState,
     setCurrentPlayerData,
     setComparePlayerStats,
+    player,
   } = useContext(CalculatorContext);
 
-  async function fetchPlayerData(playerName) {
-    console.log(playerName);
+  async function fetchPlayerData(additionalProps) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerName: playerName }),
+      body: JSON.stringify({
+        playerName: player,
+        additionalProps: additionalProps,
+      }),
     };
     const response = await fetch(
       "http://127.0.0.1:5000/get_basic_player_data",
       requestOptions
     );
     const data = await response.json();
-    console.log(data);
-    if (Array.isArray(playerName)) {
+    if (Array.isArray(player)) {
       setComparePlayerStats(data);
     } else {
       setCurrentPlayerData(data);
     }
+    handleSubmitButton();
   }
 
-  const handleSubmitButton = (playerName) => {
-    fetchPlayerData(playerName);
+  const handleSubmitButton = () => {
     let formStateToHandle = formState;
     setFormState(++formStateToHandle);
   };
   if (formState === 0) {
     return <CalculatorPlayerInput handleSubmitButton={handleSubmitButton} />;
   } else if (formState === 1) {
-    return <CalculatorFormAdditionalProps />;
+    return <CalculatorFormAdditionalProps fetchPlayerData={fetchPlayerData} />;
   } else if (formState === 2) {
     return <CalculatorResults />;
   }

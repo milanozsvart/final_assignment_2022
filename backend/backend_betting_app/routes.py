@@ -25,14 +25,15 @@ def home():
 def get_basic_player_data():
     data = request.get_json(force=True)
     playerName = data['playerName']
-    print(playerName)
+    additionalProps = data['additionalProps']
     stats = {}
     if isinstance(playerName, list):
         players = playerName
         i = 0
         for player in players:
             playerGetter = Players()
-            matchesGetter = StatsCalculator(player)
+            matchesGetter = StatsCalculator(
+                player, additionalProps)
             playerData = playerGetter.getBasicPlayerData(player)
             bestPerformance = matchesGetter.bestPerformance()
             playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
@@ -49,7 +50,8 @@ def get_basic_player_data():
             i = i+1
     else:
         playerGetter = Players()
-        matchesGetter = StatsCalculator(playerName)
+        matchesGetter = StatsCalculator(
+            playerName, additionalProps)
         playerData = playerGetter.getBasicPlayerData(playerName)
         bestPerformance = matchesGetter.bestPerformance()
         playerMatchesData = matchesGetter.getBasicStatDataForPlayer()
@@ -72,7 +74,8 @@ def get_reached_players():
 @app.route("/get_matches_data", methods=["POST"])
 def get_matches_data():
     data = request.get_json(force=True)
-    statCalculator = StatsCalculator(data['playerName'])
+    statCalculator = StatsCalculator(
+        data['playerName'], data["additionalProps"])
     matches = statCalculator.getPlayerMatchesAgainstOpponents(
         data['opponentRanks'], data['category'])
     return jsonify(matches)

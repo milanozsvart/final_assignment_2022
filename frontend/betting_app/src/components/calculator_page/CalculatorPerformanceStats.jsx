@@ -9,6 +9,7 @@ export default function CalculatorPerformanceStats(props) {
     setPlayerMatches,
     setOpponentRanks,
     setCategorySelected,
+    additionalProps,
   } = useContext(CalculatorContext);
   const opponentRanks = props.opponentRanks;
   const performanceBetweenRanks = props.performanceBetweenRanks;
@@ -30,7 +31,7 @@ export default function CalculatorPerformanceStats(props) {
   };
 
   async function fetchPlayerMatches(event) {
-    handleVisibility()
+    handleVisibility();
     setOpponentRanks(opponentRanks);
     setCategorySelected(event.currentTarget.textContent);
     const requestOptions = {
@@ -40,6 +41,7 @@ export default function CalculatorPerformanceStats(props) {
         playerName: props.surName,
         opponentRanks: opponentRanks,
         category: event.currentTarget.id,
+        additionalProps: additionalProps,
       }),
     };
     const response = await fetch(
@@ -47,6 +49,7 @@ export default function CalculatorPerformanceStats(props) {
       requestOptions
     );
     const data = await response.json();
+    console.log(data);
     setPlayerMatches(data);
   }
 
