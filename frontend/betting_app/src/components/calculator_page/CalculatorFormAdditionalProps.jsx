@@ -15,8 +15,7 @@ export default function CalculatorFormAdditionalProps(props) {
     },
   ];
 
-  const { formState, setFormState, setAdditionalProps } =
-    useContext(CalculatorContext);
+  const { setAdditionalProps } = useContext(CalculatorContext);
 
   const handleSubmitButton = () => {
     let data = {};

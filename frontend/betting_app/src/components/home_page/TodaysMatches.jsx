@@ -1,29 +1,8 @@
 import { React, useState, useEffect } from "react";
 
 export default function () {
-  const matches = [
-    {
-      id: 1,
-      firstPlayer: "Barty A.",
-      secondPlayer: "Sabalenka A.",
-      date: "2022.03.11",
-      tier: "W1000",
-      round: "Semifinals",
-      odds1: 1.5,
-      odds2: 2.1,
-    },
-    {
-      id: 2,
-      firstPlayer: "Badosa P.",
-      secondPlayer: "Paolini J.",
-      date: "2022.03.11",
-      tier: "W1000",
-      round: "Semifinals",
-      firstOdds: 1.2,
-      secondOdds: 4,
-    },
-  ];
-  const [todaysMatches, setTodaysMatches] = useState(matches);
+  const [todaysMatches, setTodaysMatches] = useState([]);
+  const usersOffset = (new Date().getTimezoneOffset() * -1) / 60;
 
   useEffect(() => {
     fetchTodaysMatches();
@@ -38,12 +17,33 @@ export default function () {
       requestOptions
     );
     const data = await response.json();
+    data["matches"].map((match) => {
+      let timeString = match["date"];
+      let hours = timeString[0] + timeString[1];
+      hours = parseInt(hours) + usersOffset;
+      if (hours > 23) {
+        hours = hours - 24;
+      }
+      if (hours === 0) {
+        hours = "00";
+      }
+      match["date"] = hours.toString() + ":" + timeString[3] + timeString[4];
+    });
     setTodaysMatches(data["matches"]);
   }
   return (
     <div className="home-page-matches-wrapper">
       <h1>Today's matches</h1>
       <div className="todays-matches-container">
+        <h1
+          style={
+            todaysMatches.length > 0
+              ? { visibility: "hidden" }
+              : { visibility: "visible" }
+          }
+        >
+          No matches today :(
+        </h1>
         {todaysMatches.map((match) => (
           <div className="match-container" key={match["id"]}>
             <span>{match["date"]}</span>

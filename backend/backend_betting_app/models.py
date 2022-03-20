@@ -1,10 +1,12 @@
+from email.policy import default
 from backend_betting_app import db
 from datetime import datetime
 
 
 class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=False)
     tier = db.Column(db.String(20), nullable=False)
     round = db.Column(db.String(20), nullable=False)
     firstPlayer = db.Column(db.String(35), nullable=False)
@@ -13,12 +15,16 @@ class Match(db.Model):
     secondOdds = db.Column(db.Float(), nullable=False)
 
     def __repr__(self):
-        return f"Match('{self.date}', '{self.tier}', '{self.round}', '{self.firstPlayer}', {self.secondPlayer}', '{self.firstOdds}', '{self.secondOdds}'"
+        return f"Match('{self.date}', '{self.time}', '{self.tier}', '{self.round}', '{self.firstPlayer}', {self.secondPlayer}', '{self.firstOdds}', '{self.secondOdds}'"
 
 
 class Dates(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.Date, nullable=False, unique=True)
+    checked = db.Column(db.Boolean, nullable=True, default=False)
+
+    def __repr__(self):
+        return f"Dates({self.date}, {self.checked})"
 
 
 class User(db.Model):
