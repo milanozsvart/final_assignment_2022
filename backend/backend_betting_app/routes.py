@@ -9,7 +9,9 @@ from backend_betting_app import bcrypt
 from StatsCalculator import StatsCalculator
 import requests
 from datetime import date, time
+import datetime
 import os
+import jwt
 from flask import url_for, flash, redirect, request, jsonify
 
 
@@ -193,6 +195,8 @@ def login():
     data = request.get_json(force=True)
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
-        return {"message": f"Account created for {data['email']}", "successful": True}
+        token = jwt.encode(
+            {'user': data['email']}, 'ASDWQ3412LOUZT98cvT6Xy?.)Opewqrt6%6', algorithm="HS256")
+        return {"message": f"Account created for {data['email']}", "successful": True, "token": token}
     else:
         return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}

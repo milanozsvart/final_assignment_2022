@@ -2,9 +2,11 @@ import { React, useState } from "react";
 import "../App.css";
 import Nav from "./Nav";
 import LoginForm from "./LoginForm";
+import LoginButton from "./LoginButton";
 
 export default function TopComponent() {
   const [loginFormVisibility, setLoginFormVisibility] = useState(false);
+  const [token, setToken] = useState(false);
   const handleLoginFormVisibility = () => {
     if (!loginFormVisibility) {
       setRegisterForm(false);
@@ -20,13 +22,18 @@ export default function TopComponent() {
     <>
       <div id="hero-image"></div>
       <Nav />
-      <div id="login-btn" onClick={handleLoginFormVisibility}>
-        Login
-      </div>
+      <LoginButton
+        handleLoginFormVisibility={handleLoginFormVisibility}
+        token={token}
+        setToken={setToken}
+      />
       <LoginForm
         loginFormVisibility={loginFormVisibility}
+        setLoginFormVisibility={setLoginFormVisibility}
         isRegisterForm={isRegisterForm}
         toggleRegisterForm={toggleRegisterForm}
+        token={token}
+        setToken={setToken}
       />
     </>
   );

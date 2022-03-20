@@ -21,6 +21,10 @@ class StatsCalculator():
         self.endingRanks = [10, 25, 50, 75, 100, 500]
         self.roundsHierarchy = {'1st Round': 1, '2nd Round': 2, '3rd Round': 3,
                                 '4th Round': 4,  'Quarterfinals': 5,  'Semifinals': 6,  'The Final': 7}
+        self.resultsHierarcyLow = {1: '2nd Round', 2: '3rd Round', 3: 'Quarterfinals',
+                                   5: 'Semifinals', 6: 'Runner-up',  7: 'Tournament Winner'}
+        self.resultsHierarcyHigh = {1: '2nd Round', 2: '3rd Round', 3: '4th Round', 4: 'Quarterfinals',
+                                    5: 'Semifinals', 6: 'Runner-up',  7: 'Tournament Winner'}
 
     def cleanUpTournamentData(self):
         self.df['Tier'] = self.df['Tier'].apply(
@@ -95,7 +99,10 @@ class StatsCalculator():
     def setBestPerformances(self, tournament, bestForTournamentType):
         for round in self.roundsHierarchy.keys():
             if self.roundsHierarchy[round] == bestForTournamentType:
-                self.bestPerformanceInTournamentTypes[tournament] = round
+                if round == "Grand Slam" or round == "WTA1000":
+                    self.bestPerformanceInTournamentTypes[tournament] = self.resultsHierarcyHigh[bestForTournamentType]
+                else:
+                    self.bestPerformanceInTournamentTypes[tournament] = self.resultsHierarcyLow[bestForTournamentType]
                 break
 
     def lookForPlayersBestPerformanceInTournament(self, tournament, bestForTournamentType):
@@ -120,22 +127,27 @@ class StatsCalculator():
         winnerInStraightSets = 0
 
         self.setIndexOfDataFrame('Loser')
-        matchesOfPlayer = self.getPlayerMatches()
-        for match in matchesOfPlayer:
-            if(match["Comment"] == "Completed"):
-                if match["WRank"] <= endingRank and match["WRank"] >= startingRank:
-                    allMatches += 1
+        try:
+            matchesOfPlayer = self.getPlayerMatches()
+            for match in matchesOfPlayer:
+                if(match["Comment"] == "Completed"):
+                    if match["WRank"] <= endingRank and match["WRank"] >= startingRank:
+                        allMatches += 1
+        except:
+            None
 
         self.setIndexOfDataFrame('Winner')
-
-        matchesOfPlayer = self.getPlayerMatches()
-        for match in matchesOfPlayer:
-            if(match["Comment"] == "Completed"):
-                if match["LRank"] <= endingRank and match["LRank"] >= startingRank:
-                    allMatches += 1
-                    numberOfWins += 1
-                    if float(match["Lsets"]) < 1:
-                        winnerInStraightSets += 1
+        try:
+            matchesOfPlayer = self.getPlayerMatches()
+            for match in matchesOfPlayer:
+                if(match["Comment"] == "Completed"):
+                    if match["LRank"] <= endingRank and match["LRank"] >= startingRank:
+                        allMatches += 1
+                        numberOfWins += 1
+                        if float(match["Lsets"]) < 1:
+                            winnerInStraightSets += 1
+        except:
+            None
 
         return {"Matches played": allMatches, "Matches won": numberOfWins, "Matches won 2-0": winnerInStraightSets}
 
@@ -169,14 +181,17 @@ class StatsCalculator():
 
     def playerMatchesWithRank(self, result, rankToCheck):
         self.setIndexOfDataFrame(result)
-        playersDf = self.df.loc[self.player]
-        if (not isinstance(playersDf, pd.DataFrame)):
-            playersDf.reset_index(drop=False)
-            playersDf = playersDf.to_frame().transpose()
-        playersDf = playersDf[(playersDf[rankToCheck] >= self.startingRank) &
-                              (playersDf[rankToCheck] <= self.endingRank) & (playersDf['Comment'] == 'Completed')]
-        playersDf = playersDf[['Winner', 'Loser', 'Date',
-                               'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        try:
+            playersDf = self.df.loc[self.player]
+            if (not isinstance(playersDf, pd.DataFrame)):
+                playersDf.reset_index(drop=False)
+                playersDf = playersDf.to_frame().transpose()
+            playersDf = playersDf[(playersDf[rankToCheck] >= self.startingRank) &
+                                  (playersDf[rankToCheck] <= self.endingRank) & (playersDf['Comment'] == 'Completed')]
+            playersDf = playersDf[['Winner', 'Loser', 'Date',
+                                   'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        except:
+            playersDf = pd.DataFrame()
 
         return playersDf
 

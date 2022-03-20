@@ -433,15 +433,9 @@ main {
 }
 
 #login-btn {
-  position: absolute;
-  text-transform: uppercase;
-  top: 12vh;
-  right: 7vh;
   background-color: cornflowerblue;
   padding: 0.5em 1.6rem;
-  font-size: 1.4rem;
   color: white;
-  cursor: pointer;
   border: 2px solid cornflowerblue;
 }
 
@@ -449,6 +443,31 @@ main {
   background-color: white;
   color: cornflowerblue;
   border: 2px solid cornflowerblue;
+}
+
+.login-and-account-btn {
+  position: absolute;
+  text-transform: uppercase;
+  top: 12vh;
+  right: 7vh;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+#account-btn {
+  color: cornflowerblue;
+  top: 15vh;
+}
+
+#account-btn:hover {
+  border-bottom: 2px solid cornflowerblue;
+}
+
+#account-email {
+  position: absolute;
+  top: 12vh;
+  right: 7vh;
+  color: cornflowerblue;
 }
 
 .login-register {

@@ -37,9 +37,12 @@ export default function LoginForm(props) {
     const response = await fetch("http://127.0.0.1:5000/login", requestOptions);
     const returnData = await response.json();
     if (returnData["successful"]) {
-      alert("Success!");
+      localStorage.setItem("token", returnData["token"]);
+      localStorage.setItem("user", data["email"]);
+      props.setLoginFormVisibility(false);
+      props.setToken(true);
     } else {
-      alert("Not good!");
+      alert("no good");
     }
   }
 
