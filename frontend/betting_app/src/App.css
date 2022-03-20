@@ -456,7 +456,7 @@ main {
 
 #account-btn {
   color: cornflowerblue;
-  top: 15vh;
+  top: 15%;
 }
 
 #account-btn:hover {
@@ -465,8 +465,8 @@ main {
 
 #account-email {
   position: absolute;
-  top: 12vh;
-  right: 7vh;
+  top: 12%;
+  right: 3%;
   color: cornflowerblue;
 }
 
@@ -594,3 +594,42 @@ main {
   text-transform: capitalize;
   color: cornflowerblue;
 }
+
+#account-manager-window {
+  position: absolute;
+  background-color: cornflowerblue;
+  top: 15%;
+  right: 3.5%;
+  margin: 2rem 0;
+  width: 20%;
+  padding: 0.5rem;
+  border-radius: 0.6rem;
+}
+
+#logout-btn {
+  background-color: red;
+  color: white;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.account-setting {
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 0.4rem;
+  border-radius: 0.5rem;
+}
+
+.account-setting:hover {
+  color: cornflowerblue;
+  background-color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+

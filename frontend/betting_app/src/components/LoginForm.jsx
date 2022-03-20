@@ -4,6 +4,7 @@ import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import RegisterForm from "./RegisterForm";
 import { useForm } from "react-hook-form";
+import AccountManagerWindow from "./AccountManagerWindow";
 
 export default function LoginForm(props) {
   let visibility = props.loginFormVisibility;
@@ -44,6 +45,16 @@ export default function LoginForm(props) {
     } else {
       alert("no good");
     }
+  }
+
+  if (props.token) {
+    return (
+      <AccountManagerWindow
+        setLoginFormVisibility={props.setLoginFormVisibility}
+        visibility={visibility}
+        setToken={props.setToken}
+      />
+    );
   }
 
   if (props.isRegisterForm) {

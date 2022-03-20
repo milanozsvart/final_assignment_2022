@@ -18,10 +18,7 @@ export default function LoginButton(props) {
         <div
           className="login-and-account-btn"
           id="account-btn"
-          onClick={() => {
-            localStorage.clear();
-            props.setToken(false);
-          }}
+          onClick={props.handleLoginFormVisibility}
         >
           My account
         </div>
