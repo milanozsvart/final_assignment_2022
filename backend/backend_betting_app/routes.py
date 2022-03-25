@@ -7,6 +7,7 @@ from backend_betting_app import db
 from backend_betting_app import app
 from backend_betting_app import bcrypt
 from StatsCalculator import StatsCalculator
+from ResultsPredictor import ResultsPredictor
 import requests
 from datetime import date, time
 import datetime
@@ -87,7 +88,7 @@ def get_matches_data():
 @app.route("/get_todays_matches_from_db", methods=["GET"])
 def get_todays_matches_from_db():
     db.create_all()
-    dateToCheck = date(2022, 3, 20)
+    dateToCheck = date.today()
     returnMatches = {"matches": []}
     dateExists = db.session.query(db.exists().where(
         Dates.date == dateToCheck)).scalar()
@@ -200,3 +201,12 @@ def login():
         return {"message": f"Account created for {data['email']}", "successful": True, "token": token}
     else:
         return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}
+
+
+@app.route("/get_predictions_for_match", methods=["POST"])
+def get_predictions_for_match():
+    data = request.get_json(force=True)
+    r = ResultsPredictor(data['player1'], data['player2'],
+                         data["player1Rank"], data["player2Rank"])
+    r.transformDataFrame()
+    return "d"

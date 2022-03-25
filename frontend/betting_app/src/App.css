@@ -471,7 +471,7 @@ main {
 }
 
 .login-register {
-  position: fixed;
+  position: absolute;
   width: 20vw;
   height: auto;
   top: 22.5vh;
@@ -580,9 +580,10 @@ main {
 .calculator-results-form {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 0 7.5%;
+  margin: 0 1rem 1rem 1rem;
 }
 
 .calculator-results-form-inner {

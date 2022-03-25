@@ -15,6 +15,23 @@ export default function CalculatorFormAdditionalProps(props) {
     },
   ];
 
+  const addMonths = (date, months) => {
+    let month = (date.getMonth() + months) % 12;
+    //create a new Date object that gets the last day of the desired month
+    let last = new Date(date.getFullYear(), month + 1, 0);
+
+    //compare dates and set appropriately
+    if (date.getDate() <= last.getDate()) {
+      date.setMonth(month);
+    } else {
+      date.setMonth(month, last.getDate());
+    }
+
+    return date;
+  };
+
+  const [dateValue, setDateValue] = useState(addMonths(new Date(), -6));
+
   const { setAdditionalProps } = useContext(CalculatorContext);
 
   const handleSubmitButton = () => {
@@ -54,6 +71,8 @@ export default function CalculatorFormAdditionalProps(props) {
             type="date"
             min="2021-01-06"
             max={new Date().toISOString().split("T")[0]}
+            value={dateValue.toISOString().split("T")[0]}
+            onChange={(e) => setDateValue(e.currentTarget.value)}
           />
         </div>
       </div>

@@ -99,7 +99,8 @@ class StatsCalculator():
     def setBestPerformances(self, tournament, bestForTournamentType):
         for round in self.roundsHierarchy.keys():
             if self.roundsHierarchy[round] == bestForTournamentType:
-                if round == "Grand Slam" or round == "WTA1000":
+                print(round, bestForTournamentType, tournament)
+                if tournament == "Grand Slam" or tournament == "WTA1000":
                     self.bestPerformanceInTournamentTypes[tournament] = self.resultsHierarcyHigh[bestForTournamentType]
                 else:
                     self.bestPerformanceInTournamentTypes[tournament] = self.resultsHierarcyLow[bestForTournamentType]
