@@ -10,7 +10,7 @@ from StatsCalculator import StatsCalculator
 from ResultsPredictor import ResultsPredictor
 import requests
 from datetime import date, time
-import datetime
+import unidecode
 import os
 import jwt
 from flask import url_for, flash, redirect, request, jsonify
@@ -34,6 +34,10 @@ def get_basic_player_data():
     if isinstance(playerName, list):
         players = playerName
         i = 0
+        playerStat = Players()
+        predictor = ResultsPredictor(players[0], players[1], playerStat.getBasicPlayerData(
+            players[0])["rank"], playerStat.getBasicPlayerData(players[1])["rank"])
+        prediction = predictor.analysePlayerMatchesData()
         for player in players:
             playerGetter = Players()
             matchesGetter = StatsCalculator(
@@ -51,6 +55,7 @@ def get_basic_player_data():
             performanceBetweenRanks = matchesGetter.performanceAgainstRank()
             fullPlayerStats['performanceBetweenRanks'] = performanceBetweenRanks
             stats[i] = fullPlayerStats
+            stats["pred"] = prediction
             i = i+1
     else:
         playerGetter = Players()
@@ -101,9 +106,11 @@ def get_todays_matches_from_db():
         exists = db.session.query(db.exists().where(
             Match.date == dateToCheck)).scalar()
         if exists:
+            p = Players()
             matches = matches = Match.query.filter_by(date=dateToCheck)
             returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
-                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds} for match in matches]
+                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
+                                             unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
         dateInDb.checked = True
     else:
         get_todays_matches_from_api()
@@ -185,7 +192,6 @@ def register():
     if not exists:
         db.session.add(User(email=data["email"], password=hashedPassword))
         db.session.commit()
-        print(User.query.all())
         return {"message": f"Account created for {data['email']}", "successful": True}
     else:
         return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}
@@ -210,3 +216,19 @@ def get_predictions_for_match():
                          data["player1Rank"], data["player2Rank"])
     r.transformDataFrame()
     return "d"
+
+
+@app.route("/change_password", methods=["POST"])
+def change_password():
+    data = request.get_json(force=True)
+    userEmail = jwt.decode(
+        data["token"], "ASDWQ3412LOUZT98cvT6Xy?.)Opewqrt6%6", algorithms=["HS256"])["user"]
+    print(userEmail)
+    if not userEmail:
+        return {"successful": False}
+    user = User.query.filter_by(email=userEmail).first()
+    if user and bcrypt.check_password_hash(user.password, data["currentPassword"]):
+        user.password = bcrypt.generate_password_hash(
+            data["newPassword"]).decode('utf-8')
+        db.session.commit()
+        return {"successful": True}

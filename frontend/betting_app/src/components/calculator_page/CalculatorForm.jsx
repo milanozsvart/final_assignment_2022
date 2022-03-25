@@ -27,6 +27,7 @@ export default function CalculatorForm() {
       requestOptions
     );
     const data = await response.json();
+    console.log(data);
     if (Array.isArray(player)) {
       setComparePlayerStats(data);
     } else {

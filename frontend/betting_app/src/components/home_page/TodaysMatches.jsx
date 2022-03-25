@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import Predictions from "../calculator_page/Predictions";
 
 export default function () {
   const [todaysMatches, setTodaysMatches] = useState([]);
@@ -45,15 +46,23 @@ export default function () {
           No matches today :(
         </h1>
         {todaysMatches.map((match) => (
-          <div className="match-container" key={match["id"]}>
-            <span>{match["date"]}</span>
-            <span>{match["tier"]}</span>
-            <span>{match["round"]}</span>
-            <span>{match["firstPlayer"]}</span>
-            <span>{match["secondPlayer"]}</span>
-            <span>{match["firstOdds"]}</span>
-            <span>{match["secondOdds"]}</span>
-          </div>
+          <>
+            <div className="match-container" key={match["id"]}>
+              <span>{match["date"]}</span>
+              <span>{match["tier"]}</span>
+              <span>{match["round"]}</span>
+              <span>{match["firstPlayer"]}</span>
+              <span>{match["secondPlayer"]}</span>
+              <span>{match["firstOdds"]}</span>
+              <span>{match["secondOdds"]}</span>
+            </div>
+            <div>
+              <Predictions
+                player={match["pred"]["player"]}
+                points={match["pred"]["points"]}
+              />
+            </div>
+          </>
         ))}
       </div>
     </div>

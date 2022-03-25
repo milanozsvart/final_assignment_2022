@@ -3,6 +3,7 @@ import "../App.css";
 import Nav from "./Nav";
 import LoginForm from "./LoginForm";
 import LoginButton from "./LoginButton";
+import AccountSettingDisplay from "./AccountSettingDisplay";
 
 export default function TopComponent() {
   const [loginFormVisibility, setLoginFormVisibility] = useState(false);

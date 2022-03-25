@@ -633,4 +633,70 @@ main {
   cursor: pointer;
 }
 
+.change-password {
+  font-size: 1.1rem;
+  background-color: cornflowerblue;
+  position: relative;
+  color: white;
+  width: 20%;
+  padding: 1.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.change-password input {
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.change-password .visible-password {
+  margin-bottom: 1rem;
+}
+
+.change-password h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.change-password button {
+  background-color: white;
+  color: cornflowerblue;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+
+.change-password form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.prediction-wrapper {
+  font-size: 1.5rem;
+  color: cornflowerblue;
+}
+
+.certainity-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.certainity-wrapper .certainity-div {
+  border: 1px solid black;
+  margin: 0 0.1rem;
+  display: block;
+  background-color: white;
+  width: 10%;
+  height: 20px;
+}
+
+
+
 

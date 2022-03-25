@@ -8,8 +8,8 @@ class ResultsPredictor():
         self.player2odds = 0
         self.player1 = player1.lower()
         self.player2 = player2.lower()
-        self.player1Rank = player1Rank
-        self.player2Rank = player2Rank
+        self.player1Rank = int(player1Rank)
+        self.player2Rank = int(player2Rank)
         self.statsLocation = r'C:\Users\milan\Desktop\Dokumentumok\python_workspace\betting_app\csv\2021-women.csv'
         self.df = pd.read_csv(self.statsLocation, sep=";")
         self.setIndexOfDataFrame('Winner')
@@ -17,7 +17,7 @@ class ResultsPredictor():
         self.definePlayer2()
         self.cleanUpTournamentData()
         self.setDate()
-        #self.setTier()
+        # self.setTier()
 
     def setIndexOfDataFrame(self, propertyAsIndex):
         self.df.set_index(propertyAsIndex, inplace=True, drop=False)
@@ -45,47 +45,51 @@ class ResultsPredictor():
                 break
 
     def countMatches(self, player, opponentRank):
-        startingRank = max(1, opponentRank-8)
-        endingRank = min(1000, opponentRank+10)
+        startingRank = max(1, int(opponentRank)-8)
+        endingRank = min(1000, int(opponentRank)+10)
         matchesCount = 0
         wonMatches = 0
         lostMatches = 0
         self.setIndexOfDataFrame('Winner')
         matchesCount += sum(self.df.index == player)
         wonMatches += sum(self.df.index == player)
-        playersDf = self.df.loc[player]
-        if (not isinstance(playersDf, pd.DataFrame)):
-            playersDf.reset_index(drop=False)
-            playersDf = playersDf.to_frame().transpose()
-        playersDf = playersDf[(playersDf["LRank"] >= startingRank) &
-                              (playersDf["LRank"] <= endingRank) & (playersDf['Comment'] == 'Completed')]
-        playersDf = playersDf[['Winner', 'Loser', 'Date',
-                               'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        try:
+            playersDf = self.df.loc[player]
+            if (not isinstance(playersDf, pd.DataFrame)):
+                playersDf.reset_index(drop=False)
+                playersDf = playersDf.to_frame().transpose()
+            playersDf = playersDf[(playersDf["LRank"] >= startingRank) &
+                                  (playersDf["LRank"] <= endingRank) & (playersDf['Comment'] == 'Completed')]
+            playersDf = playersDf[['Winner', 'Loser', 'Date',
+                                   'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        except:
+            playersDf = pd.DataFrame()
         matchesCountAgainstRank = sum(playersDf.index == player)
         wonAgainstRank = sum(playersDf.index == player)
         self.setIndexOfDataFrame('Loser')
         matchesCount += sum(self.df.index == player)
         lostMatches += sum(self.df.index == player)
-        playersDf = self.df.loc[player]
-        if (not isinstance(playersDf, pd.DataFrame)):
-            playersDf.reset_index(drop=False)
-            playersDf = playersDf.to_frame().transpose()
-        playersDf = playersDf[(playersDf["WRank"] >= startingRank) &
-                              (playersDf["WRank"] <= endingRank) & (playersDf['Comment'] == 'Completed')]
-        playersDf = playersDf[['Winner', 'Loser', 'Date',
-                               'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        try:
+            playersDf = self.df.loc[player]
+            if (not isinstance(playersDf, pd.DataFrame)):
+                playersDf.reset_index(drop=False)
+                playersDf = playersDf.to_frame().transpose()
+            playersDf = playersDf[(playersDf["WRank"] >= startingRank) &
+                                  (playersDf["WRank"] <= endingRank) & (playersDf['Comment'] == 'Completed')]
+            playersDf = playersDf[['Winner', 'Loser', 'Date',
+                                   'Tier', 'WRank', 'LRank', 'B365W', 'B365L', 'Wsets', 'Lsets']]
+        except:
+            playersDf = pd.DataFrame()
         matchesCountAgainstRank += sum(playersDf.index == player)
         lostAgainstRank = sum(playersDf.index == player)
         return {"allMatches": matchesCount, "wonMatches": wonMatches, "lostMatches": lostMatches, "wonPercentage": wonMatches/matchesCount if wonMatches > 0 and matchesCount > 0 else 0, "matchesCountAgainstRank": matchesCountAgainstRank, "wonAgainstRank": wonAgainstRank, "lostAgainstRank": lostAgainstRank, "wonPercentageAgainstRank": wonAgainstRank/matchesCountAgainstRank if wonAgainstRank > 0 and matchesCountAgainstRank > 0 else 0}
 
     def transformDataFrame(self):
         print(self.isUnDiscovered(self.player2))
-        player1Matches = self.countMatches(self.player1, self.player2Rank)
-        player2Matches = self.countMatches(self.player2, self.player1Rank)
         print(self.analysePlayerMatchesData())
         #df = self.isOnStreak(self.player1)
         #df2 = self.isOnStreak(self.player2)
-        #print(df)
+        # print(df)
 
     def setTier(self):
         tier = "WTA1000"
@@ -154,10 +158,8 @@ class ResultsPredictor():
                 (self.player1Rank - self.player2Rank) * 4
         else:
             self.player2odds += (player2RanksWinning -
-                                 player1RanksWinning)*(player1RanksWinning - player2RanksWinning) * 4
+                                 player1RanksWinning)*(self.player1Rank - self.player2Rank) * 4
             self.player1odds += (player2RanksWinning -
-                                 player1RanksWinning)*(player2RanksWinning - player1RanksWinning) * 4
-        print(self.player1odds)
-        print(self.player2odds)
+                                 player1RanksWinning)*(self.player2Rank - self.player1Rank) * 4
 
-        return better
+        return {"points": abs(self.player1odds)+abs(self.player2odds), "player": self.player1 if self.player1odds > self.player2odds else self.player2}

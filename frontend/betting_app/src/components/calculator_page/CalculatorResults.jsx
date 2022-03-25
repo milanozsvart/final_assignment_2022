@@ -5,6 +5,7 @@ import CalculatorResultsRanks from "./CalculatorResultsRanks";
 import CalculatorResultsStats from "./CalculatorResultsStats";
 import CalculatorPlayerMatches from "./CalculatorPlayerMatches";
 import CalculatorResultsForm from "./CalculatorResultsForm";
+import Predictions from "./Predictions";
 
 export default function CalculatorResults() {
   const resultsRef = useRef();
@@ -36,6 +37,10 @@ export default function CalculatorResults() {
             <CalculatorResultsRanks currentPlayerData={comparePlayerStats[0]} />
             <CalculatorResultsRanks currentPlayerData={comparePlayerStats[1]} />
           </div>
+          <Predictions
+            player={comparePlayerStats["pred"]["player"]}
+            points={comparePlayerStats["pred"]["points"]}
+          />
           <CalculatorPlayerMatches />
         </div>
 

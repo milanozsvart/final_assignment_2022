@@ -1,3 +1,4 @@
+from numpy import isin
 import pandas as pd
 import json
 
@@ -15,6 +16,9 @@ class Players():
             ['surName', 'firstName', 'rank', 'flag'], playerName)
 
     def getDataBasedOnProperty(self, propertyToCheck, ownerOfProperty):
+        data = self.df.loc[ownerOfProperty, propertyToCheck]
+        if isinstance(data, pd.Series):
+            return self.df.loc[ownerOfProperty, propertyToCheck][0]
         return self.df.loc[ownerOfProperty, propertyToCheck]
 
     def setDataBasedOnProperty(self, propertyToSet, ownerOfProperty):
@@ -66,3 +70,7 @@ class Players():
 
     def emptyStringForReachedPlayers(self, playerNamePart):
         return len(playerNamePart) < 1
+
+    def playerInDf(self, playerName):
+        self.setIndexOfDataFrame('surName')
+        return playerName in self.df.index
