@@ -1,6 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
+import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorCurrentPlayerCard(props) {
+  const { additionalProps, setRanksResults, setRanksVisibility } =
+    useContext(CalculatorContext);
+  async function getHistoricRanksData() {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerName: props.currentPlayerData.surName,
+        additionalProps: additionalProps,
+      }),
+    };
+    const response = await fetch(
+      "http://127.0.0.1:5000/get_historic_ranks_data",
+      requestOptions
+    );
+    const data = await response.json();
+    setRanksResults(data);
+    setRanksVisibility(true);
+  }
   return (
     <div className="wrapper-calculator-player-card">
       <div id="photo-container">
@@ -16,7 +36,9 @@ export default function CalculatorCurrentPlayerCard(props) {
             " " +
             props.currentPlayerData.surName}
         </div>
-        <div id="player-rank">{"#" + props.currentPlayerData.rank}</div>
+        <div id="player-rank" onClick={getHistoricRanksData}>
+          {"#" + props.currentPlayerData.rank}
+        </div>
         <div id="all-matches" className="player-card-data-line">
           <div>Matches played: </div>
           <div>{props.currentPlayerData.allMatches}</div>

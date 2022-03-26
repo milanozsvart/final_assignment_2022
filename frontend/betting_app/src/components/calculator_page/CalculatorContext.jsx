@@ -25,6 +25,8 @@ export function CalculatorState(props) {
   const [comparePlayerStats, setComparePlayerStats] = useState([]);
   const [player, setPlayer] = useState();
   const [additionalProps, setAdditionalProps] = useState();
+  const [ranksResults, setRanksResults] = useState({ ranks: [], dates: [] });
+  const [ranksVisibility, setRanksVisibility] = useState(false);
   return (
     <CalculatorContext.Provider
       value={{
@@ -54,6 +56,10 @@ export function CalculatorState(props) {
         setPlayer,
         additionalProps,
         setAdditionalProps,
+        ranksResults,
+        setRanksResults,
+        ranksVisibility,
+        setRanksVisibility,
       }}
     >
       {props.children}

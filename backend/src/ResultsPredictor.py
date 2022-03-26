@@ -84,13 +84,6 @@ class ResultsPredictor():
         lostAgainstRank = sum(playersDf.index == player)
         return {"allMatches": matchesCount, "wonMatches": wonMatches, "lostMatches": lostMatches, "wonPercentage": wonMatches/matchesCount if wonMatches > 0 and matchesCount > 0 else 0, "matchesCountAgainstRank": matchesCountAgainstRank, "wonAgainstRank": wonAgainstRank, "lostAgainstRank": lostAgainstRank, "wonPercentageAgainstRank": wonAgainstRank/matchesCountAgainstRank if wonAgainstRank > 0 and matchesCountAgainstRank > 0 else 0}
 
-    def transformDataFrame(self):
-        print(self.isUnDiscovered(self.player2))
-        print(self.analysePlayerMatchesData())
-        #df = self.isOnStreak(self.player1)
-        #df2 = self.isOnStreak(self.player2)
-        # print(df)
-
     def setTier(self):
         tier = "WTA1000"
         if tier != "All":
@@ -109,17 +102,25 @@ class ResultsPredictor():
         newDf = newDf.loc[a]
 
     def isUnDiscovered(self, player):
-        self.setIndexOfDataFrame(['Winner', 'WRank'])
-        playersDfWon = self.df.loc[player]
-        self.setIndexOfDataFrame(['Loser', 'LRank'])
-        playersDfLost = self.df.loc[player]
+        try:
+            self.setIndexOfDataFrame(['Winner', 'WRank'])
+            playersDfWon = self.df.loc[player]
+        except:
+            playersDfWon = pd.DataFrame(
+                columns=['Winner', 'Loser', 'WRank', 'LRank', 'DateAsDate'])
+        try:
+            self.setIndexOfDataFrame(['Loser', 'LRank'])
+            playersDfLost = self.df.loc[player]
+        except:
+            playersDfLost = pd.DataFrame(
+                columns=['Winner', 'Loser', 'WRank', 'LRank', 'DateAsDate'])
         newDf = pd.concat([playersDfWon, playersDfLost])
         newDf = newDf.sort_values(by=['DateAsDate'], ascending=False).head(10)[
             ['Winner', 'Loser', 'WRank', 'LRank', 'DateAsDate']]
         progress = newDf.tail(1).index / newDf.head(1).index
-        if progress[0] > 2:
-            return True
-        else:
+        try:
+            return progress[0] > 2
+        except:
             return False
 
     def analysePlayerMatchesData(self):
@@ -161,5 +162,10 @@ class ResultsPredictor():
                                  player1RanksWinning)*(self.player1Rank - self.player2Rank) * 4
             self.player1odds += (player2RanksWinning -
                                  player1RanksWinning)*(self.player2Rank - self.player1Rank) * 4
+
+        if(self.isUnDiscovered(self.player1)):
+            self.player1odds += abs(self.player1odds) * 0.4 + self.player1odds
+        if(self.isUnDiscovered(self.player2)):
+            self.player2odds += abs(self.player2odds) * 0.4 + self.player2odds
 
         return {"points": abs(self.player1odds)+abs(self.player2odds), "player": self.player1 if self.player1odds > self.player2odds else self.player2}

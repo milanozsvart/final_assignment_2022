@@ -19,9 +19,9 @@ export default function Nav() {
           Calculator
         </div>
       </Link>
-      <Link to="/players" style={navStyle}>
-        <div id="players-button" className="nav-button">
-          Players
+      <Link to="/ranks" style={navStyle}>
+        <div id="ranks-button" className="nav-button">
+          Ranks
         </div>
       </Link>
     </nav>

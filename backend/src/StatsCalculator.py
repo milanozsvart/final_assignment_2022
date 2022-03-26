@@ -1,7 +1,6 @@
 import pandas as pd
 from datetime import datetime
-
-from sqlalchemy import null
+import math
 
 
 class StatsCalculator():
@@ -197,3 +196,28 @@ class StatsCalculator():
 
     def getRanksFromString(self, ranks):
         return ranks.split("-")
+
+    def getHistoricRanksForPlayer(self):
+        self.setIndexOfDataFrame('Winner')
+        playersDfWon = self.df.loc[self.player][["WRank", "DateAsDate"]]
+        print(playersDfWon)
+        self.setIndexOfDataFrame('Loser')
+        playersDfLost = self.df.loc[self.player][["LRank", "DateAsDate"]]
+        print(playersDfLost)
+        newDf = pd.concat([playersDfWon, playersDfLost])
+        newDf = newDf.sort_values(by=['DateAsDate'], ascending=True)[
+            ['WRank', 'LRank', 'DateAsDate']]
+
+        newDf["LRank"] = newDf["LRank"].apply(
+            lambda x: x if (not math.isnan(float(x))) else 0)
+        newDf["WRank"] = newDf["WRank"].apply(
+            lambda x: x if (not math.isnan(float(x))) else 0)
+        newDf['Rank'] = newDf['WRank'] + newDf['LRank']
+        newDf = newDf[['Rank', 'DateAsDate']].to_dict("records")
+        response = {"data": newDf}
+        return self.createListFromDict(newDf)
+
+    def createListFromDict(self, dictionaries):
+        dates = [d["DateAsDate"] for d in dictionaries]
+        ranks = [d["Rank"] for d in dictionaries]
+        return {"dates": dates, "ranks": ranks, "player": self.player}

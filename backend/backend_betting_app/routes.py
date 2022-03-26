@@ -1,3 +1,4 @@
+from Tournaments import Tournaments
 from backend_betting_app.models import Match, User, Dates
 from Players import Players
 from flask_cors import CORS
@@ -14,7 +15,6 @@ import unidecode
 import os
 import jwt
 from flask import url_for, flash, redirect, request, jsonify
-
 
 
 CORS(app)
@@ -119,7 +119,7 @@ def get_todays_matches_from_db():
         if exists:
             matches = matches = Match.query.filter_by(date=dateToCheck)
             returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
-                                 "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds} for match in matches]
+                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds} for match in matches]
         dateInDb.checked = True
     db.session.commit()
 
@@ -147,6 +147,8 @@ def get_todays_matches_from_api():
 
     db.create_all()
 
+    t = Tournaments()
+
     del dictionary['meta']
 
     for result in dictionary["results"]:
@@ -154,11 +156,12 @@ def get_todays_matches_from_api():
             dictionary["results"].remove(result)
 
     for result in dictionary["results"]:
+        tournamentName = result["tournament"]["name"]
         for match in result["matches"]:
-            db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier="W1000",
+            db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
                            firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
     db.session.commit()
-    #print(Match.query.all())
+    # print(Match.query.all())
     return "asd"
 
 
@@ -232,3 +235,13 @@ def change_password():
             data["newPassword"]).decode('utf-8')
         db.session.commit()
         return {"successful": True}
+
+
+@app.route("/get_historic_ranks_data", methods=["POST"])
+def get_historic_ranks_data():
+    data = request.get_json(force=True)
+    data["additionalProps"]["court"] = 'all'
+    data["additionalProps"]["tournament"] = 'All'
+    data["additionalProps"]["round"] = 'All'
+    s = StatsCalculator(data["playerName"], data["additionalProps"])
+    return s.getHistoricRanksForPlayer()

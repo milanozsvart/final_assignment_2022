@@ -46,7 +46,7 @@ export default function () {
           No matches today :(
         </h1>
         {todaysMatches.map((match) => (
-          <>
+          <div className="matches-wrapper">
             <div className="match-container" key={match["id"]}>
               <span>{match["date"]}</span>
               <span>{match["tier"]}</span>
@@ -56,13 +56,12 @@ export default function () {
               <span>{match["firstOdds"]}</span>
               <span>{match["secondOdds"]}</span>
             </div>
-            <div>
-              <Predictions
-                player={match["pred"]["player"]}
-                points={match["pred"]["points"]}
-              />
-            </div>
-          </>
+
+            <Predictions
+              player={match["pred"]["player"]}
+              points={match["pred"]["points"]}
+            />
+          </div>
         ))}
       </div>
     </div>

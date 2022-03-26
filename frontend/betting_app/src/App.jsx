@@ -3,7 +3,8 @@ import TopComponent from "./components/TopComponent";
 import Calculator from "./components/calculator_page/Calculator";
 import Home from "./components/home_page/Home";
 import Players from "./components/Players"
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import Ranks from "./components/Ranks";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 function App() {
   return (
     <>
@@ -11,9 +12,9 @@ function App() {
         <TopComponent />
         <main>
           <Routes>
-            <Route path='/' element={<Home />}/>
-            <Route path='/calculator' element={<Calculator />}/>
-            <Route path='/players' element={<Players />}/>
+            <Route path="/" element={<Home />} />
+            <Route path="/calculator" element={<Calculator />} />
+            <Route path="/ranks" element={<Ranks />} />
           </Routes>
         </main>
       </Router>

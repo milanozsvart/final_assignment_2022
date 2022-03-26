@@ -2,10 +2,11 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 
-export default function ChangePassword() {
+export default function ChangePassword(props) {
   const [iconTypeFirst, setIconTypeFirst] = useState(faEye);
   const [iconTypeSecond, setIconTypeSecond] = useState(faEye);
   const [iconTypeThird, setIconTypeThird] = useState(faEye);
@@ -62,6 +63,14 @@ export default function ChangePassword() {
 
   return (
     <div className="change-password">
+      <FontAwesomeIcon
+        icon={faXmarkCircle}
+        id="exit-btn"
+        onClick={() => {
+          props.setCurrentSetting(null);
+          document.querySelector("main").style.filter = null;
+        }}
+      />
       <h2>Change password</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="">Current password</label>

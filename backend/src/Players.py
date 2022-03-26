@@ -2,6 +2,7 @@ from numpy import isin
 import pandas as pd
 import json
 
+
 class Players():
     def __init__(self):
         self.playersStoreLocation = r'C:\Users\milan\Desktop\szakdolgozat2022\backend\webscraper\players.csv'
@@ -23,7 +24,8 @@ class Players():
 
     def setDataBasedOnProperty(self, propertyToSet, ownerOfProperty):
         if propertyToSet == "flag":
-            nationality = self.getDataBasedOnProperty('nationality', ownerOfProperty).lower()
+            nationality = self.getDataBasedOnProperty(
+                'nationality', ownerOfProperty).lower()
             if "czech" in nationality:
                 nationality = "czechia"
             if "russia" in nationality:
@@ -49,7 +51,6 @@ class Players():
         self.setIndexOfDataFrame('surName')
         return self.searchForSurnames(playerNamePart)
 
-
     def searchForSurnames(self, playerNamePart):
         for index in self.df.index:
             if playerNamePart in str(index).lower():
@@ -66,7 +67,6 @@ class Players():
         for firstName in firstNames:
             fullName = str(surName) + ", " + str(firstName)
             self.namesWithPart['values'].append(fullName)
-
 
     def emptyStringForReachedPlayers(self, playerNamePart):
         return len(playerNamePart) < 1
