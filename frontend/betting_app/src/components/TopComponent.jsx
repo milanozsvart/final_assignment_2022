@@ -7,7 +7,9 @@ import AccountSettingDisplay from "./AccountSettingDisplay";
 
 export default function TopComponent() {
   const [loginFormVisibility, setLoginFormVisibility] = useState(false);
-  const [token, setToken] = useState(false);
+  const [token, setToken] = useState(
+    localStorage.getItem("token") ? localStorage.getItem("token") : false
+  );
   const handleLoginFormVisibility = () => {
     if (!loginFormVisibility) {
       setRegisterForm(false);

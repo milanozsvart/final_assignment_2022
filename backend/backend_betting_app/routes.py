@@ -14,6 +14,7 @@ from datetime import date, time
 import unidecode
 import os
 import jwt
+import time
 from flask import url_for, flash, redirect, request, jsonify
 
 
@@ -156,7 +157,7 @@ def get_todays_matches_from_api():
             dictionary["results"].remove(result)
 
     for result in dictionary["results"]:
-        tournamentName = result["tournament"]["name"]
+        tournamentName = "Miami Open"
         for match in result["matches"]:
             db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
                            firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
@@ -167,22 +168,51 @@ def get_todays_matches_from_api():
 
 @app.route("/get_todays_odds", methods=["POST"])
 def get_today_odds():
-    url = "https://betsapi2.p.rapidapi.com/v1/bet365/upcoming"
+    """url = "https://unibet.p.rapidapi.com/competitions-by-sport"
 
-    querystring = {"sport_id": "13", "league_id": "10071612", "page": "1"}
+    querystring = {"sport": "tennis"}
 
     headers = {
-        'x-rapidapi-host': "betsapi2.p.rapidapi.com",
-        'x-rapidapi-key': "53d34c6facmsh98fd17e0f5dbbe4p15651ajsnd6a53a13558a"
+        "X-RapidAPI-Host": "unibet.p.rapidapi.com",
+        "X-RapidAPI-Key": "53d34c6facmsh98fd17e0f5dbbe4p15651ajsnd6a53a13558a"
     }
 
     response = requests.request(
         "GET", url, headers=headers, params=querystring)
-    with open("todaysOdds.txt", "a+") as f:
-        f.write(response.text)
-    print(response.text)
-    return response
 
+    tournaments = response.json()
+    womensTournaments = [t["id"]
+                         for t in tournaments if "tennis/wta/" in t["id"]]
+    time.sleep(1.5)
+    for wt in womensTournaments:
+        url = "https://unibet.p.rapidapi.com/matches-by-competition"
+
+        querystring = {"competitionid": wt}
+
+        response = requests.request(
+            "GET", url, headers=headers, params=querystring)
+        print(response.json())
+        time.sleep(2)
+        with open("todaysOdds.txt", "a+") as f:
+            f.write(response.text)"""
+
+    with open('todaysOdds.json') as json_file:
+        matches = json.load(json_file)
+
+    for m in matches:
+        player1Name = transformName(m['team1']['name'])
+        player2Name = transformName(m['team2']['name'])
+        match = Match.query.filter_by(
+            firstPlayer=player1Name, secondPlayer=player2Name).first()
+        match.firstOdds = m['odds']['1']
+        match.secondOdds = m['odds']['2']
+        db.session.commit()
+    #print(response.text)
+    return
+
+
+def transformName(playerName):
+    return playerName.split(",")[0] + " " + playerName.split(",")[1][1] + "."
 
 @app.route("/register", methods=["POST"])
 def register():

@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import AddToBets from "./AddToBets";
 import Predictions from "../calculator_page/Predictions";
 
 export default function () {
@@ -61,6 +62,8 @@ export default function () {
               player={match["pred"]["player"]}
               points={match["pred"]["points"]}
             />
+
+            <AddToBets match={match} />
           </div>
         ))}
       </div>

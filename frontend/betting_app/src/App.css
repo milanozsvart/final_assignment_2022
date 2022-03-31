@@ -699,12 +699,9 @@ main {
   padding: 0.5rem;
   border: 3px solid cornflowerblue;
   margin-bottom: 1.5rem;
-  transition: all 0.15s ease-out;
 }
 
-.matches-wrapper:hover {
-  transform: scale(1.1);
-}
+
 
 .certainity-wrapper {
   display: flex;
@@ -768,6 +765,35 @@ main {
   top: 1rem;
   right: 1rem;
   cursor: pointer;
+}
+
+#prediction-winner {
+  font-size: 2rem;
+  color: purple;
+  font-weight: bolder;
+}
+
+#percentage-show {
+  text-align: right;
+}
+
+
+.bets-btn {
+  text-align: center;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  background-color: green;
+  color: white;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.remove-from-bets {
+  background-color: red;
+}
+
+.bets-btn:hover {
+  transform: scale(1.075);
 }
 
 

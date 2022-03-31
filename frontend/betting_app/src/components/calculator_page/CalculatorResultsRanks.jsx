@@ -6,7 +6,7 @@ import CalculatorPerformanceStats from "./CalculatorPerformanceStats";
 export default function CalculatorResultsRanks(props) {
   return (
     <div>
-      <label>Perfromance against players:</label>
+      <label>Performance against players:</label>
       <label id="label-info">
         Click the{" "}
         <FontAwesomeIcon icon={faCircleInfo} className="circle-info" /> icon on

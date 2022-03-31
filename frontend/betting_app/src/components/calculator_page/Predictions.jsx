@@ -4,12 +4,14 @@ export default function Predictions(props) {
   const player = props.player;
   const points = parseFloat(props.points);
 
-  let percentage = Math.min(points / 4000 + 0.5, 1) * 100;
+  let percentage = Math.min(points / 4000 + 0.5, 0.999) * 100;
   const certainities = getCertainities(percentage);
 
   return (
     <div className="prediction-wrapper" key={player}>
-      <p>Prediction to win match: {player}</p>
+      <p>
+        Prediction to win match: <span id="prediction-winner">{player}</span>
+      </p>
       <p>Certainity: </p>
       <div className="certainity-wrapper">
         {certainities.map((cert) => {
@@ -23,6 +25,7 @@ export default function Predictions(props) {
           );
         })}
       </div>
+      <p id="percentage-show">{percentage.toString().substring(0, 4) + "%"}</p>
     </div>
   );
 }
