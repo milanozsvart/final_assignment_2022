@@ -6,7 +6,7 @@ export default function AccountSettingDisplay(props) {
   if (props.currentSetting === "change-password") {
     return <ChangePassword setCurrentSetting={props.setCurrentSetting} />;
   } else if (props.currentSetting === "bets") {
-    return <Bets />;
+    return <Bets setCurrentSetting={props.setCurrentSetting} />;
   } else {
     return null;
   }

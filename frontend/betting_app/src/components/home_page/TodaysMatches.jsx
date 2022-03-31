@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from "react";
 import AddToBets from "./AddToBets";
 import Predictions from "../calculator_page/Predictions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretSquareLeft } from "@fortawesome/free-regular-svg-icons";
 
 export default function () {
   const [todaysMatches, setTodaysMatches] = useState([]);
@@ -9,13 +11,15 @@ export default function () {
   useEffect(() => {
     fetchTodaysMatches();
   }, []);
-  async function fetchTodaysMatches() {
+  async function fetchTodaysMatches(
+    dateToCheck = new Date().toISOString().split("T")[0]
+  ) {
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
     const response = await fetch(
-      "http://127.0.0.1:5000/get_todays_matches_from_db",
+      `http://127.0.0.1:5000/get_todays_matches_from_db/${dateToCheck}`,
       requestOptions
     );
     const data = await response.json();
@@ -35,7 +39,23 @@ export default function () {
   }
   return (
     <div className="home-page-matches-wrapper">
-      <h1>Today's matches</h1>
+      <div id="home-page-matches-header">
+        <FontAwesomeIcon
+          icon={faCaretSquareLeft}
+          id="go-left-btn"
+          onClick={() => {
+            console.log("click");
+            let dateToCheck = new Date();
+            console.log(dateToCheck);
+            dateToCheck = new Date(
+              dateToCheck.setDate(dateToCheck.getDate() - 1)
+            );
+            dateToCheck = dateToCheck.toISOString().split("T")[0];
+            fetchTodaysMatches(dateToCheck);
+          }}
+        />
+        <h1>Today's matches</h1>
+      </div>
       <div className="todays-matches-container">
         <h1
           style={

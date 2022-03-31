@@ -796,6 +796,57 @@ main {
   transform: scale(1.075);
 }
 
+.bets-wrapper {
+  width: 50vw;
+  height: 50vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: cornflowerblue;
+  z-index: 150;
+  border-radius: 1rem;
+}
+
+.bets-wrapper h2 {
+  color: white;
+  margin: 1.5rem 1rem;
+}
+
+.bet-item {
+  background-color: white;
+  color: cornflowerblue;
+  font-size: 1.4rem;
+  margin: 0.4rem 0.5rem;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.bet-item span {
+  padding: 0 1rem;
+}
+
+#remove-match-from-bets {
+  color:red;
+  position: absolute;
+  right:1.5rem;
+  cursor: pointer;
+}
+
+#home-page-matches-header {
+  position: relative;
+  color: cornflowerblue;
+}
+
+#go-left-btn {
+  position: absolute;
+  left: -2rem;
+  top: 20%;
+  height: 25px;
+  cursor: pointer;
+}
 
 
 

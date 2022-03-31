@@ -62,65 +62,68 @@ export default function ChangePassword(props) {
   }
 
   return (
-    <div className="change-password">
-      <FontAwesomeIcon
-        icon={faXmarkCircle}
-        id="exit-btn"
-        onClick={() => {
-          props.setCurrentSetting(null);
-          document.querySelector("main").style.filter = null;
-        }}
-      />
-      <h2>Change password</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="">Current password</label>
-        <div className="visible-password" id="first">
-          <input
-            type="password"
-            {...register("currentPassword", { required: true })}
-            placeholder="Enter your current password..."
-          />
-          <FontAwesomeIcon
-            icon={iconTypeFirst}
-            className="eye"
-            onClick={handlePwVisible}
-            id="first-password-eye"
-          />
-        </div>
-        <label htmlFor="">New password</label>
-        <div className="visible-password" id="second">
-          <input
-            type="password"
-            {...register("newPassword", { required: true })}
-            placeholder="Enter your new password..."
-          />
-          <FontAwesomeIcon
-            icon={iconTypeSecond}
-            className="eye"
-            onClick={handlePwVisible}
-            id="first-password-eye"
-          />
-        </div>
-        <label htmlFor="">Confirm new password</label>
-        <div className="visible-password" id="third">
-          <input
-            type="password"
-            {...register("confirmPassword", {
-              validate: (value) => value === watch("newPassword"),
-            })}
-            placeholder="Confirm new password..."
-          />
-          <FontAwesomeIcon
-            icon={iconTypeThird}
-            className="eye"
-            onClick={handlePwVisible}
-            id="first-password-eye"
-          />
-        </div>
-        <button type="submit" id="submit-btn">
-          Submit
-        </button>
-      </form>
-    </div>
+    <>
+      <div className="blurred-div"></div>
+      <div className="change-password">
+        <FontAwesomeIcon
+          icon={faXmarkCircle}
+          id="exit-btn"
+          onClick={() => {
+            props.setCurrentSetting(null);
+            document.querySelector("main").style.filter = null;
+          }}
+        />
+        <h2>Change password</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <label htmlFor="">Current password</label>
+          <div className="visible-password" id="first">
+            <input
+              type="password"
+              {...register("currentPassword", { required: true })}
+              placeholder="Enter your current password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeFirst}
+              className="eye"
+              onClick={handlePwVisible}
+              id="first-password-eye"
+            />
+          </div>
+          <label htmlFor="">New password</label>
+          <div className="visible-password" id="second">
+            <input
+              type="password"
+              {...register("newPassword", { required: true })}
+              placeholder="Enter your new password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeSecond}
+              className="eye"
+              onClick={handlePwVisible}
+              id="first-password-eye"
+            />
+          </div>
+          <label htmlFor="">Confirm new password</label>
+          <div className="visible-password" id="third">
+            <input
+              type="password"
+              {...register("confirmPassword", {
+                validate: (value) => value === watch("newPassword"),
+              })}
+              placeholder="Confirm new password..."
+            />
+            <FontAwesomeIcon
+              icon={iconTypeThird}
+              className="eye"
+              onClick={handlePwVisible}
+              id="first-password-eye"
+            />
+          </div>
+          <button type="submit" id="submit-btn">
+            Submit
+          </button>
+        </form>
+      </div>
+    </>
   );
 }

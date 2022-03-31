@@ -13,10 +13,8 @@ export default function AccountManagerWindow(props) {
   const handleCurrentSetting = (e) => {
     if (currentSetting === e.currentTarget.id) {
       setCurrentSetting(null);
-      document.querySelector("main").style.filter = null;
     } else {
       setCurrentSetting(e.currentTarget.id);
-      document.querySelector("main").style.filter = `blur(15px)`;
     }
     props.setLoginFormVisibility(false);
   };

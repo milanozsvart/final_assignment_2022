@@ -91,10 +91,10 @@ def get_matches_data():
     return jsonify(matches)
 
 
-@app.route("/get_todays_matches_from_db", methods=["GET"])
-def get_todays_matches_from_db():
+@app.route("/get_todays_matches_from_db/<dateToCheck>", methods=["GET"])
+def get_todays_matches_from_db(dateToCheck):
     db.create_all()
-    dateToCheck = date.today()
+    print(dateToCheck)
     returnMatches = {"matches": []}
     dateExists = db.session.query(db.exists().where(
         Dates.date == dateToCheck)).scalar()
