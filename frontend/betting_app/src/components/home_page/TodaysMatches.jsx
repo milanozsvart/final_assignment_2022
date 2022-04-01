@@ -3,10 +3,31 @@ import AddToBets from "./AddToBets";
 import Predictions from "../calculator_page/Predictions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareLeft } from "@fortawesome/free-regular-svg-icons";
+import { faCaretSquareRight } from "@fortawesome/free-regular-svg-icons";
 
 export default function () {
   const [todaysMatches, setTodaysMatches] = useState([]);
+  const [headerText, setHeaderText] = useState("Today's matches");
+  const [rightVisible, setRightVisible] = useState(false);
+  const [leftVisible, setLeftVisible] = useState(true);
+  const [isToday, setIsToday] = useState(true);
   const usersOffset = (new Date().getTimezoneOffset() * -1) / 60;
+  const [matchWrapperStyle, setMatchWrapperStyle] = useState({});
+  const [matchContainerStyle, setMatchContainerStyle] = useState({});
+
+  const handleStyleChanging = (match) => {
+    let matchWrapperStyle, matchContainerStyle;
+    if (!isToday && match["result"] === match["pred"]["player"]) {
+      matchWrapperStyle = { border: "3px solid green" };
+      matchContainerStyle = { backgroundColor: "green" };
+    } else if (!isToday && match["result"] != match["pred"]["player"]) {
+      matchWrapperStyle = { border: "3px solid red" };
+      matchContainerStyle = { backgroundColor: "red" };
+    } else {
+      return [{}, {}];
+    }
+    return [matchWrapperStyle, matchContainerStyle];
+  };
 
   useEffect(() => {
     fetchTodaysMatches();
@@ -43,18 +64,35 @@ export default function () {
         <FontAwesomeIcon
           icon={faCaretSquareLeft}
           id="go-left-btn"
+          style={leftVisible ? { display: "block" } : { display: "none" }}
           onClick={() => {
-            console.log("click");
             let dateToCheck = new Date();
-            console.log(dateToCheck);
             dateToCheck = new Date(
               dateToCheck.setDate(dateToCheck.getDate() - 1)
             );
             dateToCheck = dateToCheck.toISOString().split("T")[0];
+            setTodaysMatches([]);
             fetchTodaysMatches(dateToCheck);
+            setHeaderText("Yesterday's matches");
+            setLeftVisible(false);
+            setRightVisible(true);
+            setIsToday(false);
           }}
         />
-        <h1>Today's matches</h1>
+        <FontAwesomeIcon
+          icon={faCaretSquareRight}
+          id="go-right-btn"
+          style={rightVisible ? { display: "block" } : { display: "none" }}
+          onClick={() => {
+            setLeftVisible(true);
+            setRightVisible(false);
+            setTodaysMatches([]);
+            fetchTodaysMatches();
+            setHeaderText("Today's matches");
+            setIsToday(true);
+          }}
+        />
+        <h1>{headerText}</h1>
       </div>
       <div className="todays-matches-container">
         <h1
@@ -66,26 +104,33 @@ export default function () {
         >
           No matches today :(
         </h1>
-        {todaysMatches.map((match) => (
-          <div className="matches-wrapper">
-            <div className="match-container" key={match["id"]}>
-              <span>{match["date"]}</span>
-              <span>{match["tier"]}</span>
-              <span>{match["round"]}</span>
-              <span>{match["firstPlayer"]}</span>
-              <span>{match["secondPlayer"]}</span>
-              <span>{match["firstOdds"]}</span>
-              <span>{match["secondOdds"]}</span>
+        {todaysMatches.map((match) => {
+          const styles = handleStyleChanging(match);
+          return (
+            <div className="matches-wrapper" style={styles[0]}>
+              <div
+                className="match-container"
+                key={match["id"]}
+                style={styles[1]}
+              >
+                <span>{match["date"]}</span>
+                <span>{match["tier"]}</span>
+                <span>{match["round"]}</span>
+                <span>{match["firstPlayer"]}</span>
+                <span>{match["secondPlayer"]}</span>
+                <span>{match["firstOdds"]}</span>
+                <span>{match["secondOdds"]}</span>
+              </div>
+
+              <Predictions
+                player={match["pred"]["player"]}
+                points={match["pred"]["points"]}
+              />
+
+              <AddToBets match={match} isToday={isToday} />
             </div>
-
-            <Predictions
-              player={match["pred"]["player"]}
-              points={match["pred"]["points"]}
-            />
-
-            <AddToBets match={match} />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ export default function Predictions(props) {
   const player = props.player;
   const points = parseFloat(props.points);
 
-  let percentage = Math.min(points / 4000 + 0.5, 0.999) * 100;
+  let percentage = Math.min(points / 1000 + 0.5, 0.999) * 100;
   const certainities = getCertainities(percentage);
 
   return (

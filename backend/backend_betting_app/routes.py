@@ -10,7 +10,7 @@ from backend_betting_app import bcrypt
 from StatsCalculator import StatsCalculator
 from ResultsPredictor import ResultsPredictor
 import requests
-from datetime import date, time
+from datetime import date, time, datetime
 import unidecode
 import os
 import jwt
@@ -95,6 +95,8 @@ def get_matches_data():
 def get_todays_matches_from_db(dateToCheck):
     db.create_all()
     print(dateToCheck)
+    dateToCheck = datetime.strptime(dateToCheck, "%Y-%m-%d").date()
+    print(Dates.query.all())
     returnMatches = {"matches": []}
     dateExists = db.session.query(db.exists().where(
         Dates.date == dateToCheck)).scalar()
@@ -108,13 +110,13 @@ def get_todays_matches_from_db(dateToCheck):
             Match.date == dateToCheck)).scalar()
         if exists:
             p = Players()
-            matches = matches = Match.query.filter_by(date=dateToCheck)
-            returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
+            matches = Match.query.filter_by(date=dateToCheck)
+            returnMatches["matches"] = [{"id": match.id, "result": match.result, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
                                          "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
                                              unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
         dateInDb.checked = True
     else:
-        get_todays_matches_from_api()
+        get_todays_matches_from_api(dateToCheck)
         exists = db.session.query(db.exists().where(
             Match.date == dateToCheck)).scalar()
         if exists:
@@ -127,24 +129,25 @@ def get_todays_matches_from_db(dateToCheck):
     return jsonify(returnMatches)
 
 
-@app.route("/get_todays_matches_from_api", methods=["GET"])
-def get_todays_matches_from_api():
-    dateToday = date.today().isoformat()
-    url = f"https://tennis-live-data.p.rapidapi.com/matches-by-date/{dateToday}"
+@app.route("/get_todays_matches_from_api/<dateToCheck>", methods=["GET"])
+def get_todays_matches_from_api(dateToCheck):
+    #dateToCheck = date.today().isoformat()
+    url = f"https://tennis-live-data.p.rapidapi.com/matches-by-date/{dateToCheck}"
 
     headers = {
         'x-rapidapi-host': "tennis-live-data.p.rapidapi.com",
-        'x-rapidapi-key': "53d34c6facmsh98fd17e0f5dbbe4p15651ajsnd6a53a13558a"
+        'x-rapidapi-key': os.environ.get('API_KEY')
     }
     response = requests.request("GET", url, headers=headers)
-    with open("todayMatches1.json", "a+") as f:
+    """with open("todayMatches1.json", "a+") as f:
         f.write(response.text)
 
     with open('todayMatches1.json') as json_file:
         dictionary = json.load(json_file)
 
     os.remove(
-        'C:\\Users\\milan\\Desktop\\szakdolgozat2022\\backend\\todayMatches1.json')
+        'C:\\Users\\milan\\Desktop\\szakdolgozat2022\\backend\\todayMatches1.json')"""
+    dictionary = response.json()
 
     db.create_all()
 
@@ -156,13 +159,24 @@ def get_todays_matches_from_api():
         if result["tournament"]["code"] != "WTA":
             dictionary["results"].remove(result)
 
-    for result in dictionary["results"]:
-        tournamentName = "Miami Open"
-        for match in result["matches"]:
-            db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
-                           firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
+    if dateToCheck == date.today().isoformat():
+        for result in dictionary["results"]:
+            tournamentName = result["tournament"]["name"].split("Open")[
+                0] + "Open"
+            for match in result["matches"]:
+                db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
+                                     firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
+    else:
+        for result in dictionary["results"]:
+            for match in result["matches"]:
+                matchToCheck = Match.query.filter_by(
+                    firstPlayer=match["home_player"], secondPlayer=match["away_player"]).first()
+                print(matchToCheck)
+                if match["home_id"] == match["result"]["winner_id"]:
+                    matchToCheck.result = match["home_player"]
+                else:
+                    matchToCheck.result = match["away_player"]
     db.session.commit()
-    # print(Match.query.all())
     return "asd"
 
 
@@ -174,7 +188,7 @@ def get_today_odds():
 
     headers = {
         "X-RapidAPI-Host": "unibet.p.rapidapi.com",
-        "X-RapidAPI-Key": "53d34c6facmsh98fd17e0f5dbbe4p15651ajsnd6a53a13558a"
+        "X-RapidAPI-Key": os.environ.get('API_KEY')
     }
 
     response = requests.request(
@@ -236,10 +250,12 @@ def login():
     user = User.query.filter_by(email=data["email"]).first()
     if user and bcrypt.check_password_hash(user.password, data["password"]):
         token = jwt.encode(
-            {'user': data['email']}, 'ASDWQ3412LOUZT98cvT6Xy?.)Opewqrt6%6', algorithm="HS256")
-        return {"message": f"Account created for {data['email']}", "successful": True, "token": token}
-    else:
-        return {"message": f"There is already an account registered with this email address: {data['email']}", "successful": False}
+            {'user': data['email']}, os.environ.get('JWT_SECRET_KEY'), algorithm="HS256")
+        return {"successful": True, "token": token}
+    elif not user:
+        return {"message": f"There is no account registered with this email address: {data['email']}", "successful": False}
+    elif user and not bcrypt.check_password_hash(user.password, data["password"]):
+        return {"message": f"Wrong password, please try again!", "successful": False}
 
 
 @app.route("/get_predictions_for_match", methods=["POST"])
@@ -255,16 +271,15 @@ def get_predictions_for_match():
 def change_password():
     data = request.get_json(force=True)
     userEmail = jwt.decode(
-        data["token"], "ASDWQ3412LOUZT98cvT6Xy?.)Opewqrt6%6", algorithms=["HS256"])["user"]
-    print(userEmail)
-    if not userEmail:
-        return {"successful": False}
+        data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
     user = User.query.filter_by(email=userEmail).first()
     if user and bcrypt.check_password_hash(user.password, data["currentPassword"]):
         user.password = bcrypt.generate_password_hash(
             data["newPassword"]).decode('utf-8')
         db.session.commit()
         return {"successful": True}
+    if not bcrypt.check_password_hash(user.password, data["currentPassword"]):
+        return {"message": "This is not your current password, please try again!", "successful": False}
 
 
 @app.route("/get_historic_ranks_data", methods=["POST"])

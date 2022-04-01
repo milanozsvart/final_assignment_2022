@@ -141,26 +141,26 @@ class ResultsPredictor():
         better = self.player1 if player1Winning > player2Winning else self.player2
         if better == self.player1:
             self.player1odds += (player1Winning-player2Winning) * \
-                ((self.player2Rank - self.player1Rank) / 1.3)
+                ((self.player2Rank - self.player1Rank) / 4)
             self.player2odds += (player1Winning-player2Winning) * \
-                ((self.player1Rank - self.player2Rank) / 1.3)
+                ((self.player1Rank - self.player2Rank) / 4)
         else:
             self.player2odds += (player2Winning -
-                                 player1Winning)*((self.player1Rank - self.player2Rank) / 1.3)
+                                 player1Winning)*((self.player1Rank - self.player2Rank) / 4)
             self.player1odds += (player2Winning -
-                                 player1Winning)*((self.player2Rank - self.player1Rank) / 1.3)
+                                 player1Winning)*((self.player2Rank - self.player1Rank) / 4)
         print(self.player1odds, self.player2odds)
         betterRanks = self.player1 if player1RanksWinning > player2RanksWinning else self.player2
         if betterRanks == self.player1:
             self.player1odds += (player1RanksWinning-player2RanksWinning) * \
-                ((self.player2Rank - self.player1Rank) / 1.3) * 4
+                ((self.player2Rank - self.player1Rank) / 4) * 4
             self.player2odds += (player1RanksWinning-player2RanksWinning) * \
-                ((self.player1Rank - self.player2Rank) / 1.3) * 4
+                ((self.player1Rank - self.player2Rank) / 4) * 4
         else:
             self.player2odds += (player2RanksWinning -
-                                 player1RanksWinning)*((self.player1Rank - self.player2Rank) / 1.3) * 4
+                                 player1RanksWinning)*((self.player1Rank - self.player2Rank) / 4) * 4
             self.player1odds += (player2RanksWinning -
-                                 player1RanksWinning)*((self.player2Rank - self.player1Rank) / 1.3) * 4
+                                 player1RanksWinning)*((self.player2Rank - self.player1Rank) / 4) * 4
         print(self.player1odds, self.player2odds)
         if(self.isUnDiscovered(self.player1)):
             self.player1odds += abs(self.player1odds) * 0.4 + self.player1odds

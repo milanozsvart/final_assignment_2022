@@ -3,6 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 
 export default function Bets(props) {
+
+  const selectedStyle = {
+    fontSize: "1.5rem",
+    //textDecoration: "underline",
+    color: "purple",
+    fontWeight: "bolder",
+  };
   let [bets, setBets] = useState(
     localStorage.getItem("bets") ? JSON.parse(localStorage.getItem("bets")) : []
   );
@@ -28,13 +35,47 @@ export default function Bets(props) {
           onClick={exit}
         />
         <h2>My bets</h2>
+        <p>Select your matches on the Home page!</p>
         {bets.map((bet) => {
           return (
             <div className="bet-item">
-              <span>{bet["firstPlayer"]}</span>
-              <span>{bet["secondPlayer"]}</span>
-              <span>{bet["firstOdds"]}</span>
-              <span>{bet["secondOdds"]}</span>
+              <span
+                style={
+                  bet["pred"]["player"] === bet["firstPlayer"]
+                    ? selectedStyle
+                    : { color: "cornflowerblue" }
+                }
+              >
+                {bet["firstPlayer"]}
+              </span>
+              <span
+                style={
+                  bet["pred"]["player"] === bet["secondPlayer"]
+                    ? selectedStyle
+                    : { color: "cornflowerblue" }
+                }
+              >
+                {bet["secondPlayer"]}
+              </span>
+              <span
+                style={
+                  bet["pred"]["player"] === bet["firstPlayer"]
+                    ? selectedStyle
+                    : { color: "cornflowerblue" }
+                }
+              >
+                {bet["firstOdds"]}
+              </span>
+              <span
+                style={
+                  bet["pred"]["player"] === bet["secondPlayer"]
+                    ? selectedStyle
+                    : { color: "cornflowerblue" }
+                }
+              >
+                {bet["secondOdds"]}
+              </span>
+              <span>{bet["pred"]["points"]}</span>
               <FontAwesomeIcon
                 icon={faXmarkCircle}
                 id="remove-match-from-bets"
@@ -43,6 +84,7 @@ export default function Bets(props) {
             </div>
           );
         })}
+        <div id="save-button-bets">Save</div>
       </div>
     </>
   );

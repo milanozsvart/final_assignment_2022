@@ -9,3 +9,4 @@ players_old_v2.csv
 todayMatches.json
 todaysOdds.json
 sandbox.py
+.env

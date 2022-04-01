@@ -13,9 +13,11 @@ class Match(db.Model):
     secondPlayer = db.Column(db.String(35), nullable=False)
     firstOdds = db.Column(db.Float(), nullable=False)
     secondOdds = db.Column(db.Float(), nullable=False)
+    result = db.Column(db.String(35))
+    bets = db.relationship('Bets', backref='match', lazy=True)
 
     def __repr__(self):
-        return f"Match('{self.date}', '{self.time}', '{self.tier}', '{self.round}', '{self.firstPlayer}', {self.secondPlayer}', '{self.firstOdds}', '{self.secondOdds}'"
+        return f"Match('{self.date}', '{self.time}', '{self.tier}', '{self.round}', '{self.firstPlayer}', {self.secondPlayer}', '{self.firstOdds}', '{self.secondOdds}', '{self.result}'"
 
 
 class Dates(db.Model):
@@ -36,3 +38,9 @@ class User(db.Model):
 
     def __repr__(self):
         return f"User({self.email}, {self.password}, {self.dateJoined}"
+
+
+class Bet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    matchId = db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
+    bettedOn = db.Column(db.String(35), nullable=False)

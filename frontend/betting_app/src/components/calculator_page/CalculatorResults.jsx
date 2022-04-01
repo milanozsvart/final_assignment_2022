@@ -1,5 +1,7 @@
 import { React, useContext, useEffect, useRef } from "react";
 import { CalculatorContext } from "./CalculatorContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import CalculatorCurrentPlayerCard from "./CalculatorCurrentPlayerCard";
 import CalculatorResultsRanks from "./CalculatorResultsRanks";
 import CalculatorResultsStats from "./CalculatorResultsStats";
@@ -47,10 +49,26 @@ export default function CalculatorResults() {
         />
         <div>
           <CalculatorResultsForm />
-          <div id="compare-results-ranks" className="calculator-results">
-            <CalculatorResultsRanks currentPlayerData={comparePlayerStats[0]} />
-            <CalculatorResultsRanks currentPlayerData={comparePlayerStats[1]} />
+          <div
+            className="calculator-results"
+            id="calculator-results-ranks-outer"
+          >
+            <label>Performance against players:</label>
+            <label id="label-info">
+              Click the{" "}
+              <FontAwesomeIcon icon={faCircleInfo} className="circle-info" />{" "}
+              icon on the labels to see the results of matches
+            </label>
+            <div id="compare-results-ranks" className="calculator-results">
+              <CalculatorResultsRanks
+                currentPlayerData={comparePlayerStats[0]}
+              />
+              <CalculatorResultsRanks
+                currentPlayerData={comparePlayerStats[1]}
+              />
+            </div>
           </div>
+
           <Predictions
             player={comparePlayerStats["pred"]["player"]}
             points={comparePlayerStats["pred"]["points"]}

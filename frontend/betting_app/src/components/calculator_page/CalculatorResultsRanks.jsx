@@ -6,12 +6,6 @@ import CalculatorPerformanceStats from "./CalculatorPerformanceStats";
 export default function CalculatorResultsRanks(props) {
   return (
     <div>
-      <label>Performance against players:</label>
-      <label id="label-info">
-        Click the{" "}
-        <FontAwesomeIcon icon={faCircleInfo} className="circle-info" /> icon on
-        the labels to see the results of matches
-      </label>
       {Object.keys(props.currentPlayerData.performanceBetweenRanks).map(
         (opponentRanks) => {
           return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { faEyeSlash } from "@fortawesome/free-regular-svg-icons";
@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 
 export default function ChangePassword(props) {
+  const messageRef = useRef();
   const [iconTypeFirst, setIconTypeFirst] = useState(faEye);
   const [iconTypeSecond, setIconTypeSecond] = useState(faEye);
   const [iconTypeThird, setIconTypeThird] = useState(faEye);
@@ -54,10 +55,11 @@ export default function ChangePassword(props) {
       requestOptions
     );
     const returnData = await response.json();
+    messageRef.current.innerText = returnData["message"];
     if (returnData["successful"]) {
-      alert("good");
+      messageRef.current.id = "success-message";
     } else {
-      alert("not good");
+      messageRef.current.id = "error-message";
     }
   }
 
@@ -75,7 +77,12 @@ export default function ChangePassword(props) {
         />
         <h2>Change password</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <span style={{ marginBottom: "0.5rem" }} ref={messageRef}></span>
           <label htmlFor="">Current password</label>
+          <div className="error-message">
+            {errors.currentPassword?.type === "required" &&
+              "Password is required"}
+          </div>
           <div className="visible-password" id="first">
             <input
               type="password"
@@ -90,6 +97,10 @@ export default function ChangePassword(props) {
             />
           </div>
           <label htmlFor="">New password</label>
+          <div className="error-message">
+            {errors.newPassword?.type === "required" &&
+              "New password is required"}
+          </div>
           <div className="visible-password" id="second">
             <input
               type="password"
@@ -104,6 +115,10 @@ export default function ChangePassword(props) {
             />
           </div>
           <label htmlFor="">Confirm new password</label>
+          <div className="error-message">
+            {errors.confirmPassword?.type === "validate" &&
+              "Passwords don't match"}
+          </div>
           <div className="visible-password" id="third">
             <input
               type="password"

@@ -14,11 +14,14 @@ export default function AddToBets(props) {
       ? "bets-btn"
       : "remove-from-bets bets-btn"
   );
+  const [predOutcome, setPredOutCome] = useState(
+    props.match.result === props.match.pred.player
+  );
   const handleText = () => {
     if (text === "Add to bets") {
       setText("Remove from bets");
       setButtonClass("remove-from-bets bets-btn");
-      let currentBets = bets;
+      let currentBets = JSON.parse(localStorage.getItem("bets"));
       console.log(currentBets);
       currentBets.push(props.match);
       setBets(currentBets);
@@ -26,7 +29,7 @@ export default function AddToBets(props) {
     } else {
       setText("Add to bets");
       setButtonClass("bets-btn");
-      let currentBets = bets;
+      let currentBets = JSON.parse(localStorage.getItem("bets"));
       console.log(currentBets);
       currentBets = currentBets.filter((el) => {
         return el["id"] != props.match["id"];
@@ -35,9 +38,18 @@ export default function AddToBets(props) {
       localStorage.setItem("bets", JSON.stringify(currentBets));
     }
   };
-  return (
-    <div className={buttonClass} onClick={handleText}>
-      {text}
-    </div>
-  );
+  if (props.isToday) {
+    return (
+      <div className={buttonClass} onClick={handleText}>
+        {text}
+      </div>
+    );
+  } else {
+    return (
+      <div className={predOutcome ? "bets-btn" : "remove-from-bets bets-btn"}>
+        {predOutcome ? "Winner" : "Loser"}
+      </div>
+    );
+  }
+  
 }

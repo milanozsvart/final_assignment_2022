@@ -8,6 +8,7 @@ import AccountManagerWindow from "./AccountManagerWindow";
 
 export default function LoginForm(props) {
   let visibility = props.loginFormVisibility;
+  const messageRef = useRef();
   const [iconTypeFirst, setIconTypeFirst] = useState(faEye);
 
   const {
@@ -37,13 +38,15 @@ export default function LoginForm(props) {
     };
     const response = await fetch("http://127.0.0.1:5000/login", requestOptions);
     const returnData = await response.json();
+    messageRef.current.innerText = returnData["message"];
     if (returnData["successful"]) {
       localStorage.setItem("token", returnData["token"]);
       localStorage.setItem("user", data["email"]);
       props.setLoginFormVisibility(false);
       props.setToken(true);
+      messageRef.current.id = "success-message";
     } else {
-      alert("no good");
+      messageRef.current.id = "error-message";
     }
   }
 
@@ -83,13 +86,20 @@ export default function LoginForm(props) {
             </div>
             <p id="or-sign">OR</p>
           </div>
+          <span style={{ marginTop: "1.5rem" }} ref={messageRef}></span>
           <h3>Log in to your account!</h3>
+          <div className="error-message">
+            {errors.email?.type === "required" && "Email is required"}
+          </div>
           <input
             type="email"
             {...register("email", { required: true })}
             placeholder="Enter your email..."
           />
           <br />
+          <div className="error-message">
+            {errors.password?.type === "required" && "Password is required"}
+          </div>
           <div className="visible-password" id="first-password">
             <input
               type="password"

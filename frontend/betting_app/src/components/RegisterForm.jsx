@@ -56,6 +56,7 @@ export default function RegisterForm(props) {
       messageRef.current.id = "error-message";
     }
   }
+  console.log(errors);
   return (
     <div
       style={
@@ -71,6 +72,9 @@ export default function RegisterForm(props) {
         <div id="register-form-inner">
           <p id="or-sign">OR</p>
           <h2>Register with email</h2>
+          <div className="error-message">
+            {errors.email?.type === "required" && "Email is required"}
+          </div>
           <input
             type="email"
             {...register("email", { required: true })}
@@ -78,6 +82,9 @@ export default function RegisterForm(props) {
             placeholder="Enter your email..."
           />
           <br />
+          <div className="error-message">
+            {errors.password?.type === "required" && "Password is required"}
+          </div>
           <div className="visible-password" id="first">
             <input
               type="password"
@@ -93,11 +100,14 @@ export default function RegisterForm(props) {
             />
           </div>
           <br />
+          <div className="error-message">
+            {errors.confirmPassword?.type === "validate" &&
+              "Passwords don't match"}
+          </div>
           <div className="visible-password" id="second">
             <input
               type="password"
-              name="passwordRepeat"
-              id="password-textField"
+              id="confirmPassword-textField"
               {...register("confirmPassword", {
                 validate: (value) => value === watch("password"),
               })}
