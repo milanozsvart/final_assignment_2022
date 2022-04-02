@@ -12,9 +12,6 @@ export default function () {
   const [leftVisible, setLeftVisible] = useState(true);
   const [isToday, setIsToday] = useState(true);
   const usersOffset = (new Date().getTimezoneOffset() * -1) / 60;
-  const [matchWrapperStyle, setMatchWrapperStyle] = useState({});
-  const [matchContainerStyle, setMatchContainerStyle] = useState({});
-
   const handleStyleChanging = (match) => {
     let matchWrapperStyle, matchContainerStyle;
     if (!isToday && match["result"] === match["pred"]["player"]) {
@@ -102,7 +99,9 @@ export default function () {
               : { visibility: "visible" }
           }
         >
-          No matches today :(
+          {isToday
+            ? "No matches today :("
+            : "There were no matches yesterday :("}
         </h1>
         {todaysMatches.map((match) => {
           const styles = handleStyleChanging(match);
@@ -123,8 +122,12 @@ export default function () {
               </div>
 
               <Predictions
-                player={match["pred"]["player"]}
-                points={match["pred"]["points"]}
+                player={
+                  match["pred"]["player"] ? match["pred"]["player"] : null
+                }
+                points={
+                  match["pred"]["points"] ? match["pred"]["points"] : null
+                }
               />
 
               <AddToBets match={match} isToday={isToday} />

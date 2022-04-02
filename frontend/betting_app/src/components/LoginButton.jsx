@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { MainContext } from "./MainContext";
 
 export default function LoginButton(props) {
+  const { betsLength } = useContext(MainContext);
   if (!props.token) {
     return (
       <div
@@ -21,6 +23,16 @@ export default function LoginButton(props) {
           onClick={props.handleLoginFormVisibility}
         >
           My account
+          <div
+            id="bets-number"
+            style={
+              betsLength < 1 || props.loginFormVisibility
+                ? { visibility: "hidden" }
+                : {}
+            }
+          >
+            {betsLength}
+          </div>
         </div>
       </>
     );

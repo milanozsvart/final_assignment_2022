@@ -1,5 +1,5 @@
 from Tournaments import Tournaments
-from backend_betting_app.models import Match, User, Dates
+from backend_betting_app.models import Match, User, Dates, Bet, BetEvent
 from Players import Players
 from flask_cors import CORS
 import json
@@ -14,7 +14,7 @@ from datetime import date, time, datetime
 import unidecode
 import os
 import jwt
-import time
+from time import sleep
 from flask import url_for, flash, redirect, request, jsonify
 
 
@@ -115,23 +115,24 @@ def get_todays_matches_from_db(dateToCheck):
                                          "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
                                              unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
         dateInDb.checked = True
+        db.session.commit()
     else:
         get_todays_matches_from_api(dateToCheck)
         exists = db.session.query(db.exists().where(
             Match.date == dateToCheck)).scalar()
         if exists:
-            matches = matches = Match.query.filter_by(date=dateToCheck)
+            matches = Match.query.filter_by(date=dateToCheck)
             returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
                                          "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds} for match in matches]
         dateInDb.checked = True
-    db.session.commit()
+        db.session.commit()
+        get_today_odds()
 
     return jsonify(returnMatches)
 
 
 @app.route("/get_todays_matches_from_api/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_api(dateToCheck):
-    #dateToCheck = date.today().isoformat()
     url = f"https://tennis-live-data.p.rapidapi.com/matches-by-date/{dateToCheck}"
 
     headers = {
@@ -139,39 +140,25 @@ def get_todays_matches_from_api(dateToCheck):
         'x-rapidapi-key': os.environ.get('API_KEY')
     }
     response = requests.request("GET", url, headers=headers)
-    """with open("todayMatches1.json", "a+") as f:
-        f.write(response.text)
-
-    with open('todayMatches1.json') as json_file:
-        dictionary = json.load(json_file)
-
-    os.remove(
-        'C:\\Users\\milan\\Desktop\\szakdolgozat2022\\backend\\todayMatches1.json')"""
     dictionary = response.json()
-
     db.create_all()
-
     t = Tournaments()
-
     del dictionary['meta']
-
     for result in dictionary["results"]:
         if result["tournament"]["code"] != "WTA":
             dictionary["results"].remove(result)
-
-    if dateToCheck == date.today().isoformat():
+    if str(dateToCheck) == date.today().isoformat():
         for result in dictionary["results"]:
-            tournamentName = result["tournament"]["name"].split("Open")[
-                0] + "Open"
+            tournamentName = "Miami Open"
             for match in result["matches"]:
-                db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
-                                     firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
+                if "Qualification" not in match["round_name"]:
+                    db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
+                                         firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
     else:
         for result in dictionary["results"]:
             for match in result["matches"]:
                 matchToCheck = Match.query.filter_by(
                     firstPlayer=match["home_player"], secondPlayer=match["away_player"]).first()
-                print(matchToCheck)
                 if match["home_id"] == match["result"]["winner_id"]:
                     matchToCheck.result = match["home_player"]
                 else:
@@ -180,9 +167,9 @@ def get_todays_matches_from_api(dateToCheck):
     return "asd"
 
 
-@app.route("/get_todays_odds", methods=["POST"])
+@app.route("/get_todays_odds", methods=["GET"])
 def get_today_odds():
-    """url = "https://unibet.p.rapidapi.com/competitions-by-sport"
+    url = "https://unibet.p.rapidapi.com/competitions-by-sport"
 
     querystring = {"sport": "tennis"}
 
@@ -197,7 +184,7 @@ def get_today_odds():
     tournaments = response.json()
     womensTournaments = [t["id"]
                          for t in tournaments if "tennis/wta/" in t["id"]]
-    time.sleep(1.5)
+    sleep(1.5)
     for wt in womensTournaments:
         url = "https://unibet.p.rapidapi.com/matches-by-competition"
 
@@ -205,22 +192,18 @@ def get_today_odds():
 
         response = requests.request(
             "GET", url, headers=headers, params=querystring)
-        print(response.json())
-        time.sleep(2)
-        with open("todaysOdds.txt", "a+") as f:
-            f.write(response.text)"""
+        matches = response.json()
+        sleep(2)
 
-    with open('todaysOdds.json') as json_file:
-        matches = json.load(json_file)
-
-    for m in matches:
-        player1Name = transformName(m['team1']['name'])
-        player2Name = transformName(m['team2']['name'])
-        match = Match.query.filter_by(
-            firstPlayer=player1Name, secondPlayer=player2Name).first()
-        match.firstOdds = m['odds']['1']
-        match.secondOdds = m['odds']['2']
-        db.session.commit()
+        for m in matches:
+            player1Name = transformName(m['team1']['name'])
+            player2Name = transformName(m['team2']['name'])
+            match = Match.query.filter_by(
+                firstPlayer=player1Name, secondPlayer=player2Name).first()
+            if match:
+                match.firstOdds = m['odds']['1']
+                match.secondOdds = m['odds']['2']
+                db.session.commit()
     #print(response.text)
     return
 
@@ -290,3 +273,41 @@ def get_historic_ranks_data():
     data["additionalProps"]["round"] = 'All'
     s = StatsCalculator(data["playerName"], data["additionalProps"])
     return s.getHistoricRanksForPlayer()
+
+
+@app.route("/add_bet_to_user", methods=["POST"])
+def add_bet_to_user():
+    data = request.get_json(force=True)
+    db.create_all()
+    userEmail = jwt.decode(
+        data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
+    user = User.query.filter_by(email=userEmail).first()
+    bets = data["bets"]
+    userBet = Bet(user_id=user.id)
+    db.session.add(userBet)
+    db.session.commit()
+    for bet in bets:
+        betEvent = BetEvent(
+            matchId=bet["id"], bettedOn=bet["pred"]["player"], betId=userBet.id)
+        db.session.add(betEvent)
+    db.session.commit()
+    print(BetEvent.query.all())
+    return "a"
+
+
+@app.route("/get_users_bets", methods=["POST"])
+def get_users_bets():
+    #data = request.get_json(force=True)
+    #userEmail = jwt.decode(
+    #    data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
+    userEmail = "admin@admin.com"
+    user = User.query.filter_by(email=userEmail).first()
+    for bet in user.bets:
+        for e in bet.betEvents:
+            print(e.date)
+    return "a"
+
+
+@app.route("/delete_users_bets", methods=["POST"])
+def delete_users_bets():
+    pass

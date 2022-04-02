@@ -1,46 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { MainContext } from "../MainContext";
 
 export default function AddToBets(props) {
-  const [bets, setBets] = useState(
-    localStorage.getItem("bets") ? JSON.parse(localStorage.getItem("bets")) : []
-  );
-  const [text, setText] = useState(
-    bets.filter((b) => b["id"] === props.match["id"]).length < 1
-      ? "Add to bets"
-      : "Remove from bets"
-  );
-  const [buttonClass, setButtonClass] = useState(
-    bets.filter((b) => b["id"] === props.match["id"]).length < 1
-      ? "bets-btn"
-      : "remove-from-bets bets-btn"
-  );
+  const { bets, setBets, isOpen, token, setToken, betsLength, setBetsLength } =
+    useContext(MainContext);
+
+  useEffect(() => {
+    setText(
+      bets.filter((b) => b["id"] === props.match["id"]).length < 1
+        ? "Add to bets"
+        : "Remove from bets"
+    );
+    setButtonClass(
+      bets.filter((b) => b["id"] === props.match["id"]).length < 1
+        ? "bets-btn"
+        : "remove-from-bets bets-btn"
+    );
+  }, [isOpen]);
+  const [text, setText] = useState("Add to bets");
+  const [buttonClass, setButtonClass] = useState("bets-btn");
   const [predOutcome, setPredOutCome] = useState(
     props.match.result === props.match.pred.player
   );
   const handleText = () => {
-    if (text === "Add to bets") {
-      setText("Remove from bets");
-      setButtonClass("remove-from-bets bets-btn");
-      let currentBets = JSON.parse(localStorage.getItem("bets"));
-      console.log(currentBets);
-      currentBets.push(props.match);
-      setBets(currentBets);
-      localStorage.setItem("bets", JSON.stringify(currentBets));
+    if (!token) {
+      alert("If you want to add matches to your bets, please log in!");
     } else {
-      setText("Add to bets");
-      setButtonClass("bets-btn");
-      let currentBets = JSON.parse(localStorage.getItem("bets"));
-      console.log(currentBets);
-      currentBets = currentBets.filter((el) => {
-        return el["id"] != props.match["id"];
-      });
-      setBets(currentBets);
-      localStorage.setItem("bets", JSON.stringify(currentBets));
+      if (text === "Add to bets") {
+        setText("Remove from bets");
+        setButtonClass("remove-from-bets bets-btn");
+        let currentBets = bets;
+        currentBets.push(props.match);
+        setBets(currentBets);
+        let length = betsLength;
+        setBetsLength(++length);
+      } else {
+        setText("Add to bets");
+        setButtonClass("bets-btn");
+        let currentBets = bets;
+        currentBets = currentBets.filter((el) => {
+          return el["id"] != props.match["id"];
+        });
+        setBets(currentBets);
+        let length = betsLength;
+        setBetsLength(--length);
+      }
     }
   };
   if (props.isToday) {
     return (
-      <div className={buttonClass} onClick={handleText}>
+      <div
+        className={buttonClass}
+        onClick={handleText}
+        style={token ? {} : { opacity: "60%", cursor: "not-allowed" }}
+      >
         {text}
       </div>
     );
@@ -51,5 +64,4 @@ export default function AddToBets(props) {
       </div>
     );
   }
-  
 }

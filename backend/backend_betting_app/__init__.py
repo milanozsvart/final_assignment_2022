@@ -10,7 +10,7 @@ sys.path.append(
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 bcrypt = Bcrypt(app)
 
 from backend_betting_app import routes

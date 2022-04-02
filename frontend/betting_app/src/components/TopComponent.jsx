@@ -1,15 +1,14 @@
-import { React, useState } from "react";
+import { React, useContext, useState } from "react";
 import "../App.css";
 import Nav from "./Nav";
 import LoginForm from "./LoginForm";
 import LoginButton from "./LoginButton";
 import AccountSettingDisplay from "./AccountSettingDisplay";
+import { MainContext } from "./MainContext";
 
 export default function TopComponent() {
   const [loginFormVisibility, setLoginFormVisibility] = useState(false);
-  const [token, setToken] = useState(
-    localStorage.getItem("token") ? localStorage.getItem("token") : false
-  );
+  const { token, setToken } = useContext(MainContext);
   const handleLoginFormVisibility = () => {
     if (!loginFormVisibility) {
       setRegisterForm(false);
@@ -29,6 +28,7 @@ export default function TopComponent() {
         handleLoginFormVisibility={handleLoginFormVisibility}
         token={token}
         setToken={setToken}
+        loginFormVisibility={loginFormVisibility}
       />
       <LoginForm
         loginFormVisibility={loginFormVisibility}

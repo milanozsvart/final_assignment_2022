@@ -651,6 +651,7 @@ main {
   cursor: pointer;
   margin-bottom: 0.4rem;
   border-radius: 0.5rem;
+  position: relative;
 }
 
 .account-setting:hover {
@@ -815,7 +816,7 @@ main {
 
 .bets-wrapper {
   width: 50vw;
-  height: 50vh;
+  min-height: 10vh;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -823,6 +824,7 @@ main {
   background-color: cornflowerblue;
   z-index: 150;
   border-radius: 1rem;
+  padding-bottom: 6rem;
 }
 
 .bets-wrapper h2, .bets-wrapper p {
@@ -893,6 +895,31 @@ main {
 
 #save-button-bets:hover {
   transform: scale(1.1);
+}
+
+#bets-container {
+  height: auto;
+}
+
+#bets-number {
+  position: absolute;
+  top: 0;
+  right: -2rem;
+  background-color: cornflowerblue;
+  color: white;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+}
+
+.account-setting > #bets-number {
+  right: 0;
+  background-color: white;
+  color: cornflowerblue
 }
 
 

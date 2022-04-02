@@ -14,7 +14,7 @@ class Match(db.Model):
     firstOdds = db.Column(db.Float(), nullable=False)
     secondOdds = db.Column(db.Float(), nullable=False)
     result = db.Column(db.String(35))
-    bets = db.relationship('Bets', backref='match', lazy=True)
+    betsPlaced = db.relationship('BetEvent', backref='match', lazy=True)
 
     def __repr__(self):
         return f"Match('{self.date}', '{self.time}', '{self.tier}', '{self.round}', '{self.firstPlayer}', {self.secondPlayer}', '{self.firstOdds}', '{self.secondOdds}', '{self.result}'"
@@ -35,12 +35,22 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     dateJoined = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow())
+    bets = db.relationship('Bet', backref='owner', lazy=True)
 
     def __repr__(self):
         return f"User({self.email}, {self.password}, {self.dateJoined}"
 
 
+class BetEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    matchId = db.Column(db.Integer, db.ForeignKey('match.id'))
+    bettedOn = db.Column(db.String(35), nullable=False)
+    betId = db.Column(db.Integer, db.ForeignKey(
+        'bet.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now())
+
+
 class Bet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    matchId = db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
-    bettedOn = db.Column(db.String(35), nullable=False)
+    betEvents = db.relationship('BetEvent', backref='bet_event', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
