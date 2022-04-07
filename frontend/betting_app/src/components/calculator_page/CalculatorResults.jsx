@@ -47,6 +47,9 @@ export default function CalculatorResults() {
         <CalculatorCurrentPlayerCard
           currentPlayerData={comparePlayerStats[0]}
         />
+        <CalculatorCurrentPlayerCard
+          currentPlayerData={comparePlayerStats[1]}
+        />
         <div>
           <CalculatorResultsForm />
           <div
@@ -76,9 +79,6 @@ export default function CalculatorResults() {
           <CalculatorPlayerMatches />
         </div>
 
-        <CalculatorCurrentPlayerCard
-          currentPlayerData={comparePlayerStats[1]}
-        />
         <Ranks
           ranks={ranksResults["ranks"]}
           dates={ranksResults["dates"]}

@@ -1,58 +1,37 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 import { MainContext } from "./MainContext";
+import MatchesBetted from "./MatchesBetted";
 
 export default function Bets(props) {
-  const selectedStyle = {
-    fontSize: "1.5rem",
-    //textDecoration: "underline",
-    color: "purple",
-    fontWeight: "bolder",
-  };
-  const { bets, setBets, setIsOpen, betsLength, setBetsLength } =
-    useContext(MainContext);
   const exit = () => {
     props.setCurrentSetting(null);
     setIsOpen(false);
   };
 
-  const saveBets = () => {
-    if (bets.length < 1) {
-      alert("Please select matches to bet on!");
-    } else {
-      sendBetsData();
-      setBets([]);
-      setBetsLength(0);
-      exit();
-    }
-  };
+  const [betsOnMatches, setBetsOnMatches] = useState([]);
+  const [currentlyOpen, setCurrentlyOpen] = useState("");
 
-  async function sendBetsData() {
+  useEffect(fetchUserBets, []);
+
+  async function fetchUserBets() {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         token: localStorage.getItem("token"),
-        bets: bets,
       }),
     };
     const response = await fetch(
-      "http://127.0.0.1:5000/add_bet_to_user",
+      `http://127.0.0.1:5000/get_users_bets`,
       requestOptions
     );
-    const returnData = await response.json();
+    const data = await response.json();
+    setBetsOnMatches(data);
   }
-
-  const removeFromBets = (id) => {
-    let currentBets = bets;
-    currentBets = currentBets.filter((el) => {
-      return el["id"] != id;
-    });
-    setBets(currentBets);
-    let length = betsLength;
-    setBetsLength(--length);
-  };
+  const { bets, setBets, setIsOpen, betsLength, setBetsLength } =
+    useContext(MainContext);
   return (
     <>
       <div className="blurred-div"></div>
@@ -62,71 +41,31 @@ export default function Bets(props) {
           id="exit-btn-ranks"
           onClick={exit}
         />
-        <h2>My bets</h2>
-        <p>Select your matches on the Home page!</p>
+        <h1>My bets</h1>
         <div id="bets-container">
-          {bets.map((bet) => {
+          {Object.keys(betsOnMatches).map((key) => {
             return (
-              <div className="bet-item">
-                <span
-                  style={
-                    bet["pred"]["player"] === bet["firstPlayer"]
-                      ? selectedStyle
-                      : { color: "cornflowerblue" }
-                  }
+              <>
+                <div
+                  className="bet-item made-bets"
+                  onClick={() => {
+                    if (currentlyOpen != key) {
+                      setCurrentlyOpen(key);
+                    } else {
+                      setCurrentlyOpen(null);
+                    }
+                  }}
                 >
-                  {bet["firstPlayer"]}
-                </span>
-                <span
-                  style={
-                    bet["pred"]["player"] === bet["secondPlayer"]
-                      ? selectedStyle
-                      : { color: "cornflowerblue" }
-                  }
-                >
-                  {bet["secondPlayer"]}
-                </span>
-                <span
-                  style={
-                    bet["pred"]["player"] === bet["firstPlayer"]
-                      ? selectedStyle
-                      : { color: "cornflowerblue" }
-                  }
-                >
-                  {bet["firstOdds"]}
-                </span>
-                <span
-                  style={
-                    bet["pred"]["player"] === bet["secondPlayer"]
-                      ? selectedStyle
-                      : { color: "cornflowerblue" }
-                  }
-                >
-                  {bet["secondOdds"]}
-                </span>
-                <span>
-                  {(Math.min(bet["pred"]["points"] / 1000 + 0.5, 0.999) * 100)
-                    .toString()
-                    .substring(0, 4)}
-                  {"%"}
-                </span>
-                <FontAwesomeIcon
-                  icon={faXmarkCircle}
-                  id="remove-match-from-bets"
-                  onClick={() => removeFromBets(bet["id"])}
+                  <span>{key}</span>
+                </div>
+                <MatchesBetted
+                  matches={betsOnMatches[key]}
+                  currentlyOpen={currentlyOpen}
+                  betId={key}
                 />
-              </div>
+              </>
             );
           })}
-        </div>
-        <div
-          id="save-button-bets"
-          onClick={saveBets}
-          style={
-            bets.length < 1 ? { opacity: "60%", cursor: "not-allowed" } : {}
-          }
-        >
-          Save
         </div>
       </div>
     </>

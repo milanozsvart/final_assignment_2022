@@ -14,7 +14,8 @@ attributesDict = {
 source = open('players.xml', 'r')
 
 soup = BeautifulSoup(source, 'lxml')
-outPutFile = open("players_2022_03.csv", "a+", encoding="utf-8")
+outPutFile = open("players_2022_04.csv", "a+", encoding="utf-8")
+outPutFile.write('surName,firstName,rank,nationality')
 
 playerWebsiteLinks = soup.find_all('loc')
 with sync_playwright() as p:

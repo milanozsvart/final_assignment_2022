@@ -10,6 +10,7 @@ export default function CalculatorPerformanceStats(props) {
     setOpponentRanks,
     setCategorySelected,
     additionalProps,
+    setSelectedPlayer,
   } = useContext(CalculatorContext);
   const opponentRanks = props.opponentRanks;
   const performanceBetweenRanks = props.performanceBetweenRanks;
@@ -51,6 +52,7 @@ export default function CalculatorPerformanceStats(props) {
     const data = await response.json();
     console.log(data);
     setPlayerMatches(data);
+    setSelectedPlayer(props.surName);
   }
 
   return (

@@ -38,17 +38,17 @@ export default function AccountManagerWindow(props) {
       >
         <div
           className="account-setting"
-          id="matches"
-          onClick={handleCurrentSetting}
-        >
-          My matches
-        </div>
-        <div
-          className="account-setting"
           id="bets"
           onClick={handleCurrentSetting}
         >
           My bets
+        </div>
+        <div
+          className="account-setting"
+          id="selected-matches"
+          onClick={handleCurrentSetting}
+        >
+          Selected matches
           <div
             id="bets-number"
             style={betsLength < 1 ? { visibility: "hidden" } : {}}

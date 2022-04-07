@@ -1,5 +1,5 @@
 from Tournaments import Tournaments
-from backend_betting_app.models import Match, User, Dates, Bet, BetEvent
+from backend_betting_app.models import User, Dates, Match, BetEvent, Bet
 from Players import Players
 from flask_cors import CORS
 import json
@@ -20,6 +20,17 @@ from flask import url_for, flash, redirect, request, jsonify
 
 CORS(app)
 
+
+API_CHECKS = {
+    "odds": {
+        "lastChecked": None,
+        "checkHours": 3
+    },
+    "matches": {
+        "lastChecked": None,
+        "checkHours": 6
+    }
+}
 
 @app.route("/")
 def home():
@@ -51,8 +62,10 @@ def get_basic_player_data():
             otherPlayer = players[(i+1) % 2]
             opponentsRank = playerGetter.getBasicPlayerData(otherPlayer)[
                 "rank"]
-            matchesGetter.startingRanks = [max(1, int(opponentsRank) - 8)]
-            matchesGetter.endingRanks = [min(1000, int(opponentsRank) + 10)]
+            matchesGetter.startingRanks = [
+                max(1, int(float(opponentsRank)) - 8)]
+            matchesGetter.endingRanks = [
+                min(1000, int(float(opponentsRank)) + 10)]
             performanceBetweenRanks = matchesGetter.performanceAgainstRank()
             fullPlayerStats['performanceBetweenRanks'] = performanceBetweenRanks
             stats[i] = fullPlayerStats
@@ -94,9 +107,7 @@ def get_matches_data():
 @app.route("/get_todays_matches_from_db/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_db(dateToCheck):
     db.create_all()
-    print(dateToCheck)
     dateToCheck = datetime.strptime(dateToCheck, "%Y-%m-%d").date()
-    print(Dates.query.all())
     returnMatches = {"matches": []}
     dateExists = db.session.query(db.exists().where(
         Dates.date == dateToCheck)).scalar()
@@ -109,11 +120,23 @@ def get_todays_matches_from_db(dateToCheck):
         exists = db.session.query(db.exists().where(
             Match.date == dateToCheck)).scalar()
         if exists:
-            p = Players()
-            matches = Match.query.filter_by(date=dateToCheck)
-            returnMatches["matches"] = [{"id": match.id, "result": match.result, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
-                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
-                                             unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
+            if str(dateToCheck) != date.today().isoformat():
+                if not dateInDb.resultsChecked:
+                    get_todays_matches_from_api(dateToCheck)
+                    dateInDb.resultsChecked = True
+                p = Players()
+                matches = Match.query.filter_by(date=dateToCheck)
+                returnMatches["matches"] = [{"id": match.id, "result": match.result, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
+                                            "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
+                                                unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
+            else:
+                matches = Match.query.filter_by(date=dateToCheck)
+                p = Players()
+                returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
+                                             "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
+                                                 unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).analysePlayerMatchesData() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
+                print(returnMatches)
+
         dateInDb.checked = True
         db.session.commit()
     else:
@@ -153,16 +176,17 @@ def get_todays_matches_from_api(dateToCheck):
             for match in result["matches"]:
                 if "Qualification" not in match["round_name"]:
                     db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
-                                         firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=1.2, secondOdds=2.1))
+                                         firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=-1, secondOdds=-1))
     else:
         for result in dictionary["results"]:
             for match in result["matches"]:
-                matchToCheck = Match.query.filter_by(
-                    firstPlayer=match["home_player"], secondPlayer=match["away_player"]).first()
-                if match["home_id"] == match["result"]["winner_id"]:
-                    matchToCheck.result = match["home_player"]
-                else:
-                    matchToCheck.result = match["away_player"]
+                if "Qualification" not in match["round_name"]:
+                    matchToCheck = Match.query.filter_by(
+                        firstPlayer=match["home_player"], secondPlayer=match["away_player"]).first()
+                    if match["home_id"] == match["result"]["winner_id"]:
+                        matchToCheck.result = match["home_player"]
+                    else:
+                        matchToCheck.result = match["away_player"]
     db.session.commit()
     return "asd"
 
@@ -198,17 +222,36 @@ def get_today_odds():
         for m in matches:
             player1Name = transformName(m['team1']['name'])
             player2Name = transformName(m['team2']['name'])
+            print(m)
             match = Match.query.filter_by(
                 firstPlayer=player1Name, secondPlayer=player2Name).first()
             if match:
-                match.firstOdds = m['odds']['1']
-                match.secondOdds = m['odds']['2']
+                match.firstOdds = m['odds']['1'] if m['odds']['1'] != None else 1
+                match.secondOdds = m['odds']['2'] if m['odds']['2'] != None else 1
                 db.session.commit()
     #print(response.text)
     return
 
 
+@app.route('/delete_matches_with_no_odds', methods=["GET"])
+def delete_matches_with_no_odds():
+    matches = Match.query.filter_by(
+        firstOdds=1.2, secondOdds=2.1, date=date.today())
+    otherMatches = Match.query.filter_by(
+        firstOdds=-1, secondOdds=-1, date=date.today())
+    for m in matches:
+        db.session.delete(m)
+    for om in otherMatches:
+        db.session.delete(om)
+    db.session.commit()
+    todaysMatches = Match.query.filter_by(date=date.today())
+    for tm in todaysMatches:
+        print(tm)
+
 def transformName(playerName):
+    print(playerName)
+    if not playerName:
+        return None
     return playerName.split(",")[0] + " " + playerName.split(",")[1][1] + "."
 
 @app.route("/register", methods=["POST"])
@@ -283,7 +326,7 @@ def add_bet_to_user():
         data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
     user = User.query.filter_by(email=userEmail).first()
     bets = data["bets"]
-    userBet = Bet(user_id=user.id)
+    userBet = Bet(user_id=user.id, date=datetime.now())
     db.session.add(userBet)
     db.session.commit()
     for bet in bets:
@@ -291,21 +334,27 @@ def add_bet_to_user():
             matchId=bet["id"], bettedOn=bet["pred"]["player"], betId=userBet.id)
         db.session.add(betEvent)
     db.session.commit()
-    print(BetEvent.query.all())
     return "a"
 
 
 @app.route("/get_users_bets", methods=["POST"])
 def get_users_bets():
-    #data = request.get_json(force=True)
-    #userEmail = jwt.decode(
-    #    data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
-    userEmail = "admin@admin.com"
+    data = request.get_json(force=True)
+    userEmail = jwt.decode(
+        data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
     user = User.query.filter_by(email=userEmail).first()
+    returnBets = {}
     for bet in user.bets:
+        returnBets[str(bet.date)] = []
         for e in bet.betEvents:
-            print(e.date)
-    return "a"
+            print(str(bet.date))
+            match = Match.query.filter_by(id=e.matchId).first()
+            if match:
+                returnBets[str(bet.date)].append({
+                    "bettedOn": e.bettedOn, "firstPlayer": match.firstPlayer, "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds})
+    returnBets = {key: value for key,
+                  value in returnBets.items() if len(value) > 0}
+    return jsonify(returnBets)
 
 
 @app.route("/delete_users_bets", methods=["POST"])

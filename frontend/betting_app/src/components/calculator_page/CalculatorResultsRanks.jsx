@@ -9,18 +9,25 @@ export default function CalculatorResultsRanks(props) {
       {Object.keys(props.currentPlayerData.performanceBetweenRanks).map(
         (opponentRanks) => {
           return (
-            <div
-              className="performance-stats"
-              key={opponentRanks + "-performance-stats"}
-            >
-              <CalculatorPerformanceStats
-                performanceBetweenRanks={
-                  props.currentPlayerData.performanceBetweenRanks
-                }
-                opponentRanks={opponentRanks}
-                surName={props.currentPlayerData.surName}
-              />
-            </div>
+            <>
+              <span style={{ color: "cornflowerblue" }}>
+                {props.currentPlayerData.firstName +
+                  " " +
+                  props.currentPlayerData.surName}
+              </span>
+              <div
+                className="performance-stats"
+                key={opponentRanks + "-performance-stats"}
+              >
+                <CalculatorPerformanceStats
+                  performanceBetweenRanks={
+                    props.currentPlayerData.performanceBetweenRanks
+                  }
+                  opponentRanks={opponentRanks}
+                  surName={props.currentPlayerData.surName}
+                />
+              </div>
+            </>
           );
         }
       )}

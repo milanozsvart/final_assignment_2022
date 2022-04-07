@@ -8,8 +8,8 @@ class ResultsPredictor():
         self.player2odds = 0
         self.player1 = player1.lower()
         self.player2 = player2.lower()
-        self.player1Rank = int(player1Rank)
-        self.player2Rank = int(player2Rank)
+        self.player1Rank = int(float(player1Rank))
+        self.player2Rank = int(float(player2Rank))
         self.statsLocation = r'C:\Users\milan\Desktop\Dokumentumok\python_workspace\betting_app\csv\2021-women.csv'
         self.df = pd.read_csv(self.statsLocation, sep=";")
         self.setIndexOfDataFrame('Winner')
@@ -45,8 +45,8 @@ class ResultsPredictor():
                 break
 
     def countMatches(self, player, opponentRank):
-        startingRank = max(1, int(opponentRank)-8)
-        endingRank = min(1000, int(opponentRank)+10)
+        startingRank = max(1, int(float(opponentRank))-8)
+        endingRank = min(1000, int(float(opponentRank))+10)
         matchesCount = 0
         wonMatches = 0
         lostMatches = 0
@@ -141,26 +141,26 @@ class ResultsPredictor():
         better = self.player1 if player1Winning > player2Winning else self.player2
         if better == self.player1:
             self.player1odds += (player1Winning-player2Winning) * \
-                ((self.player2Rank - self.player1Rank) / 4)
+                ((self.player2Rank - self.player1Rank) / 50)
             self.player2odds += (player1Winning-player2Winning) * \
-                ((self.player1Rank - self.player2Rank) / 4)
+                ((self.player1Rank - self.player2Rank) / 50)
         else:
             self.player2odds += (player2Winning -
-                                 player1Winning)*((self.player1Rank - self.player2Rank) / 4)
+                                 player1Winning)*((self.player1Rank - self.player2Rank) / 50)
             self.player1odds += (player2Winning -
-                                 player1Winning)*((self.player2Rank - self.player1Rank) / 4)
+                                 player1Winning)*((self.player2Rank - self.player1Rank) / 50)
         print(self.player1odds, self.player2odds)
         betterRanks = self.player1 if player1RanksWinning > player2RanksWinning else self.player2
         if betterRanks == self.player1:
             self.player1odds += (player1RanksWinning-player2RanksWinning) * \
-                ((self.player2Rank - self.player1Rank) / 4) * 4
+                ((self.player2Rank - self.player1Rank) / 50) * 4
             self.player2odds += (player1RanksWinning-player2RanksWinning) * \
-                ((self.player1Rank - self.player2Rank) / 4) * 4
+                ((self.player1Rank - self.player2Rank) / 50) * 4
         else:
             self.player2odds += (player2RanksWinning -
-                                 player1RanksWinning)*((self.player1Rank - self.player2Rank) / 4) * 4
+                                 player1RanksWinning)*((self.player1Rank - self.player2Rank) / 50) * 4
             self.player1odds += (player2RanksWinning -
-                                 player1RanksWinning)*((self.player2Rank - self.player1Rank) / 4) * 4
+                                 player1RanksWinning)*((self.player2Rank - self.player1Rank) / 50) * 4
         print(self.player1odds, self.player2odds)
         if(self.isUnDiscovered(self.player1)):
             self.player1odds += abs(self.player1odds) * 0.4 + self.player1odds

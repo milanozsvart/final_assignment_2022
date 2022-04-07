@@ -3,8 +3,13 @@ import { CalculatorContext } from "./CalculatorContext";
 import { Textfit } from "react-textfit";
 
 export default function CalculatorPlayerMatches() {
-  const { playerMatches, opponentRanks, categorySelected, currentPlayerData } =
-    useContext(CalculatorContext);
+  const {
+    playerMatches,
+    opponentRanks,
+    categorySelected,
+    currentPlayerData,
+    selectedPlayer,
+  } = useContext(CalculatorContext);
 
   return (
     <div>
@@ -66,7 +71,7 @@ export default function CalculatorPlayerMatches() {
               max={16}
               className="winner individual-match-property"
               id={
-                match["Winner"].includes(currentPlayerData.surName)
+                match["Winner"].includes(selectedPlayer)
                   ? "current-player-winner"
                   : undefined
               }
@@ -79,7 +84,7 @@ export default function CalculatorPlayerMatches() {
               max={16}
               className="loser individual-match-property"
               id={
-                match["Loser"].includes(currentPlayerData.surName)
+                match["Loser"].includes(selectedPlayer)
                   ? "current-player-loser"
                   : undefined
               }

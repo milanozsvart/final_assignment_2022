@@ -1,4 +1,3 @@
-from email.policy import default
 from backend_betting_app import db
 from datetime import datetime
 
@@ -24,6 +23,7 @@ class Dates(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False, unique=True)
     checked = db.Column(db.Boolean, nullable=True, default=False)
+    resultChecked = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"Dates({self.date}, {self.checked})"
@@ -47,10 +47,16 @@ class BetEvent(db.Model):
     bettedOn = db.Column(db.String(35), nullable=False)
     betId = db.Column(db.Integer, db.ForeignKey(
         'bet.id'), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.now())
 
 
 class Bet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     betEvents = db.relationship('BetEvent', backref='bet_event', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now())
+
+
+class ApiChecks(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    oddsChecked = db.Column(db.DateTime)
+    matchesChecked = db.Column(db.DateTime)
