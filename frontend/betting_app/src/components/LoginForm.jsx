@@ -112,7 +112,6 @@ export default function LoginForm(props) {
               onClick={handlePwVisible}
               id="first-password-eye"
             />
-            <p id="forgot-password">Forgot your password?</p>
           </div>
           <br />
           <button type="submit" id="login-button">

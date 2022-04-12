@@ -744,16 +744,6 @@ main {
   right: 5%;
 }
 
-#forgot-password {
-  position: absolute;
-  bottom: -75%;
-  right: 5%;
-  font-size: 0.8rem;
-  color: white;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 #ranks-plot {
   position: fixed;
   top: 50%;
@@ -828,7 +818,7 @@ main {
   padding-bottom: 6rem;
 }
 
-.bets-wrapper h2, .bets-wrapper h1 {
+.bets-wrapper h2, .bets-wrapper h1, .bets-wrapper input {
   color: white;
   margin: 1.5rem 1rem;
 }
@@ -840,8 +830,10 @@ main {
   margin: 0.4rem 0.5rem;
   border-radius: 0.4rem;
   padding: 0.2rem 0.4rem;
+  padding-right: 2rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .bet-item span {
@@ -940,6 +932,21 @@ main {
 .betted-matches-wrapper {
   position: relative;
   padding-bottom: 1.5rem;
+}
+
+#insert-bet-name {
+  position: absolute;
+  font-size: 1.35rem;
+  color: black
+}
+
+.match-header {
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  font-size: 1.15rem;
+  color: cornflowerblue;
+  background-color: white;
+  border: 5px solid cornflowerblue;
 }
 
 

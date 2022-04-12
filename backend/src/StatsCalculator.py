@@ -16,8 +16,8 @@ class StatsCalculator():
         self.setSurface()
         self.setTier()
         self.setRound()
-        self.startingRanks = [1, 11, 26, 51, 76, 111]
-        self.endingRanks = [10, 25, 50, 75, 100, 500]
+        self.startingRanks = [1, 11, 26, 51, 76]
+        self.endingRanks = [10, 25, 50, 75, 200]
         self.roundsHierarchy = {'1st Round': 1, '2nd Round': 2, '3rd Round': 3,
                                 '4th Round': 4,  'Quarterfinals': 5,  'Semifinals': 6,  'The Final': 7}
         self.resultsHierarcyLow = {1: '2nd Round', 2: '3rd Round', 3: 'Quarterfinals',

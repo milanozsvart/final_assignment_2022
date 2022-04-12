@@ -10,7 +10,7 @@ export default function Bets(props) {
     setIsOpen(false);
   };
 
-  const [betsOnMatches, setBetsOnMatches] = useState([]);
+  const [betsOnMatches, setBetsOnMatches] = useState({ bets: [], results: [] });
   const [currentlyOpen, setCurrentlyOpen] = useState("");
 
   useEffect(fetchUserBets, []);
@@ -28,6 +28,7 @@ export default function Bets(props) {
       requestOptions
     );
     const data = await response.json();
+    console.log(data);
     setBetsOnMatches(data);
   }
   const { bets, setBets, setIsOpen, betsLength, setBetsLength } =
@@ -43,7 +44,7 @@ export default function Bets(props) {
         />
         <h1>My bets</h1>
         <div id="bets-container">
-          {Object.keys(betsOnMatches).map((key) => {
+          {Object.keys(betsOnMatches["bets"]).map((key) => {
             return (
               <>
                 <div
@@ -57,9 +58,10 @@ export default function Bets(props) {
                   }}
                 >
                   <span>{key}</span>
+                  <span>{betsOnMatches["results"][key]}</span>
                 </div>
                 <MatchesBetted
-                  matches={betsOnMatches[key]}
+                  matches={betsOnMatches["bets"][key]}
                   currentlyOpen={currentlyOpen}
                   betId={key}
                 />

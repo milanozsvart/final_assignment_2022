@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 import { MainContext } from "./MainContext";
 
 export default function SelectedMatches(props) {
+  const betNameRef = useRef();
   const selectedStyle = {
     fontSize: "1.5rem",
     //textDecoration: "underline",
@@ -35,6 +36,7 @@ export default function SelectedMatches(props) {
       body: JSON.stringify({
         token: localStorage.getItem("token"),
         bets: bets,
+        betsName: betNameRef.current.value,
       }),
     };
     const response = await fetch(
@@ -123,6 +125,13 @@ export default function SelectedMatches(props) {
             );
           })}
         </div>
+        <input
+          type="text"
+          name=""
+          id="insert-bet-name"
+          placeholder="Add a name to your bet!"
+          ref={betNameRef}
+        />
         <div
           id="save-button-bets"
           onClick={saveBets}

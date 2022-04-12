@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import CalculatorPerformanceStats from "./CalculatorPerformanceStats";
+import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorResultsRanks(props) {
+  const { calculationType } = useContext(CalculatorContext);
   return (
     <div>
       {Object.keys(props.currentPlayerData.performanceBetweenRanks).map(
         (opponentRanks) => {
           return (
             <>
-              <span style={{ color: "cornflowerblue" }}>
+              <span
+                style={
+                  calculationType === "compare"
+                    ? { color: "cornflowerblue" }
+                    : { display: "none" }
+                }
+              >
                 {props.currentPlayerData.firstName +
                   " " +
                   props.currentPlayerData.surName}

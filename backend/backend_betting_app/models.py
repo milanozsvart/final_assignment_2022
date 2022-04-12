@@ -54,6 +54,7 @@ class Bet(db.Model):
     betEvents = db.relationship('BetEvent', backref='bet_event', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date = db.Column(db.DateTime, default=datetime.now())
+    betName = db.Column(db.String(50), nullable=True)
 
 
 class ApiChecks(db.Model):

@@ -168,3 +168,55 @@ class ResultsPredictor():
             self.player2odds += abs(self.player2odds) * 0.4 + self.player2odds
 
         return {"points": abs(self.player1odds)+abs(self.player2odds), "player": self.player1 if self.player1odds > self.player2odds else self.player2}
+
+    def countMatchesAccordingToTier(self, player, opponentRank):
+        startingRank = max(1, int(float(opponentRank))-8)
+        endingRank = min(1000, int(float(opponentRank))+10)
+        points = 0
+        self.setIndexOfDataFrame('Winner')
+        playersDfWon = self.df.loc[player]
+        wonDf = playersDfWon[(playersDfWon["LRank"] >= startingRank) &
+                             (playersDfWon["LRank"] <= endingRank) & (playersDfWon['Comment'] == 'Completed')]
+        self.setIndexOfDataFrame('Loser')
+        playersDfLost = self.df.loc[player]
+        lostDf = playersDfLost[(playersDfLost["WRank"] >= startingRank) &
+                               (playersDfLost["WRank"] <= endingRank) & (playersDfLost['Comment'] == 'Completed')]
+        fullDf = pd.concat([playersDfWon, playersDfLost])
+        ranksDf = pd.concat([wonDf, lostDf])
+        matches = fullDf.to_dict('records')
+        ranks = ranksDf.to_dict('records')
+        for match in matches:
+            if match['Winner'] == player:
+                if match['Tier'] == "WTA250":
+                    points += 1
+                elif match['Tier'] == 'WTA500':
+                    points += 1.5
+                elif match['Tier'] == 'WTA1000':
+                    points += 2
+                elif match['Tier'] == 'Grand Slam':
+                    points += 2.5
+            else:
+                if match['Tier'] == 'WTA1000':
+                    points += 0.2
+                elif match['Tier'] == 'Grand Slam':
+                    points += 0.5
+        for rank in ranks:
+            if rank['Winner'] == player:
+                if rank['Tier'] == "WTA250":
+                    points += 1.5
+                elif rank['Tier'] == 'WTA500':
+                    points += 2
+                elif rank['Tier'] == 'WTA1000':
+                    points += 2.5
+                elif rank['Tier'] == 'Grand Slam':
+                    points += 3
+
+        return points
+
+    def finalPrediction(self):
+        player1Points = self.countMatchesAccordingToTier(
+            self.player1, self.player2Rank)
+        player2Points = self.countMatchesAccordingToTier(
+            self.player2, self.player1Rank)
+
+        return {"points": max(player1Points, player2Points) - min(player1Points, player2Points), "player": self.player1 if player1Points > player2Points else self.player2}

@@ -103,6 +103,15 @@ export default function () {
             ? "No matches today :("
             : "There were no matches yesterday :("}
         </h1>
+        <div className="match-container match-header">
+          <span>{"Time"}</span>
+          <span>{"Tier"}</span>
+          <span>{"Round"}</span>
+          <span>{"Player 1"}</span>
+          <span>{"Player 2"}</span>
+          <span>{"Odds 1"}</span>
+          <span>{"Odds 2"}</span>
+        </div>
         {todaysMatches.map((match) => {
           const styles = handleStyleChanging(match);
           return (
