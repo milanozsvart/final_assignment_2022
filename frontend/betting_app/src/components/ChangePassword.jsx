@@ -21,11 +21,11 @@ export default function ChangePassword(props) {
     const parentDiv = event.currentTarget.parentNode;
     const pwInput = parentDiv.querySelector("input");
 
-    if (pwInput.type == "text") {
+    if (pwInput.type === "text") {
       pwInput.type = "password";
       if (parentDiv.id === "first") {
         setIconTypeFirst(faEye);
-      } else if (parentDiv.id == "second") {
+      } else if (parentDiv.id === "second") {
         setIconTypeSecond(faEye);
       } else {
         setIconTypeThird(faEye);
@@ -34,7 +34,7 @@ export default function ChangePassword(props) {
       pwInput.type = "text";
       if (parentDiv.id === "first") {
         setIconTypeFirst(faEyeSlash);
-      } else if (parentDiv.id == "second") {
+      } else if (parentDiv.id === "second") {
         setIconTypeSecond(faEyeSlash);
       } else {
         setIconTypeThird(faEyeSlash);

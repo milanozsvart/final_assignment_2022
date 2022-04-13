@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareLeft } from "@fortawesome/free-regular-svg-icons";
 import { faCaretSquareRight } from "@fortawesome/free-regular-svg-icons";
 
-export default function () {
+export default function TodaysMatches() {
   const [todaysMatches, setTodaysMatches] = useState([]);
   const [headerText, setHeaderText] = useState("Today's matches");
   const [rightVisible, setRightVisible] = useState(false);
@@ -17,7 +17,7 @@ export default function () {
     if (!isToday && match["result"] === match["pred"]["player"]) {
       matchWrapperStyle = { border: "3px solid green" };
       matchContainerStyle = { backgroundColor: "green" };
-    } else if (!isToday && match["result"] != match["pred"]["player"]) {
+    } else if (!isToday && match["result"] !== match["pred"]["player"]) {
       matchWrapperStyle = { border: "3px solid red" };
       matchContainerStyle = { backgroundColor: "red" };
     } else {
@@ -26,9 +26,7 @@ export default function () {
     return [matchWrapperStyle, matchContainerStyle];
   };
 
-  useEffect(() => {
-    fetchTodaysMatches();
-  }, []);
+  useEffect(fetchTodaysMatches, []);
   async function fetchTodaysMatches(
     dateToCheck = new Date().toISOString().split("T")[0]
   ) {
@@ -52,6 +50,7 @@ export default function () {
         hours = "00";
       }
       match["date"] = hours.toString() + ":" + timeString[3] + timeString[4];
+      return data["matches"];
     });
     setTodaysMatches(data["matches"]);
   }
@@ -103,7 +102,14 @@ export default function () {
             ? "No matches today :("
             : "There were no matches yesterday :("}
         </h1>
-        <div className="match-container match-header">
+        <div
+          className="match-container match-header"
+          style={
+            todaysMatches.length > 0
+              ? { visibility: "visible" }
+              : { visibility: "hidden" }
+          }
+        >
           <span>{"Time"}</span>
           <span>{"Tier"}</span>
           <span>{"Round"}</span>

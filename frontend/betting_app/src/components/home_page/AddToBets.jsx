@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { MainContext } from "../MainContext";
 
 export default function AddToBets(props) {
-  const { bets, setBets, isOpen, token, setToken, betsLength, setBetsLength } =
+  const { bets, setBets, isOpen, token, betsLength, setBetsLength } =
     useContext(MainContext);
 
   useEffect(() => {
@@ -19,9 +19,8 @@ export default function AddToBets(props) {
   }, [isOpen]);
   const [text, setText] = useState("Add to bets");
   const [buttonClass, setButtonClass] = useState("bets-btn");
-  const [predOutcome, setPredOutCome] = useState(
-    props.match.result === props.match.pred.player
-  );
+  const predOutcome = props.match.result === props.match.pred.player;
+
   const handleText = () => {
     if (!token) {
       alert("If you want to add matches to your bets, please log in!");
@@ -39,7 +38,7 @@ export default function AddToBets(props) {
         setButtonClass("bets-btn");
         let currentBets = bets;
         currentBets = currentBets.filter((el) => {
-          return el["id"] != props.match["id"];
+          return el["id"] !== props.match["id"];
         });
         setBets(currentBets);
         let length = betsLength;

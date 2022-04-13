@@ -149,7 +149,6 @@ class ResultsPredictor():
                                  player1Winning)*((self.player1Rank - self.player2Rank) / 50)
             self.player1odds += (player2Winning -
                                  player1Winning)*((self.player2Rank - self.player1Rank) / 50)
-        print(self.player1odds, self.player2odds)
         betterRanks = self.player1 if player1RanksWinning > player2RanksWinning else self.player2
         if betterRanks == self.player1:
             self.player1odds += (player1RanksWinning-player2RanksWinning) * \
@@ -161,7 +160,6 @@ class ResultsPredictor():
                                  player1RanksWinning)*((self.player1Rank - self.player2Rank) / 50) * 4
             self.player1odds += (player2RanksWinning -
                                  player1RanksWinning)*((self.player2Rank - self.player1Rank) / 50) * 4
-        print(self.player1odds, self.player2odds)
         if(self.isUnDiscovered(self.player1)):
             self.player1odds += abs(self.player1odds) * 0.4 + self.player1odds
         if(self.isUnDiscovered(self.player2)):
@@ -174,13 +172,22 @@ class ResultsPredictor():
         endingRank = min(1000, int(float(opponentRank))+10)
         points = 0
         self.setIndexOfDataFrame('Winner')
-        playersDfWon = self.df.loc[player]
-        wonDf = playersDfWon[(playersDfWon["LRank"] >= startingRank) &
+        try:
+            playersDfWon = self.df.loc[player]
+            wonDf = playersDfWon[(playersDfWon["LRank"] >= startingRank) &
                              (playersDfWon["LRank"] <= endingRank) & (playersDfWon['Comment'] == 'Completed')]
+        except:
+            playersDfWon = pd.DataFrame()
+            wonDf = pd.DataFrame()
         self.setIndexOfDataFrame('Loser')
-        playersDfLost = self.df.loc[player]
-        lostDf = playersDfLost[(playersDfLost["WRank"] >= startingRank) &
+
+        try:
+            playersDfLost = self.df.loc[player]
+            lostDf = playersDfLost[(playersDfLost["WRank"] >= startingRank) &
                                (playersDfLost["WRank"] <= endingRank) & (playersDfLost['Comment'] == 'Completed')]
+        except:
+            playersDfLost = pd.DataFrame()
+            lostDf = pd.DataFrame()
         fullDf = pd.concat([playersDfWon, playersDfLost])
         ranksDf = pd.concat([wonDf, lostDf])
         matches = fullDf.to_dict('records')

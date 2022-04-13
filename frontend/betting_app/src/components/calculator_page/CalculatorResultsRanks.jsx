@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import CalculatorPerformanceStats from "./CalculatorPerformanceStats";
 import { CalculatorContext } from "./CalculatorContext";
 

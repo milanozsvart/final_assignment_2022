@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 import { MainContext } from "./MainContext";
@@ -49,7 +49,7 @@ export default function SelectedMatches(props) {
   const removeFromBets = (id) => {
     let currentBets = bets;
     currentBets = currentBets.filter((el) => {
-      return el["id"] != id;
+      return el["id"] !== id;
     });
     setBets(currentBets);
     let length = betsLength;

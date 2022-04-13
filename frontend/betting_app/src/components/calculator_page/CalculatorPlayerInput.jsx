@@ -28,20 +28,20 @@ export default function CalculatorPlayerInput(props) {
   }
 
   const handleNameSelection = (currentRef, playerName) => {
-    if (currentRef == "player1") {
+    if (currentRef === "player1") {
       player1Ref.current.value = playerName;
-    } else if (currentRef == "player2") {
+    } else if (currentRef === "player2") {
       player2Ref.current.value = playerName;
     }
     setCurrentInput(null);
   };
 
   const handleCurrentInput = (whichRef) => {
-    if (whichRef == playerNameRef) {
+    if (whichRef === playerNameRef) {
       setCurrentInput("purePlayer");
-    } else if (whichRef == player1Ref) {
+    } else if (whichRef === player1Ref) {
       setCurrentInput("player1");
-    } else if (whichRef == player2Ref) {
+    } else if (whichRef === player2Ref) {
       setCurrentInput("player2");
     }
   };

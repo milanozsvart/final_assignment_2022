@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { CalculatorContext } from "./CalculatorContext";
 
 export default function CalculatorResultsSelect(props) {

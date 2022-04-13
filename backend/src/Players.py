@@ -7,7 +7,6 @@ class Players():
     def __init__(self):
         self.playersStoreLocation = r'C:\Users\milan\Desktop\szakdolgozat2022\backend\webscraper\players.csv'
         self.df = pd.read_csv(self.playersStoreLocation)
-        print(self.df.info())
 
     def setIndexOfDataFrame(self, propertyAsIndex):
         self.df.set_index(propertyAsIndex, inplace=True, drop=False)

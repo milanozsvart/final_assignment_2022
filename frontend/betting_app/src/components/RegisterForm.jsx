@@ -20,7 +20,7 @@ export default function RegisterForm(props) {
     const parentDiv = event.currentTarget.parentNode;
     const pwInput = parentDiv.querySelector("input");
 
-    if (pwInput.type == "text") {
+    if (pwInput.type === "text") {
       pwInput.type = "password";
       if (parentDiv.id === "first") {
         setIconTypeFirst(faEye);

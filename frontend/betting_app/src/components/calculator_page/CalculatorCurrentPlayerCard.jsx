@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { CalculatorContext } from "./CalculatorContext";
+import { Textfit } from "react-textfit";
 
 export default function CalculatorCurrentPlayerCard(props) {
   const { additionalProps, setRanksResults, setRanksVisibility } =
@@ -48,17 +49,23 @@ export default function CalculatorCurrentPlayerCard(props) {
           <div>{props.currentPlayerData.wonMatches}</div>
         </div>
 
-        <label
+        <Textfit
           className="player-card-data-line"
           id="player-card-performance-label"
+          mode="single"
+          max={16}
         >
           Best performance in tournaments:
-        </label>
+        </Textfit>
         {Object.keys(props.currentPlayerData.bestPerformance).map((key) => {
           return (
             <div className="player-card-data-line" key={key}>
-              <div>{key + ": "}</div>
-              <div>{props.currentPlayerData.bestPerformance[key]}</div>
+              <Textfit mode="single" max={18}>
+                {key + ": "}
+              </Textfit>
+              <Textfit mode="single" max={18}>
+                {props.currentPlayerData.bestPerformance[key]}
+              </Textfit>
             </div>
           );
         })}

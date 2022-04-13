@@ -2,10 +2,10 @@ import { React, useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { CalculatorContext } from "./CalculatorContext";
+import { Textfit } from "react-textfit";
 
 export default function CalculatorPerformanceStats(props) {
   const {
-    currentPlayerData,
     setPlayerMatches,
     setOpponentRanks,
     setCategorySelected,
@@ -49,10 +49,13 @@ export default function CalculatorPerformanceStats(props) {
       "http://127.0.0.1:5000/get_matches_data",
       requestOptions
     );
-    const data = await response.json();
-    console.log(data);
-    setPlayerMatches(data);
+    let data = await response.text();
+    data = data.replaceAll("Tour Championships", "Tour Ch.");
+    setPlayerMatches(JSON.parse(data));
     setSelectedPlayer(props.surName);
+    document
+      .querySelector("#calculator-player-matches-wrapper")
+      .scrollIntoView({ behavior: "smooth" });
   }
 
   return (
@@ -76,17 +79,20 @@ export default function CalculatorPerformanceStats(props) {
           Matches lost
         </p>
       </div>
-      <div className="performance-stats-ranks">
+      <Textfit mode="single" max={16} className="performance-stats-ranks">
         {"Opponent's rank: " + opponentRanks}
-      </div>
+      </Textfit>
       <div className="performance-stats-section">
         {Object.keys(performanceBetweenRanks[opponentRanks]).map((label) => (
           <div
             className="perfromance-stats-individual"
             key={label + "performance-stats-individual"}
+            id={label}
           >
             <div>{label}</div>
-            <div>{performanceBetweenRanks[opponentRanks][label]}</div>
+            <div id={label.replaceAll(" ", "") + "_count"}>
+              {performanceBetweenRanks[opponentRanks][label]}
+            </div>
           </div>
         ))}
       </div>

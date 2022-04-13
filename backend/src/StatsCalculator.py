@@ -200,10 +200,8 @@ class StatsCalculator():
     def getHistoricRanksForPlayer(self):
         self.setIndexOfDataFrame('Winner')
         playersDfWon = self.df.loc[self.player][["WRank", "DateAsDate"]]
-        print(playersDfWon)
         self.setIndexOfDataFrame('Loser')
         playersDfLost = self.df.loc[self.player][["LRank", "DateAsDate"]]
-        print(playersDfLost)
         newDf = pd.concat([playersDfWon, playersDfLost])
         newDf = newDf.sort_values(by=['DateAsDate'], ascending=True)[
             ['WRank', 'LRank', 'DateAsDate']]

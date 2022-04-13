@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { MainContext } from "./MainContext";
 
 export default function LoginButton(props) {
@@ -15,7 +15,7 @@ export default function LoginButton(props) {
     );
   } else {
     return (
-      <>
+      <div id="account-and-login-wrapper">
         <p id="account-email">{localStorage.getItem("user")}</p>
         <div
           className="login-and-account-btn"
@@ -34,7 +34,7 @@ export default function LoginButton(props) {
             {betsLength}
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }

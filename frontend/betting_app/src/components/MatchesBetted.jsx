@@ -1,6 +1,5 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 
 export default function MatchesBetted(props) {
@@ -9,7 +8,7 @@ export default function MatchesBetted(props) {
   const calculateStyle = (match) => {
     if (match["result"] === null) {
       return { backgroundColor: "lightyellow" };
-    } else if (match["result"] != match["bettedOn"]) {
+    } else if (match["result"] !== match["bettedOn"]) {
       return { backgroundColor: "red" };
     } else {
       return { backgroundColor: "greenyellow" };

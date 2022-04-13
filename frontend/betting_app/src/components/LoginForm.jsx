@@ -21,7 +21,7 @@ export default function LoginForm(props) {
     const parentDiv = event.currentTarget.parentNode;
     const pwInput = parentDiv.querySelector("input");
 
-    if (pwInput.type == "text") {
+    if (pwInput.type === "text") {
       pwInput.type = "password";
       setIconTypeFirst(faEye);
     } else {

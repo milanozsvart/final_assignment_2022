@@ -139,7 +139,6 @@ def get_todays_matches_from_db(dateToCheck):
                 returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
                                              "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
                                                  unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).finalPrediction() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
-            print(returnMatches)
 
         dateInDb.checked = True
         db.session.commit()
@@ -230,7 +229,6 @@ def get_today_odds():
         for m in matches:
             player1Name = transformName(m['team1']['name'])
             player2Name = transformName(m['team2']['name'])
-            print(m)
             match = Match.query.filter_by(
                 firstPlayer=player1Name, secondPlayer=player2Name).first()
             if match:
@@ -255,12 +253,9 @@ def delete_matches_with_no_odds():
         db.session.delete(om)
     db.session.commit()
     todaysMatches = Match.query.filter_by(date=date.today())
-    for tm in todaysMatches:
-        print(tm)
 
 
 def transformName(playerName):
-    print(playerName)
     if not playerName:
         return None
     return playerName.split(",")[0] + " " + playerName.split(",")[1][1] + "."
@@ -377,7 +372,6 @@ def get_users_bets():
         results[key] = status
     returnBets["results"] = results
     returnBets["bets"] = betsToReturn
-    print(returnBets)
 
     return jsonify(returnBets)
 

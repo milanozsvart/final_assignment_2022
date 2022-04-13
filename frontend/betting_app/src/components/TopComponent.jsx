@@ -3,7 +3,6 @@ import "../App.css";
 import Nav from "./Nav";
 import LoginForm from "./LoginForm";
 import LoginButton from "./LoginButton";
-import AccountSettingDisplay from "./AccountSettingDisplay";
 import { MainContext } from "./MainContext";
 
 export default function TopComponent() {

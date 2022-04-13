@@ -31,8 +31,7 @@ export default function Bets(props) {
     console.log(data);
     setBetsOnMatches(data);
   }
-  const { bets, setBets, setIsOpen, betsLength, setBetsLength } =
-    useContext(MainContext);
+  const { setIsOpen } = useContext(MainContext);
   return (
     <>
       <div className="blurred-div"></div>
@@ -50,7 +49,7 @@ export default function Bets(props) {
                 <div
                   className="bet-item made-bets"
                   onClick={() => {
-                    if (currentlyOpen != key) {
+                    if (currentlyOpen !== key) {
                       setCurrentlyOpen(key);
                     } else {
                       setCurrentlyOpen(null);

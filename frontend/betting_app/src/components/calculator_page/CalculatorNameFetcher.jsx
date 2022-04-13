@@ -5,8 +5,8 @@ export default function CalculatorNameFetcher(props) {
   const { playersReached, setPlayer } = useContext(CalculatorContext);
   let players = playersReached;
   if (
-    props.currentRef == props.currentInput &&
-    props.currentInput == "purePlayer"
+    props.currentRef === props.currentInput &&
+    props.currentInput === "purePlayer"
   ) {
     return (
       <div className="calculator-name-fetcher">
@@ -24,7 +24,7 @@ export default function CalculatorNameFetcher(props) {
         ))}
       </div>
     );
-  } else if (props.currentRef == props.currentInput) {
+  } else if (props.currentRef === props.currentInput) {
     return (
       <div className="calculator-name-fetcher">
         {players.map((player) => (

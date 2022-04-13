@@ -3,16 +3,11 @@ import { CalculatorContext } from "./CalculatorContext";
 import { Textfit } from "react-textfit";
 
 export default function CalculatorPlayerMatches() {
-  const {
-    playerMatches,
-    opponentRanks,
-    categorySelected,
-    currentPlayerData,
-    selectedPlayer,
-  } = useContext(CalculatorContext);
+  const { playerMatches, opponentRanks, categorySelected, selectedPlayer } =
+    useContext(CalculatorContext);
 
   return (
-    <div>
+    <div id="calculator-player-matches-wrapper">
       <div
         className="player-matches-header performance-stats-ranks"
         style={

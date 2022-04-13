@@ -50,7 +50,11 @@ export default function CalculatorResults() {
         <CalculatorCurrentPlayerCard
           currentPlayerData={comparePlayerStats[1]}
         />
-        <div>
+        <div className="matches-data-wrapper">
+          <Predictions
+            player={comparePlayerStats["pred"]["player"]}
+            points={comparePlayerStats["pred"]["points"]}
+          />
           <CalculatorResultsForm />
           <div
             className="calculator-results"
@@ -71,13 +75,8 @@ export default function CalculatorResults() {
               />
             </div>
           </div>
-
-          <Predictions
-            player={comparePlayerStats["pred"]["player"]}
-            points={comparePlayerStats["pred"]["points"]}
-          />
-          <CalculatorPlayerMatches />
         </div>
+        <CalculatorPlayerMatches />
 
         <Ranks
           ranks={ranksResults["ranks"]}
