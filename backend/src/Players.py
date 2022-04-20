@@ -6,7 +6,9 @@ import json
 class Players():
     def __init__(self):
         self.playersStoreLocation = r'C:\Users\milan\Desktop\szakdolgozat2022\backend\webscraper\players.csv'
+        self.statsLocation = r'C:\Users\milan\Desktop\Dokumentumok\python_workspace\betting_app\csv\2021-women.csv'
         self.df = pd.read_csv(self.playersStoreLocation)
+        self.statDf = pd.read_csv(self.statsLocation, sep=";")
 
     def setIndexOfDataFrame(self, propertyAsIndex):
         self.df.set_index(propertyAsIndex, inplace=True, drop=False)
@@ -73,4 +75,6 @@ class Players():
 
     def playerInDf(self, playerName):
         self.setIndexOfDataFrame('surName')
+        index = list(
+            set(self.statDf['Winner'].tolist() + self.statDf['Loser'].tolist()))
         return playerName in self.df.index

@@ -12,15 +12,19 @@ export default function Bets(props) {
 
   const [betsOnMatches, setBetsOnMatches] = useState({ bets: [], results: [] });
   const [currentlyOpen, setCurrentlyOpen] = useState("");
+  const [betTypeSelected, setBetTypeSelected] = useState("all");
 
-  useEffect(fetchUserBets, []);
+  useEffect(() => {
+    fetchUserBets("all");
+  }, []);
 
-  async function fetchUserBets() {
+  async function fetchUserBets(betType) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         token: localStorage.getItem("token"),
+        betType: betType,
       }),
     };
     const response = await fetch(
@@ -42,31 +46,63 @@ export default function Bets(props) {
           onClick={exit}
         />
         <h1>My bets</h1>
+        <div id="bets-btns-container">
+          <div
+            onClick={() => {
+              fetchUserBets("all");
+            }}
+          >
+            all
+          </div>
+          <div
+            onClick={() => {
+              fetchUserBets("won");
+            }}
+          >
+            won
+          </div>
+          <div
+            onClick={() => {
+              fetchUserBets("lost");
+            }}
+          >
+            lost
+          </div>
+          <div
+            onClick={() => {
+              fetchUserBets("pending");
+            }}
+          >
+            pending
+          </div>
+        </div>
         <div id="bets-container">
-          {Object.keys(betsOnMatches["bets"]).map((key) => {
-            return (
-              <>
-                <div
-                  className="bet-item made-bets"
-                  onClick={() => {
-                    if (currentlyOpen !== key) {
-                      setCurrentlyOpen(key);
-                    } else {
-                      setCurrentlyOpen(null);
-                    }
-                  }}
-                >
-                  <span>{key}</span>
-                  <span>{betsOnMatches["results"][key]}</span>
-                </div>
-                <MatchesBetted
-                  matches={betsOnMatches["bets"][key]}
-                  currentlyOpen={currentlyOpen}
-                  betId={key}
-                />
-              </>
-            );
-          })}
+          {Object.keys(betsOnMatches["bets"])
+            .slice(-8)
+            .map((key) => {
+              return (
+                <>
+                  <div
+                    className="bet-item made-bets"
+                    onClick={() => {
+                      if (currentlyOpen !== key) {
+                        setCurrentlyOpen(key);
+                      } else {
+                        setCurrentlyOpen(null);
+                      }
+                    }}
+                  >
+                    <span>{key}</span>
+                    <span>{betsOnMatches["results"][key]}</span>
+                  </div>
+                  <MatchesBetted
+                    matches={betsOnMatches["bets"][key]}
+                    currentlyOpen={currentlyOpen}
+                    betId={key}
+                  />
+                </>
+              );
+            })}
         </div>
       </div>
     </>

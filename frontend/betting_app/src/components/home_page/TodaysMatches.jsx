@@ -4,6 +4,7 @@ import Predictions from "../calculator_page/Predictions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareLeft } from "@fortawesome/free-regular-svg-icons";
 import { faCaretSquareRight } from "@fortawesome/free-regular-svg-icons";
+import { Textfit } from "react-textfit";
 
 export default function TodaysMatches() {
   const [todaysMatches, setTodaysMatches] = useState([]);
@@ -11,6 +12,7 @@ export default function TodaysMatches() {
   const [rightVisible, setRightVisible] = useState(false);
   const [leftVisible, setLeftVisible] = useState(true);
   const [isToday, setIsToday] = useState(true);
+  const [finished, setFinished] = useState(false);
   const usersOffset = (new Date().getTimezoneOffset() * -1) / 60;
   const handleStyleChanging = (match) => {
     let matchWrapperStyle, matchContainerStyle;
@@ -52,105 +54,171 @@ export default function TodaysMatches() {
       match["date"] = hours.toString() + ":" + timeString[3] + timeString[4];
       return data["matches"];
     });
+    console.log(data);
     setTodaysMatches(data["matches"]);
+    setFinished(true);
   }
   return (
-    <div className="home-page-matches-wrapper">
-      <div id="home-page-matches-header">
-        <FontAwesomeIcon
-          icon={faCaretSquareLeft}
-          id="go-left-btn"
-          style={leftVisible ? { display: "block" } : { display: "none" }}
-          onClick={() => {
-            let dateToCheck = new Date();
-            dateToCheck = new Date(
-              dateToCheck.setDate(dateToCheck.getDate() - 1)
-            );
-            dateToCheck = dateToCheck.toISOString().split("T")[0];
-            setTodaysMatches([]);
-            fetchTodaysMatches(dateToCheck);
-            setHeaderText("Yesterday's matches");
-            setLeftVisible(false);
-            setRightVisible(true);
-            setIsToday(false);
-          }}
-        />
-        <FontAwesomeIcon
-          icon={faCaretSquareRight}
-          id="go-right-btn"
-          style={rightVisible ? { display: "block" } : { display: "none" }}
-          onClick={() => {
-            setLeftVisible(true);
-            setRightVisible(false);
-            setTodaysMatches([]);
-            fetchTodaysMatches();
-            setHeaderText("Today's matches");
-            setIsToday(true);
-          }}
-        />
-        <h1>{headerText}</h1>
+    <>
+      <div
+        id="loader"
+        style={finished ? { visibility: "hidden" } : { visibility: "visible" }}
+      >
+        <p>Fetching your matches...</p>
       </div>
-      <div className="todays-matches-container">
-        <h1
-          style={
-            todaysMatches.length > 0
-              ? { visibility: "hidden" }
-              : { visibility: "visible" }
-          }
-        >
-          {isToday
-            ? "No matches today :("
-            : "There were no matches yesterday :("}
-        </h1>
-        <div
-          className="match-container match-header"
-          style={
-            todaysMatches.length > 0
-              ? { visibility: "visible" }
-              : { visibility: "hidden" }
-          }
-        >
-          <span>{"Time"}</span>
-          <span>{"Tier"}</span>
-          <span>{"Round"}</span>
-          <span>{"Player 1"}</span>
-          <span>{"Player 2"}</span>
-          <span>{"Odds 1"}</span>
-          <span>{"Odds 2"}</span>
+      <div className="home-page-matches-wrapper">
+        <div id="home-page-matches-header">
+          <FontAwesomeIcon
+            icon={faCaretSquareLeft}
+            id="go-left-btn"
+            style={leftVisible ? { display: "block" } : { display: "none" }}
+            onClick={() => {
+              let dateToCheck = new Date();
+              dateToCheck = new Date(
+                dateToCheck.setDate(dateToCheck.getDate() - 1)
+              );
+              dateToCheck = dateToCheck.toISOString().split("T")[0];
+              setTodaysMatches([]);
+              fetchTodaysMatches(dateToCheck);
+              setHeaderText("Yesterday's matches");
+              setLeftVisible(false);
+              setRightVisible(true);
+              setIsToday(false);
+            }}
+          />
+          <FontAwesomeIcon
+            icon={faCaretSquareRight}
+            id="go-right-btn"
+            style={rightVisible ? { display: "block" } : { display: "none" }}
+            onClick={() => {
+              setLeftVisible(true);
+              setRightVisible(false);
+              setTodaysMatches([]);
+              fetchTodaysMatches();
+              setHeaderText("Today's matches");
+              setIsToday(true);
+            }}
+          />
+          <h1>{headerText}</h1>
         </div>
-        {todaysMatches.map((match) => {
-          const styles = handleStyleChanging(match);
-          return (
-            <div className="matches-wrapper" style={styles[0]}>
-              <div
-                className="match-container"
-                key={match["id"]}
-                id={match["id"]}
-                style={styles[1]}
-              >
-                <span>{match["date"]}</span>
-                <span>{match["tier"]}</span>
-                <span>{match["round"]}</span>
-                <span>{match["firstPlayer"]}</span>
-                <span>{match["secondPlayer"]}</span>
-                <span>{match["firstOdds"]}</span>
-                <span>{match["secondOdds"]}</span>
+        <div className="todays-matches-container">
+          <h1
+            style={
+              todaysMatches.length > 0
+                ? { visibility: "hidden" }
+                : { visibility: "visible" }
+            }
+          >
+            {isToday
+              ? "No matches today :("
+              : "There were no matches yesterday :("}
+          </h1>
+          <div
+            className="match-container match-header"
+            style={
+              todaysMatches.length > 0
+                ? { visibility: "visible" }
+                : { visibility: "hidden" }
+            }
+          >
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Time"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Tier"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Round"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Player 1"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Player 2"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Odds 1"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Odds 2"}
+            </Textfit>
+          </div>
+          {todaysMatches.map((match) => {
+            const styles = handleStyleChanging(match);
+            return (
+              <div className="matches-wrapper" style={styles[0]}>
+                <div
+                  className="match-container"
+                  key={match["id"]}
+                  id={match["id"]}
+                  style={styles[1]}
+                >
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["date"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["tier"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["round"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["firstPlayer"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["secondPlayer"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["firstOdds"]}
+                  </Textfit>
+                  <Textfit
+                    mode="single"
+                    max={24}
+                    className="match-container-span"
+                  >
+                    {match["secondOdds"]}
+                  </Textfit>
+                </div>
+
+                <Predictions
+                  player={
+                    match["pred"]["player"] ? match["pred"]["player"] : null
+                  }
+                  points={
+                    match["pred"]["points"] ? match["pred"]["points"] : null
+                  }
+                />
+
+                <AddToBets match={match} isToday={isToday} />
               </div>
-
-              <Predictions
-                player={
-                  match["pred"]["player"] ? match["pred"]["player"] : null
-                }
-                points={
-                  match["pred"]["points"] ? match["pred"]["points"] : null
-                }
-              />
-
-              <AddToBets match={match} isToday={isToday} />
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

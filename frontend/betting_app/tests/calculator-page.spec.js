@@ -118,4 +118,104 @@ test.describe("toggler", () => {
       parseInt(allMatchesPlayed) - parseInt(wonMatches) + 1
     );
   });
+  // INDIVIDUAL TEST
+  test("individual", async ({ page }) => {
+    await expect(page.locator("text=Individual")).toHaveCSS(
+      "backgroundColor",
+      "rgb(100, 149, 237)"
+    );
+    await expect(page.locator("text=Compare")).toHaveCSS(
+      "backgroundColor",
+      "rgb(255, 255, 255)"
+    );
+    await expect(page.locator("#player-name-text-input")).toBeVisible();
+    await page.fill("#player-name-text-input", "ba");
+    await expect(page.locator("text=Sabalenka")).toBeVisible();
+    await expect(page.locator("text=Badosa")).toBeVisible();
+    await expect(page.locator("text=Bara")).toBeVisible();
+
+    await page.locator("text=Badosa").click();
+    await expect(
+      page.locator(".wrapper-calculator-form-properties")
+    ).toBeVisible();
+    const courtValue = await page.inputValue(
+      ".wrapper-calculator-form-inner select >> nth=0"
+    );
+    const tournamentValue = await page.inputValue(
+      ".wrapper-calculator-form-inner select >> nth=1"
+    );
+    const roundValue = await page.inputValue(
+      ".wrapper-calculator-form-inner select >> nth=2"
+    );
+    const dateValue = await page.inputValue(
+      ".wrapper-calculator-form-inner input"
+    );
+    await page.locator("text=Submit").click();
+    await expect(page.locator(".wrapper-calculator-results")).toBeVisible();
+    await expect(
+      page.locator(".calculator-results-form select >> nth=0")
+    ).toHaveValue(courtValue);
+    await expect(
+      page.locator(".calculator-results-form select >> nth=1")
+    ).toHaveValue(tournamentValue);
+    await expect(
+      page.locator(".calculator-results-form select >> nth=2")
+    ).toHaveValue(roundValue);
+    await expect(page.locator(".calculator-results-form input")).toHaveValue(
+      dateValue
+    );
+
+    let matchesPlayed = await page.textContent(
+      ".perfromance-stats-individual > div >> nth=1"
+    );
+    await page.locator(".circle-info-player-stats >> nth=0").click();
+    await expect(page.locator(".get-player-matches >> nth=0")).toBeVisible();
+    await page.locator("text=All matches").first().click();
+    // +1 because of header
+    await expect(page.locator(".player-matches")).toHaveCount(
+      parseInt(matchesPlayed) + 1
+    );
+    await expect(
+      page.locator(".get-player-matches >> nth=0")
+    ).not.toBeVisible();
+
+    matchesPlayed = await page.textContent("#Matcheswon_count >> nth=0");
+    await page.locator(".circle-info-player-stats >> nth=0").click();
+    await expect(page.locator(".get-player-matches >> nth=0")).toBeVisible();
+    await page.locator("#won").first().click();
+    await expect(
+      page.locator(".get-player-matches >> nth=0")
+    ).not.toBeVisible();
+    // +1 because of header
+    await expect(page.locator(".player-matches")).toHaveCount(
+      parseInt(matchesPlayed) + 1
+    );
+
+    matchesPlayed = await page.textContent("#Matcheswon2-0_count >> nth=0");
+    await page.locator(".circle-info-player-stats >> nth=0").click();
+    await expect(page.locator(".get-player-matches >> nth=0")).toBeVisible();
+    await page.locator("#won-2-0").first().click();
+    await expect(
+      page.locator(".get-player-matches >> nth=0")
+    ).not.toBeVisible();
+    // +1 because of header
+    await expect(page.locator(".player-matches")).toHaveCount(
+      parseInt(matchesPlayed) + 1
+    );
+
+    let allMatchesPlayed = await page.textContent(
+      ".perfromance-stats-individual > div >> nth=1"
+    );
+    let wonMatches = await page.textContent("#Matcheswon_count >> nth=0");
+    await page.locator(".circle-info-player-stats >> nth=0").click();
+    await expect(page.locator(".get-player-matches >> nth=0")).toBeVisible();
+    await page.locator("#lost").first().click();
+    await expect(
+      page.locator(".get-player-matches >> nth=0")
+    ).not.toBeVisible();
+    // +1 because of header
+    await expect(page.locator(".player-matches")).toHaveCount(
+      parseInt(allMatchesPlayed) - parseInt(wonMatches) + 1
+    );
+  });
 });

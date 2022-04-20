@@ -171,6 +171,7 @@ class ResultsPredictor():
         startingRank = max(1, int(float(opponentRank))-8)
         endingRank = min(1000, int(float(opponentRank))+10)
         points = 0
+        matchesCount = 0
         self.setIndexOfDataFrame('Winner')
         try:
             playersDfWon = self.df.loc[player]
@@ -207,8 +208,10 @@ class ResultsPredictor():
                     points += 0.2
                 elif match['Tier'] == 'Grand Slam':
                     points += 0.5
+            matchesCount += 1
         for rank in ranks:
             if rank['Winner'] == player:
+                matchesCount += 1
                 if rank['Tier'] == "WTA250":
                     points += 1.5
                 elif rank['Tier'] == 'WTA500':
@@ -218,7 +221,7 @@ class ResultsPredictor():
                 elif rank['Tier'] == 'Grand Slam':
                     points += 3
 
-        return points
+        return [points, matchesCount]
 
     def finalPrediction(self):
         player1Points = self.countMatchesAccordingToTier(
@@ -226,4 +229,14 @@ class ResultsPredictor():
         player2Points = self.countMatchesAccordingToTier(
             self.player2, self.player1Rank)
 
-        return {"points": max(player1Points, player2Points) - min(player1Points, player2Points), "player": self.player1 if player1Points > player2Points else self.player2}
+        print(max(player1Points[0], player2Points[0]) -
+              min(player1Points[0], player2Points[0]))
+        player = self.player1 if player1Points[0] > player2Points[0] else self.player2
+        if player == self.player1:
+            print((max(player1Points[0], player2Points[0]) -
+                  min(player1Points[0], player2Points[0])) * (1 / player1Points[1]), "prob")
+        else:
+            print(max(player1Points[0], player2Points[0]) -
+                  min(player1Points[0], player2Points[0]) * (1 / player2Points[1]), "prob")
+
+        return {"points": max(player1Points[0], player2Points[0]) - min(player1Points[0], player2Points[0]), "player": self.player1 if player1Points[0] > player2Points[0] else self.player2}

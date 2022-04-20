@@ -148,8 +148,10 @@ def get_todays_matches_from_db(dateToCheck):
             Match.date == dateToCheck)).scalar()
         if exists:
             matches = Match.query.filter_by(date=dateToCheck)
+            p = Players()
             returnMatches["matches"] = [{"id": match.id, "date": match.time.isoformat()[:5], "tier": match.tier, "round": match.round, "firstPlayer": match.firstPlayer,
-                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds} for match in matches]
+                                         "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds, "pred": ResultsPredictor(unidecode.unidecode(match.firstPlayer.split(" ")[0]), unidecode.unidecode(match.secondPlayer.split(" ")[0]), p.getBasicPlayerData(
+                                             unidecode.unidecode(match.firstPlayer.split(" ")[0]))["rank"], p.getBasicPlayerData(unidecode.unidecode(match.secondPlayer.split(" ")[0]))["rank"]).finalPrediction() if p.playerInDf(unidecode.unidecode(match.firstPlayer.split(" ")[0])) and p.playerInDf(unidecode.unidecode(match.secondPlayer.split(" ")[0])) else {"player": "Not known", "points": 0}} for match in matches]
         dateInDb.checked = True
         db.session.commit()
         get_today_odds()
@@ -179,17 +181,18 @@ def get_todays_matches_from_api(dateToCheck):
             for match in result["matches"]:
                 if "Qualification" not in match["round_name"]:
                     db.session.add(Match(date=date(int(match["date"][:4]), int(match["date"][5:7]), int(match["date"][8:10])), time=time(int(match["date"][11:13]), int(match["date"][14:16])), round=match["round_name"], tier=t.getTierForTournament(tournamentName),
-                                         firstPlayer=match["home_player"], secondPlayer=match["away_player"], firstOdds=-1, secondOdds=-1))
+                                         firstPlayer=unidecode.unidecode(match["home_player"]), secondPlayer=unidecode.unidecode(match["away_player"]), firstOdds=-1, secondOdds=-1))
     else:
         for result in dictionary["results"]:
             for match in result["matches"]:
                 if "Qualification" not in match["round_name"]:
                     matchToCheck = Match.query.filter_by(
                         firstPlayer=match["home_player"], secondPlayer=match["away_player"]).first()
-                    if match["home_id"] == match["result"]["winner_id"]:
-                        matchToCheck.result = match["home_player"]
-                    else:
-                        matchToCheck.result = match["away_player"]
+                    if matchToCheck:
+                        if match["home_id"] == match["result"]["winner_id"]:
+                            matchToCheck.result = match["home_player"]
+                        else:
+                            matchToCheck.result = match["away_player"]
     db.session.commit()
     get_today_odds()
     print("matches")
@@ -227,10 +230,11 @@ def get_today_odds():
         sleep(2)
 
         for m in matches:
+            print(m)
             player1Name = transformName(m['team1']['name'])
             player2Name = transformName(m['team2']['name'])
             match = Match.query.filter_by(
-                firstPlayer=player1Name, secondPlayer=player2Name).first()
+                firstPlayer=player1Name, secondPlayer=player2Name, date=date.today()).first()
             if match:
                 match.firstOdds = m['odds']['1'] if m['odds']['1'] != None else 1
                 match.secondOdds = m['odds']['2'] if m['odds']['2'] != None else 1
@@ -258,7 +262,15 @@ def delete_matches_with_no_odds():
 def transformName(playerName):
     if not playerName:
         return None
-    return playerName.split(",")[0] + " " + playerName.split(",")[1][1] + "."
+
+    try:
+        shortName = playerName.split(
+            ",")[0] + " " + playerName.split(",")[1][1] + "."
+    except:
+        shortName = playerName.split(
+            " ")[0] + " " + playerName.split(" ")[1][1] + "."
+    return unidecode.unidecode(shortName)
+
 
 
 @app.route("/register", methods=["POST"])
@@ -342,6 +354,7 @@ def get_users_bets():
     userEmail = jwt.decode(
         data["token"], os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
     user = User.query.filter_by(email=userEmail).first()
+    betType = data["betType"]
     returnBets = {}
     betsToReturn = {}
     for bet in user.bets:
@@ -358,20 +371,38 @@ def get_users_bets():
     betsToReturn = {key: value for key,
                     value in betsToReturn.items() if len(value) > 0}
     results = {}
-    for key in betsToReturn.keys():
-        status = "Pending"
-        for match in betsToReturn[key]:
-            if match["result"] != match["bettedOn"] and match["result"] != None:
-                status = "Lost"
-                break
-            elif match["result"] == None:
-                status = "Pending"
-                break
-            else:
-                status = "Won"
-        results[key] = status
-    returnBets["results"] = results
-    returnBets["bets"] = betsToReturn
+    if betType == "all":
+        for key in betsToReturn.keys():
+            status = "Pending"
+            for match in betsToReturn[key]:
+                if match["result"] != match["bettedOn"] and match["result"] != None:
+                    status = "Lost"
+                    break
+                elif match["result"] == None:
+                    status = "Pending"
+                    break
+                else:
+                    status = "Won"
+            results[key] = status
+        returnBets["results"] = results
+        returnBets["bets"] = betsToReturn
+    else:
+        for key in betsToReturn.keys():
+            status = "Pending"
+            for match in betsToReturn[key]:
+                if match["result"] != match["bettedOn"] and match["result"] != None:
+                    status = "Lost"
+                    break
+                elif match["result"] == None:
+                    status = "Pending"
+                    break
+                else:
+                    status = "Won"
+            if status.lower() == betType:
+                results[key] = status
+        returnBets["results"] = results
+        returnBets["bets"] = {key: value for key,
+                              value in betsToReturn.items() if key in results.keys()}
 
     return jsonify(returnBets)
 
@@ -392,11 +423,15 @@ def sample_matches():
 
 @app.route("/sample_matches_yesterday", methods=["GET"])
 def sample_matches_yesterday():
-    matches = Match.query.filter_by(date=date.today() - timedelta(days=1))
+    #matches = Match.query.filter_by(date=date.today() - timedelta(days=1))
+    dateInDb = Dates.query.filter_by(date=date.today()).first()
+    dateInDb.checked = False
+    db.session.commit()
+    matches = Match.query.filter_by(date=date.today())
     for match in matches:
         db.session.delete(match)
     db.session.commit()
-    match1 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
+    """match1 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
                    firstPlayer="Anisimova A.", secondPlayer="Zidansek T.", firstOdds=1.8, secondOdds=1.8, result='Anisimova A.')
     match2 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
                    firstPlayer="Swiatek I.", secondPlayer="Pliskova K.", firstOdds=1.78, secondOdds=1.9, result='Swiatek I.')
@@ -405,7 +440,7 @@ def sample_matches_yesterday():
     db.session.add(match1)
     db.session.add(match2)
     db.session.add(match3)
-    db.session.commit()
+    db.session.commit()"""
 
 
 @app.route("/sample_bets", methods=["GET"])
@@ -438,3 +473,10 @@ def sample_bets_won():
             matchId=bet["id"], bettedOn=bet["bettedOn"], betId=userBet.id)
         db.session.add(betEvent)
     db.session.commit()
+
+
+@app.route("/today_match", methods=["GET"])
+def today_match():
+    matches = Match.query.filter_by(date=date.today())
+    for m in matches:
+        print(m)

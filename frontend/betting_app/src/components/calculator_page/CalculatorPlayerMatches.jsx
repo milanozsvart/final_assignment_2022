@@ -3,11 +3,21 @@ import { CalculatorContext } from "./CalculatorContext";
 import { Textfit } from "react-textfit";
 
 export default function CalculatorPlayerMatches() {
-  const { playerMatches, opponentRanks, categorySelected, selectedPlayer } =
-    useContext(CalculatorContext);
-
+  const {
+    playerMatches,
+    opponentRanks,
+    categorySelected,
+    selectedPlayer,
+    calculationType,
+  } = useContext(CalculatorContext);
   return (
-    <div id="calculator-player-matches-wrapper">
+    <div
+      id={
+        calculationType === "compare"
+          ? "calculator-player-matches-wrapper"
+          : "calculator-player-matches-wrapper-individual"
+      }
+    >
       <div
         className="player-matches-header performance-stats-ranks"
         style={
