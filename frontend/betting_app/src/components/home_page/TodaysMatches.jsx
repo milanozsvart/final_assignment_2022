@@ -16,15 +16,24 @@ export default function TodaysMatches() {
   const usersOffset = (new Date().getTimezoneOffset() * -1) / 60;
   const handleStyleChanging = (match) => {
     let matchWrapperStyle, matchContainerStyle;
-    if (!isToday && match["result"] === match["pred"]["player"]) {
-      matchWrapperStyle = { border: "3px solid green" };
-      matchContainerStyle = { backgroundColor: "green" };
-    } else if (!isToday && match["result"] !== match["pred"]["player"]) {
-      matchWrapperStyle = { border: "3px solid red" };
-      matchContainerStyle = { backgroundColor: "red" };
+    if (!isToday && match["result"] === null) {
+      matchWrapperStyle = { display: "none" };
+      matchContainerStyle = { display: "none" };
     } else {
-      return [{}, {}];
+      if (match["result"] && match["result"] === match["pred"]["player"]) {
+        matchWrapperStyle = { border: "3px solid green" };
+        matchContainerStyle = { backgroundColor: "green" };
+      } else if (
+        match["result"] &&
+        match["result"] !== match["pred"]["player"]
+      ) {
+        matchWrapperStyle = { border: "3px solid red" };
+        matchContainerStyle = { backgroundColor: "red" };
+      } else {
+        return [{}, {}];
+      }
     }
+
     return [matchWrapperStyle, matchContainerStyle];
   };
 
@@ -145,77 +154,79 @@ export default function TodaysMatches() {
           </div>
           {todaysMatches.map((match) => {
             const styles = handleStyleChanging(match);
-            return (
-              <div className="matches-wrapper" style={styles[0]}>
-                <div
-                  className="match-container"
-                  key={match["id"]}
-                  id={match["id"]}
-                  style={styles[1]}
-                >
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
+            if (match["pred"]["player"] != "Not known") {
+              return (
+                <div className="matches-wrapper" style={styles[0]}>
+                  <div
+                    className="match-container"
+                    key={match["id"]}
+                    id={match["id"]}
+                    style={styles[1]}
                   >
-                    {match["date"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["tier"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["round"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["firstPlayer"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["secondPlayer"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["firstOdds"]}
-                  </Textfit>
-                  <Textfit
-                    mode="single"
-                    max={24}
-                    className="match-container-span"
-                  >
-                    {match["secondOdds"]}
-                  </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["date"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["tier"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["round"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["firstPlayer"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["secondPlayer"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["firstOdds"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["secondOdds"]}
+                    </Textfit>
+                  </div>
+
+                  <Predictions
+                    player={
+                      match["pred"]["player"] ? match["pred"]["player"] : null
+                    }
+                    points={
+                      match["pred"]["points"] ? match["pred"]["points"] : null
+                    }
+                  />
+
+                  <AddToBets match={match} isToday={isToday} />
                 </div>
-
-                <Predictions
-                  player={
-                    match["pred"]["player"] ? match["pred"]["player"] : null
-                  }
-                  points={
-                    match["pred"]["points"] ? match["pred"]["points"] : null
-                  }
-                />
-
-                <AddToBets match={match} isToday={isToday} />
-              </div>
-            );
+              );
+            }
           })}
         </div>
       </div>

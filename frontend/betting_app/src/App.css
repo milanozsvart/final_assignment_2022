@@ -499,7 +499,7 @@ main {
 }
 
 #account-and-login-wrapper {
-  position: absolute;
+  position: fixed;
   top: 12vh;
   right: 2vw;
   font-size: 1.4rem;
@@ -645,7 +645,7 @@ main {
 }
 
 #account-manager-window {
-  position: absolute;
+  position: fixed;
   background-color: cornflowerblue;
   top: 15%;
   right: 3.5%;

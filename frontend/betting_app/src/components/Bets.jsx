@@ -10,9 +10,12 @@ export default function Bets(props) {
     setIsOpen(false);
   };
 
-  const [betsOnMatches, setBetsOnMatches] = useState({ bets: [], results: [] });
+  const [betsOnMatches, setBetsOnMatches] = useState({
+    bets: [],
+    results: [],
+    dates: [],
+  });
   const [currentlyOpen, setCurrentlyOpen] = useState("");
-  const [betTypeSelected, setBetTypeSelected] = useState("all");
 
   useEffect(() => {
     fetchUserBets("all");
@@ -77,32 +80,30 @@ export default function Bets(props) {
           </div>
         </div>
         <div id="bets-container">
-          {Object.keys(betsOnMatches["bets"])
-            .slice(-8)
-            .map((key) => {
-              return (
-                <>
-                  <div
-                    className="bet-item made-bets"
-                    onClick={() => {
-                      if (currentlyOpen !== key) {
-                        setCurrentlyOpen(key);
-                      } else {
-                        setCurrentlyOpen(null);
-                      }
-                    }}
-                  >
-                    <span>{key}</span>
-                    <span>{betsOnMatches["results"][key]}</span>
-                  </div>
-                  <MatchesBetted
-                    matches={betsOnMatches["bets"][key]}
-                    currentlyOpen={currentlyOpen}
-                    betId={key}
-                  />
-                </>
-              );
-            })}
+          {betsOnMatches["dates"].slice(-8).map((key) => {
+            return (
+              <>
+                <div
+                  className="bet-item made-bets"
+                  onClick={() => {
+                    if (currentlyOpen !== key) {
+                      setCurrentlyOpen(key);
+                    } else {
+                      setCurrentlyOpen(null);
+                    }
+                  }}
+                >
+                  <span>{key}</span>
+                  <span>{betsOnMatches["results"][key]}</span>
+                </div>
+                <MatchesBetted
+                  matches={betsOnMatches["bets"][key]}
+                  currentlyOpen={currentlyOpen}
+                  betId={key}
+                />
+              </>
+            );
+          })}
         </div>
       </div>
     </>

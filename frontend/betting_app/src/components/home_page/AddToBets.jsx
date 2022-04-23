@@ -46,7 +46,7 @@ export default function AddToBets(props) {
       }
     }
   };
-  if (props.isToday) {
+  if (!props.match["result"]) {
     return (
       <div
         className={buttonClass}

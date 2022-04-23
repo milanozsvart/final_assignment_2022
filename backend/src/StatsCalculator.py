@@ -1,12 +1,15 @@
 import pandas as pd
 from datetime import datetime
 import math
+from pathlib import Path
+import os
 
 
 class StatsCalculator():
     def __init__(self, player, additionalProps):
         self.player = player.lower()
-        self.statsLocation = r'C:\Users\milan\Desktop\Dokumentumok\python_workspace\betting_app\csv\2021-women.csv'
+        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__))) + "\csv\matches.csv"))
         self.df = pd.read_csv(self.statsLocation, sep=";")
         self.cleanUpTournamentData()
         self.setIndexOfDataFrame('Winner')

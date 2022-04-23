@@ -7,9 +7,9 @@ from flask_migrate import Migrate
 import sys
 import os
 from datetime import date
+from pathlib import Path
 sys.path.append(
-    r'C:\Users\milan\Desktop\szakdolgozat2022\backend\src')
-
+    str(Path(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\src")))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)

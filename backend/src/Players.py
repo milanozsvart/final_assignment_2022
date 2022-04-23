@@ -1,12 +1,15 @@
 from numpy import isin
 import pandas as pd
-import json
+import os
+from pathlib import Path
 
 
 class Players():
     def __init__(self):
-        self.playersStoreLocation = r'C:\Users\milan\Desktop\szakdolgozat2022\backend\webscraper\players.csv'
-        self.statsLocation = r'C:\Users\milan\Desktop\Dokumentumok\python_workspace\betting_app\csv\2021-women.csv'
+        self.playersStoreLocation = str(Path(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__))) + "\csv\players.csv"))
+        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__))) + "\csv\matches.csv"))
         self.df = pd.read_csv(self.playersStoreLocation)
         self.statDf = pd.read_csv(self.statsLocation, sep=";")
 
