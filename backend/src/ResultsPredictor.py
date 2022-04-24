@@ -108,6 +108,9 @@ class ResultsPredictor():
                     points += 2.75 * self.points[match["Round"]]
                 elif rank['Tier'] == 'Grand Slam':
                     points += 3.25 * self.points[match["Round"]]
+            else:
+                matchesCount += 1
+                points -= 2
 
         return [points, matchesCount]
 

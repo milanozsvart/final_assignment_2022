@@ -12,6 +12,7 @@ from StatsCalculator import StatsCalculator
 from datetime import date, time, datetime
 from flask import request, jsonify
 import json
+from RequestValidator import RequestValidator
 
 
 CORS(app)
@@ -25,41 +26,55 @@ def home():
 @app.route("/get_basic_player_data", methods=["POST"])
 def get_basic_player_data():
     data = request.get_json(force=True)
-    playerName = data['playerName']
-    additionalProps = data['additionalProps']
-    overAllPlayerGetter = OverallPlayerData(additionalProps)
-    stats = overAllPlayerGetter.getPlayerData(playerName,
-                                              isinstance(playerName, list))
-    return json.dumps(stats)
+    r = RequestValidator()
+    if r.validate(data, r.singlePlayerSchema) or r.validate(data, r.multiplePlayerSchema):
+        playerName = data['playerName']
+        additionalProps = data['additionalProps']
+        overAllPlayerGetter = OverallPlayerData(additionalProps)
+        stats = overAllPlayerGetter.getPlayerData(playerName,
+                                                  isinstance(playerName, list))
+        return json.dumps(stats)
+    else:
+        return "Bad request"  # TODO make_response
 
 
 @app.route("/get_reached_players", methods=["POST"])
 def get_reached_players():
     data = request.get_json(force=True)
-    partOfPlayerName = data['partOfPlayerName'].lower()
-    playerGetter = Players()
-    reachedPlayers = playerGetter.getReachedPlayers(partOfPlayerName)
-    return json.dumps(reachedPlayers)
+    r = RequestValidator()
+    if r.validate(data, r.reachedPlayerSchema):
+        partOfPlayerName = data['partOfPlayerName'].lower()
+        playerGetter = Players()
+        reachedPlayers = playerGetter.getReachedPlayers(partOfPlayerName)
+        return json.dumps(reachedPlayers)
+    else:
+        return "Bad request"
 
 
 @app.route("/get_matches_data", methods=["POST"])
 def get_matches_data():
     data = request.get_json(force=True)
-    statCalculator = StatsCalculator(
-        data['playerName'], data["additionalProps"])
-    matches = statCalculator.getPlayerMatchesAgainstOpponents(
-        data['opponentRanks'], data['category'])
-    return jsonify(matches)
+    r = RequestValidator()
+    if r.validate(data, r.matchesSchema):
+        statCalculator = StatsCalculator(
+            data['playerName'], data["additionalProps"])
+        matches = statCalculator.getPlayerMatchesAgainstOpponents(
+            data['opponentRanks'], data['category'])
+        return jsonify(matches)
+    else:
+        return "Bad request"
 
 
 @app.route("/get_todays_matches_from_db/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_db(dateToCheck):
+    #TODO write date validator
     matchHandler = MatchesDatabaseHandler()
     return matchHandler.getMatches(dateToCheck)
 
 
 @app.route("/get_todays_matches_from_api/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_api(dateToCheck):
+    #TODO write date validator
     apiHandler = MatchesApiHandler(dateToCheck)
     return apiHandler.getMatchesFromAPI()
 
@@ -73,46 +88,69 @@ def get_today_odds():
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json(force=True)
-    auth = Authenctication()
-    return auth.register(data["email"], data["password"])
+    r = RequestValidator()
+    if(r.validate(data, r.emailPasswordSchema)):
+        auth = Authenctication()
+        return auth.register(data["email"], data["password"])
+    else:
+        return "Bad request"
 
 
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json(force=True)
-    auth = Authenctication()
-    return auth.login(data["email"], data["password"])
-
+    r = RequestValidator()
+    if(r.validate(data, r.emailPasswordSchema)):
+        auth = Authenctication()
+        return auth.login(data["email"], data["password"])
+    else:
+        return "Bad request"
 
 @app.route("/change_password", methods=["POST"])
 def change_password():
     data = request.get_json(force=True)
-    auth = Authenctication()
-    return auth.changePassword(data["token"], data["currentPassword"], data["newPassword"])
-
+    r = RequestValidator()
+    if(r.validate(data, r.changePasswordSchema)):
+        auth = Authenctication()
+        return auth.changePassword(data["token"], data["currentPassword"], data["newPassword"])
+    else:
+        return "Bad request"
 
 @app.route("/get_historic_ranks_data", methods=["POST"])
 def get_historic_ranks_data():
     data = request.get_json(force=True)
-    data["additionalProps"]["court"] = 'all'
-    data["additionalProps"]["tournament"] = 'All'
-    data["additionalProps"]["round"] = 'All'
-    s = StatsCalculator(data["playerName"], data["additionalProps"])
-    return s.getHistoricRanksForPlayer()
+    r = RequestValidator()
+    if(r.validate(data, r.singlePlayerSchema)):
+        data["additionalProps"]["court"] = 'all'
+        data["additionalProps"]["tournament"] = 'All'
+        data["additionalProps"]["round"] = 'All'
+        s = StatsCalculator(data["playerName"], data["additionalProps"])
+        return s.getHistoricRanksForPlayer()
+    else:
+        return "Bad request"
 
 
 @app.route("/add_bet_to_user", methods=["POST"])
 def add_bet_to_user():
     data = request.get_json(force=True)
-    betHandler = BetHandling()
-    return betHandler.addBetToUser(data["token"], data["bets"], data["betsName"])
+    r = RequestValidator()
+    if r.validate(data, r.addToBetsSchema):
+        betHandler = BetHandling()
+        return betHandler.addBetToUser(data["token"], data["bets"], data["betsName"])
+    else:
+        print(r.getErrors())
+        return "Bad request"
 
 
 @app.route("/get_users_bets", methods=["POST"])
 def get_users_bets():
     data = request.get_json(force=True)
-    betHandler = BetHandling()
-    return betHandler.getPlayerBets(data["token"], data["betType"])
+    r = RequestValidator()
+    if r.validate(data, r.getUserBets):
+        betHandler = BetHandling()
+        return betHandler.getPlayerBets(data["token"], data["betType"])
+    else:
+        return "Bad request"
 
 
 ###### ------------ DEBUG FUNCTIONS FROM HERE --------------------- #######
