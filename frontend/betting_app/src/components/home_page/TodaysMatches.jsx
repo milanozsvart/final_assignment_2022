@@ -41,6 +41,7 @@ export default function TodaysMatches() {
   async function fetchTodaysMatches(
     dateToCheck = new Date().toISOString().split("T")[0]
   ) {
+    setFinished(false);
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -133,12 +134,7 @@ export default function TodaysMatches() {
             <Textfit mode="single" max={16} className="match-container-span">
               {"Time"}
             </Textfit>
-            <Textfit mode="single" max={16} className="match-container-span">
-              {"Tier"}
-            </Textfit>
-            <Textfit mode="single" max={16} className="match-container-span">
-              {"Round"}
-            </Textfit>
+
             <Textfit mode="single" max={16} className="match-container-span">
               {"Player 1"}
             </Textfit>
@@ -150,6 +146,12 @@ export default function TodaysMatches() {
             </Textfit>
             <Textfit mode="single" max={16} className="match-container-span">
               {"Odds 2"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Tier"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
+              {"Round"}
             </Textfit>
           </div>
           {todaysMatches.map((match) => {
@@ -172,29 +174,15 @@ export default function TodaysMatches() {
                     </Textfit>
                     <Textfit
                       mode="single"
-                      max={24}
-                      className="match-container-span"
-                    >
-                      {match["tier"]}
-                    </Textfit>
-                    <Textfit
-                      mode="single"
-                      max={24}
-                      className="match-container-span"
-                    >
-                      {match["round"]}
-                    </Textfit>
-                    <Textfit
-                      mode="single"
-                      max={24}
-                      className="match-container-span"
+                      max={32}
+                      className="match-container-span player-identifier"
                     >
                       {match["firstPlayer"]}
                     </Textfit>
                     <Textfit
                       mode="single"
-                      max={24}
-                      className="match-container-span"
+                      max={32}
+                      className="match-container-span player-identifier"
                     >
                       {match["secondPlayer"]}
                     </Textfit>
@@ -211,6 +199,20 @@ export default function TodaysMatches() {
                       className="match-container-span"
                     >
                       {match["secondOdds"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["tier"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["round"]}
                     </Textfit>
                   </div>
 

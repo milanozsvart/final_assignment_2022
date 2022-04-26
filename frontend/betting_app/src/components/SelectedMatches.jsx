@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons";
 import { MainContext } from "./MainContext";
@@ -18,14 +18,14 @@ export default function SelectedMatches(props) {
     setIsOpen(false);
   };
 
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const saveBets = () => {
     if (bets.length < 1) {
-      alert("Please select matches to bet on!");
+      setErrorMessage("Please select matches to bet on!");
     } else {
       sendBetsData();
-      setBets([]);
-      setBetsLength(0);
-      exit();
     }
   };
 
@@ -43,7 +43,17 @@ export default function SelectedMatches(props) {
       "http://127.0.0.1:5000/add_bet_to_user",
       requestOptions
     );
-    const returnData = await response.json();
+    if (response.ok) {
+      const returnData = await response.json();
+      setSuccess(true);
+      setBets([]);
+      setBetsLength(0);
+      exit();
+    } else {
+      const returnData = await response.json();
+      setErrorMessage(`Bet with name ${returnData["message"]} already exists!`);
+      setSuccess(false);
+    }
   }
 
   const removeFromBets = (id) => {
@@ -111,7 +121,7 @@ export default function SelectedMatches(props) {
                   {bet["secondOdds"]}
                 </span>
                 <span>
-                  {(Math.min(bet["pred"]["points"] / 100 + 0.5, 0.999) * 100)
+                  {(Math.min(bet["pred"]["points"], 0.999) * 100)
                     .toString()
                     .substring(0, 4)}
                   {"%"}
@@ -125,6 +135,12 @@ export default function SelectedMatches(props) {
             );
           })}
         </div>
+        <p
+          id="selected-matches-error"
+          style={success ? { visibility: "hidden" } : { visibility: "visible" }}
+        >
+          {errorMessage}
+        </p>
         <input
           type="text"
           name=""

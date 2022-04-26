@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function MatchesBetted(props) {
   let odds = 1;
 
+  const calculateIcon = (match) => {
+    if (match["result"] === null) {
+      return faQuestionCircle;
+    } else if (match["result"] !== match["bettedOn"]) {
+      return faXmark;
+    } else {
+      return faCheck;
+    }
+  };
   const calculateStyle = (match) => {
     if (match["result"] === null) {
       return { backgroundColor: "lightyellow" };
@@ -75,7 +86,7 @@ export default function MatchesBetted(props) {
               {m["secondOdds"]}
             </span>
             <FontAwesomeIcon
-              icon={faQuestionCircle}
+              icon={calculateIcon(m)}
               className="question-mark"
             />
           </div>

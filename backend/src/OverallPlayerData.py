@@ -23,6 +23,12 @@ class OverallPlayerData:
                 namesErrors.append(playerName)
         return {"good": good, "errors": namesErrors}
 
+    def checkIfNamesAreNotTheSame(self, playerName, multiplePlayers):
+        if multiplePlayers and playerName[0] == playerName[1]:
+            return False
+        return True
+
+
     def calculatePrediction(self, players):
 
         predictor = ResultsPredictor(players[0], players[1], self.playerGetter.getBasicPlayerData(
@@ -57,6 +63,8 @@ class OverallPlayerData:
             return self.stats
 
     def getPlayerData(self, playerName, multiplePlayers):
+        if not self.checkIfNamesAreNotTheSame(playerName, multiplePlayers):
+            return {"message": "Names cannot be the same!"}
         playerExistenceChecker = self.checkIfPlayerExists(
             playerName, multiplePlayers)
         if playerExistenceChecker["good"]:

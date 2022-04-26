@@ -18,6 +18,8 @@ class BetHandling:
         userEmail = jwt.decode(
             token, os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
         user = User.query.filter_by(email=userEmail).first()
+        if self.betNameExists(betsName, user):
+            return {"message": betsName}, 409
         userBet = Bet(user_id=user.id, date=datetime.now(
         ), betName=betsName if len(betsName) > 0 else None)
         db.session.add(userBet)
@@ -28,6 +30,9 @@ class BetHandling:
             db.session.add(betEvent)
         db.session.commit()
         return {"message": "Successfully added bets"}
+
+    def betNameExists(self, betName, user):
+        return Bet.query.filter_by(user_id=user.id, betName=betName).first()
 
     def createBetsToReturn(self, user):
         for bet in user.bets:

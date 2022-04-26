@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
 import { MainContext } from "./MainContext";
+import { useLocation } from "react-router-dom";
 
 export default function LoginButton(props) {
   const { betsLength } = useContext(MainContext);
+  const location = useLocation();
+  console.log(location.pathname);
   if (!props.token) {
     return (
       <div
@@ -15,7 +18,14 @@ export default function LoginButton(props) {
     );
   } else {
     return (
-      <div id="account-and-login-wrapper">
+      <div
+        id="account-and-login-wrapper"
+        style={
+          location.pathname === "/calculator"
+            ? { position: "absolute" }
+            : { position: "fixed" }
+        }
+      >
         <p id="account-email">{localStorage.getItem("user")}</p>
         <div
           className="login-and-account-btn"

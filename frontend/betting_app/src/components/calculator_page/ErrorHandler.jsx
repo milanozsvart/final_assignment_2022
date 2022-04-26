@@ -25,9 +25,27 @@ export default function ErrorHandler(props) {
         }
       >
         <FontAwesomeIcon icon={faCircleXmark} id="exit-btn" onClick={exit} />
-        <p>Could not find these players: </p>
+        <p
+          style={
+            props.message !== ""
+              ? props.message.includes("cannot be")
+                ? { visibility: "hidden" }
+                : { visibility: "visible" }
+              : {}
+          }
+        >
+          Could not find these players:{" "}
+        </p>
         <p className="names-errors"> {props.message}</p>
-        <p>
+        <p
+          style={
+            props.message !== ""
+              ? props.message.includes("cannot be")
+                ? { visibility: "hidden" }
+                : { visibility: "visible" }
+              : {}
+          }
+        >
           Click on the players that pop up when you type to select a player!
         </p>
       </div>
