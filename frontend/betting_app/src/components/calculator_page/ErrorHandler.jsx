@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 export default function ErrorHandler(props) {
   const exit = () => {
@@ -24,6 +25,12 @@ export default function ErrorHandler(props) {
             : { visibility: "visible" }
         }
       >
+        <div id="error-note">
+          <FontAwesomeIcon icon={faExclamationTriangle} />
+          Error
+          <FontAwesomeIcon icon={faExclamationTriangle} />
+        </div>
+
         <FontAwesomeIcon icon={faCircleXmark} id="exit-btn" onClick={exit} />
         <p
           style={

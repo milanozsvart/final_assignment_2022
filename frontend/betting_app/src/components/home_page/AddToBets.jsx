@@ -1,9 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
+import ErrorHandler from "../calculator_page/ErrorHandler";
 import { MainContext } from "../MainContext";
 
 export default function AddToBets(props) {
   const { bets, setBets, isOpen, token, betsLength, setBetsLength } =
     useContext(MainContext);
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     setText(
@@ -23,7 +26,7 @@ export default function AddToBets(props) {
 
   const handleText = () => {
     if (!token) {
-      alert("If you want to add matches to your bets, please log in!");
+      setErrorMessage("Please LOG IN! Match cannot be added!");
     } else {
       if (text === "Add to bets") {
         setText("Remove from bets");
@@ -48,19 +51,25 @@ export default function AddToBets(props) {
   };
   if (!props.match["result"]) {
     return (
-      <div
-        className={buttonClass}
-        onClick={handleText}
-        style={token ? {} : { opacity: "60%", cursor: "not-allowed" }}
-      >
-        {text}
-      </div>
+      <>
+        <ErrorHandler message={errorMessage} setMessage={setErrorMessage} />
+        <div
+          className={buttonClass}
+          onClick={handleText}
+          style={token ? {} : { opacity: "60%", cursor: "not-allowed" }}
+        >
+          {text}
+        </div>
+      </>
     );
   } else {
     return (
-      <div className={predOutcome ? "bets-btn" : "remove-from-bets bets-btn"}>
-        {predOutcome ? "Winner" : "Loser"}
-      </div>
+      <>
+        <ErrorHandler message={errorMessage} setMessage={setErrorMessage} />
+        <div className={predOutcome ? "bets-btn" : "remove-from-bets bets-btn"}>
+          {predOutcome ? "Winner" : "Loser"}
+        </div>
+      </>
     );
   }
 }

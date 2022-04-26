@@ -861,8 +861,18 @@ main {
 
 .names-errors {
   font-size: 3rem;
-  color: rgb(204, 106, 106);
+  color: yellow;
   padding: 1.5rem;
+}
+
+#error-note {
+  display: flex;
+  font-size: 2.5rem;
+}
+
+#error-note svg {
+  color: yellow;
+  padding: 0 1.5rem;
 }
 
 .bets-wrapper h2, .bets-wrapper h1, .bets-wrapper input {
