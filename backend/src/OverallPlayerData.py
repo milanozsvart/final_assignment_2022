@@ -74,4 +74,4 @@ class OverallPlayerData:
                     playerName, playerName, multiplePlayers, i)
             return self.stats
         else:
-            return {"message": f"Could not find these players: {playerExistenceChecker['errors']}"}
+            return {"message": ', '.join(playerExistenceChecker['errors'])}

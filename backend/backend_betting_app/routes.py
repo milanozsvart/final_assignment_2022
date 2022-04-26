@@ -33,9 +33,11 @@ def get_basic_player_data():
         overAllPlayerGetter = OverallPlayerData(additionalProps)
         stats = overAllPlayerGetter.getPlayerData(playerName,
                                                   isinstance(playerName, list))
+        if "message"in stats:
+            return json.dumps(stats), 404
         return json.dumps(stats)
     else:
-        return "Bad request"  # TODO make_response
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/get_reached_players", methods=["POST"])
@@ -48,7 +50,7 @@ def get_reached_players():
         reachedPlayers = playerGetter.getReachedPlayers(partOfPlayerName)
         return json.dumps(reachedPlayers)
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/get_matches_data", methods=["POST"])
@@ -62,7 +64,7 @@ def get_matches_data():
             data['opponentRanks'], data['category'])
         return jsonify(matches)
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/get_todays_matches_from_db/<dateToCheck>", methods=["GET"])
@@ -93,7 +95,7 @@ def register():
         auth = Authenctication()
         return auth.register(data["email"], data["password"])
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/login", methods=["POST"])
@@ -104,7 +106,7 @@ def login():
         auth = Authenctication()
         return auth.login(data["email"], data["password"])
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 @app.route("/change_password", methods=["POST"])
 def change_password():
@@ -114,7 +116,7 @@ def change_password():
         auth = Authenctication()
         return auth.changePassword(data["token"], data["currentPassword"], data["newPassword"])
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 @app.route("/get_historic_ranks_data", methods=["POST"])
 def get_historic_ranks_data():
@@ -127,7 +129,7 @@ def get_historic_ranks_data():
         s = StatsCalculator(data["playerName"], data["additionalProps"])
         return s.getHistoricRanksForPlayer()
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/add_bet_to_user", methods=["POST"])
@@ -139,7 +141,7 @@ def add_bet_to_user():
         return betHandler.addBetToUser(data["token"], data["bets"], data["betsName"])
     else:
         print(r.getErrors())
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 @app.route("/get_users_bets", methods=["POST"])
@@ -150,7 +152,7 @@ def get_users_bets():
         betHandler = BetHandling()
         return betHandler.getPlayerBets(data["token"], data["betType"])
     else:
-        return "Bad request"
+        return {"message": "Bad request"}, 400
 
 
 ###### ------------ DEBUG FUNCTIONS FROM HERE --------------------- #######

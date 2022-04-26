@@ -829,7 +829,7 @@ main {
   transform: scale(1.075);
 }
 
-.bets-wrapper {
+.bets-wrapper, #error-screen-players {
   width: 50vw;
   min-height: 10vh;
   position: fixed;
@@ -840,6 +840,23 @@ main {
   z-index: 150;
   border-radius: 1rem;
   padding-bottom: 6rem;
+}
+
+#error-screen-players {
+  text-align: center;
+  font-size: 2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.names-errors {
+  font-size: 3rem;
+  color: rgb(204, 106, 106);
+  padding: 1.5rem;
 }
 
 .bets-wrapper h2, .bets-wrapper h1, .bets-wrapper input {
