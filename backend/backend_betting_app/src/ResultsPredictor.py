@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 import os
 
+
 class ResultsPredictor():
     def __init__(self, player1, player2, player1Rank, player2Rank):
         self.player1odds = 0
@@ -11,8 +12,8 @@ class ResultsPredictor():
         self.player2 = player2.lower()
         self.player1Rank = int(float(player1Rank))
         self.player2Rank = int(float(player2Rank))
-        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(
-            os.path.realpath(__file__))) + "\csv\matches.csv"))
+        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__)))) + "\csv\matches.csv"))
         self.df = pd.read_csv(self.statsLocation, sep=";")
         self.setIndexOfDataFrame('Winner')
         self.definePlayer1()

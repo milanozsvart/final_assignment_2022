@@ -6,7 +6,8 @@ export default function Predictions(props) {
 
   let percentage = Math.min(points, 0.999) * 100;
   const certainities = getCertainities(percentage);
-
+  console.log(player);
+  console.log(points);
   return (
     <div className="prediction-wrapper" key={player}>
       <p>

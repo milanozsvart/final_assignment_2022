@@ -93,7 +93,9 @@ class BetHandling:
         userEmail = jwt.decode(
             token, os.environ.get('JWT_SECRET_KEY'), algorithms=["HS256"])["user"]
         user = User.query.filter_by(email=userEmail).first()
-        self.createBetsToReturn(user)
-        self.selectBetsToReturn(betType)
-
-        return jsonify(self.returnData)
+        if user:
+            self.createBetsToReturn(user)
+            self.selectBetsToReturn(betType)
+            return jsonify(self.returnData)
+        else:
+            return {"message": "Bad request"}, 400

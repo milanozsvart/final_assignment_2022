@@ -75,6 +75,7 @@ class MatchesDatabaseHandler():
         returnMatches["matches"].sort(key=lambda item: item["date"])
         dateInDb.checked = True
         db.session.commit()
+        print(returnMatches)
         return jsonify(returnMatches)
 
     def getMatchesFromDb(self, dateToCheck, dateInDb):

@@ -69,14 +69,12 @@ def get_matches_data():
 
 @app.route("/get_todays_matches_from_db/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_db(dateToCheck):
-    #TODO write date validator
     matchHandler = MatchesDatabaseHandler()
     return matchHandler.getMatches(dateToCheck)
 
 
 @app.route("/get_todays_matches_from_api/<dateToCheck>", methods=["GET"])
 def get_todays_matches_from_api(dateToCheck):
-    #TODO write date validator
     apiHandler = MatchesApiHandler(dateToCheck)
     return apiHandler.getMatchesFromAPI()
 
@@ -84,7 +82,7 @@ def get_todays_matches_from_api(dateToCheck):
 @app.route("/get_todays_odds", methods=["GET"])
 def get_today_odds():
     apiHandler = MatchesApiHandler()
-    return apiHandler.addOddsToMatches()
+    return apiHandler.getTodaysOddsFromAPI()
 
 
 @app.route("/register", methods=["POST"])
@@ -127,6 +125,7 @@ def get_historic_ranks_data():
         data["additionalProps"]["tournament"] = 'All'
         data["additionalProps"]["round"] = 'All'
         s = StatsCalculator(data["playerName"], data["additionalProps"])
+        print(s.getHistoricRanksForPlayer())
         return s.getHistoricRanksForPlayer()
     else:
         return {"message": "Bad request"}, 400
@@ -148,10 +147,12 @@ def add_bet_to_user():
 def get_users_bets():
     data = request.get_json(force=True)
     r = RequestValidator()
+    print(data)
     if r.validate(data, r.getUserBets):
         betHandler = BetHandling()
         return betHandler.getPlayerBets(data["token"], data["betType"])
     else:
+        print(r.getErrors())
         return {"message": "Bad request"}, 400
 
 

@@ -34,7 +34,7 @@ class RequestValidator:
         'type': 'string', 'required': True}, 'bets': {'type': 'list', 'schema': {'type': 'dict', 'schema': betSchema}}}
 
     getUserBets = {'token': {'type': 'string', 'required': True}, 'betType': {
-        'type': 'string', 'allowed': ['Pending', 'Won', 'Lost', 'all']}}
+        'type': 'string', 'allowed': ['pending', 'won', 'lost', 'all']}}
 
     def __init__(self):
         self.v = Validator()

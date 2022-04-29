@@ -6,10 +6,10 @@ from pathlib import Path
 
 class Players():
     def __init__(self):
-        self.playersStoreLocation = str(Path(os.path.dirname(os.path.dirname(
-            os.path.realpath(__file__))) + "\csv\players.csv"))
-        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(
-            os.path.realpath(__file__))) + "\csv\matches.csv"))
+        self.playersStoreLocation = str(Path(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__)))) + "\csv\players.csv"))
+        self.statsLocation = str(Path(os.path.dirname(os.path.dirname(os.path.dirname(
+            os.path.realpath(__file__)))) + "\csv\matches.csv"))
         self.df = pd.read_csv(self.playersStoreLocation)
         self.statDf = pd.read_csv(self.statsLocation, sep=";")
 

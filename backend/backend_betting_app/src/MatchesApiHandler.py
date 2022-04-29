@@ -91,7 +91,7 @@ class MatchesApiHandler():
                     sleep(1.5)
                     for m in matches:
                         self.addOddsToMatches(m)
-            self.delete_matches_with_no_odds()
+            self.deleteMatchesWithNoOdds()
             return {"message": "Success"}
         else:
             return {"message": response.text}
@@ -121,7 +121,7 @@ class MatchesApiHandler():
                 " ")[0] + " " + playerName.split(" ")[1][1] + "."
         return unidecode(shortName)
 
-    def delete_matches_with_no_odds(self):
+    def deleteMatchesWithNoOdds(self):
         matches = Match.query.filter_by(
             firstOdds=-1, secondOdds=-1, date=date.today())
         for m in matches:

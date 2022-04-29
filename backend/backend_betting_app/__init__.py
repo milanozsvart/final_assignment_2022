@@ -9,7 +9,8 @@ import os
 from datetime import date
 from pathlib import Path
 sys.path.append(
-    str(Path(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\src")))
+    str(Path(os.path.dirname(os.path.realpath(__file__)) + "\src")))
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)

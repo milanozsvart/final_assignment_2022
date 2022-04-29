@@ -22,6 +22,8 @@ class Authenctication:
             return {"message": f"There is no account registered with this email address: {email}", "successful": False}
         elif user and not self.checkPassword(password, user.password):
             return {"message": f"Wrong password, please try again!", "successful": False}
+        else:
+            return {"message": f"Unknown error occured! Please try again!", "successful": False}
 
     def register(self, email, password):
         hashedPassword = bcrypt.generate_password_hash(
