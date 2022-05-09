@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from pathlib import Path
 import os
 
@@ -22,14 +22,13 @@ class ResultsPredictor():
         self.setDate()
         self.points = {"1st Round": 1, "2nd Round": 1.05, "3rd Round": 1.1,
                        "4th Round": 1.2, "Quarterfinals": 1.3, "Semifinals": 1.45, "The Final": 1.65}
-        # self.setTier()
 
     def setIndexOfDataFrame(self, propertyAsIndex):
         self.df.set_index(propertyAsIndex, inplace=True, drop=False)
 
     def setDate(self):
         self.df = self.df[self.df['DateAsDate'] >=
-                          datetime.strptime("2021-09-24", "%Y-%m-%d")]
+                          datetime.strptime((date.today() - timedelta(weeks=24)).isoformat(), "%Y-%m-%d")]
 
     def cleanUpTournamentData(self):
         self.df['Tier'] = self.df['Tier'].apply(
@@ -48,11 +47,6 @@ class ResultsPredictor():
             if self.player2 in index.lower():
                 self.player2 = index
                 break
-
-    def setTier(self):
-        tier = "WTA1000"
-        if tier != "All":
-            self.df = self.df[self.df["Tier"] == tier]
 
     def getPlayerMatches(self, won, player, startingRank, endingRank):
         if won:
@@ -102,16 +96,16 @@ class ResultsPredictor():
             if rank['Winner'] == player:
                 matchesCount += 1
                 if rank['Tier'] == "WTA250":
-                    points += 1.75 * self.points[match["Round"]]
+                    points += 2 * self.points[match["Round"]]
                 elif rank['Tier'] == 'WTA500':
-                    points += 2.25 * self.points[match["Round"]]
+                    points += 2.5 * self.points[match["Round"]]
                 elif rank['Tier'] == 'WTA1000':
-                    points += 2.75 * self.points[match["Round"]]
+                    points += 3 * self.points[match["Round"]]
                 elif rank['Tier'] == 'Grand Slam':
-                    points += 3.25 * self.points[match["Round"]]
+                    points += 3.5 * self.points[match["Round"]]
             else:
                 matchesCount += 1
-                points -= 2
+                points -= 2.5
 
         return [points, matchesCount]
 

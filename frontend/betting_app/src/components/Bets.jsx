@@ -9,6 +9,7 @@ export default function Bets(props) {
     props.setCurrentSetting(null);
     setIsOpen(false);
   };
+  const [betType, setBetType] = useState("all");
 
   const [betsOnMatches, setBetsOnMatches] = useState({
     bets: [],
@@ -35,6 +36,7 @@ export default function Bets(props) {
       requestOptions
     );
     const data = await response.json();
+    setBetType(betType);
     console.log(data);
     setBetsOnMatches(data);
   }
@@ -51,6 +53,8 @@ export default function Bets(props) {
         <h1>My bets</h1>
         <div id="bets-btns-container">
           <div
+            className="bettype"
+            id={betType === "all" ? "selected-bettype" : ""}
             onClick={() => {
               fetchUserBets("all");
             }}
@@ -58,6 +62,8 @@ export default function Bets(props) {
             all
           </div>
           <div
+            className="bettype"
+            id={betType === "won" ? "selected-bettype" : ""}
             onClick={() => {
               fetchUserBets("won");
             }}
@@ -65,6 +71,8 @@ export default function Bets(props) {
             won
           </div>
           <div
+            className="bettype"
+            id={betType === "lost" ? "selected-bettype" : ""}
             onClick={() => {
               fetchUserBets("lost");
             }}
@@ -72,6 +80,8 @@ export default function Bets(props) {
             lost
           </div>
           <div
+            className="bettype"
+            id={betType === "pending" ? "selected-bettype" : ""}
             onClick={() => {
               fetchUserBets("pending");
             }}
@@ -80,6 +90,20 @@ export default function Bets(props) {
           </div>
         </div>
         <div id="bets-container">
+          <p
+            style={
+              betsOnMatches["dates"].length === 0
+                ? {
+                    visibility: "visible",
+                    color: "white",
+                    margin: "1rem 1.25rem",
+                    fontSize: "2.25rem",
+                  }
+                : { visibility: "hidden" }
+            }
+          >
+            No bets
+          </p>
           {betsOnMatches["dates"].slice(-8).map((key) => {
             return (
               <>

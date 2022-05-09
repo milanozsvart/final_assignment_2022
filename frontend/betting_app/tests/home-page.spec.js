@@ -53,7 +53,7 @@ test.describe("login", () => {
 test.describe("add to bets", () => {
   test("without login", async ({ page }) => {
     await page.locator("text=Add to bets").first().click();
-    await expect(page.locator("#account-btn > #bets-number")).not.toBeVisible();
+    await expect(page.locator("text=Match cannot be added")).toBeVisible();
   });
   test("with login", async ({ page }) => {
     await page.locator("#login-btn").click();
@@ -64,11 +64,7 @@ test.describe("add to bets", () => {
     await expect(page.locator("text=My account")).toBeVisible();
     await page.locator("text=Add to bets").first().click();
     await expect(page.locator("#account-btn > #bets-number")).toHaveText("1");
-    await page.locator("text=Add to bets >> nth=1").click();
-    await expect(page.locator("#account-btn > #bets-number")).toHaveText("2");
     await page.locator("text=Remove from bets").first().click();
-    await expect(page.locator("#account-btn > #bets-number")).toHaveText("1");
-    await page.locator(".bets-btn >> nth=2").click();
     await expect(page.locator("#account-btn > #bets-number")).not.toBeVisible();
   });
 });
@@ -89,7 +85,6 @@ test.describe("handle bets", () => {
     await expect(page.locator("#selected-matches > #bets-number")).toHaveText(
       "1"
     );
-
     await page.locator("#selected-matches").click();
     await expect(page.locator(".bets-wrapper")).toBeVisible();
     const list = page.locator(".bet-item");
@@ -114,16 +109,38 @@ test.describe("handle bets", () => {
     await expect(page.locator("#selected-matches > #bets-number")).toHaveText(
       "1"
     );
-
+    const randNum = Math.floor(Math.random() * 10000);
     await page.locator("#selected-matches").click();
     await expect(page.locator(".bets-wrapper")).toBeVisible();
-    await page.fill("#insert-bet-name", "test_bet_01");
+    await page.fill("#insert-bet-name", `test_bet_${randNum}`);
     await page.locator("text=Save").click();
     await expect(page.locator(".bets-wrapper")).not.toBeVisible();
     await expect(page.locator("#account-manager-window")).not.toBeVisible();
     await page.locator("text=My account").click();
     await page.locator("text=My bets").click();
-    await expect(page.locator("text=test_bet_01")).toBeVisible();
+    await expect(page.locator(`text=test_bet_${randNum}`)).toBeVisible();
+  });
+
+  test("save bets - with errors", async ({ page }) => {
+    await page.locator("#login-btn").click();
+    await page.fill("#login-form input[type=email]", "admin@admin.com");
+    await page.fill("#login-form input[type=password]", "admin123");
+    await page.locator("#login-button").click();
+    await expect(page.locator("#login-form")).not.toBeVisible();
+    await expect(page.locator("text=My account")).toBeVisible();
+    await page.locator("text=Add to bets").first().click();
+    await expect(page.locator("#account-btn > #bets-number")).toHaveText("1");
+    await page.locator("text=My account").click();
+    await expect(page.locator("#account-manager-window")).toBeVisible();
+    await page.locator("#selected-matches").click();
+    await page.fill("#insert-bet-name", `test_bet_31`);
+    await page.locator("text=Save").click();
+    await expect(page.locator("text=already exists")).toBeVisible();
+    await page.locator("#remove-match-from-bets").click();
+    const matches = page.locator(".bet-item");
+    await expect(matches).toHaveCount(0);
+    await page.locator("text=Save").click();
+    await expect(page.locator("text=select matches to bet on")).toBeVisible();
   });
 });
 

@@ -15,7 +15,7 @@ import json
 from RequestValidator import RequestValidator
 
 
-CORS(app)
+CORS(app, resources={"*": {"origins": r"http://localhost:3000"}})
 
 
 @app.route("/")

@@ -39,7 +39,10 @@ class BetHandling:
             if(bet.betName):
                 key = bet.betName
             else:
-                key = str(bet.date)
+                if str(bet.date) != "None":
+                    key = str(bet.date.strftime("%Y-%m-%d %H:%M:%S"))
+                else:
+                    key = str(bet.date)
             self.betsToReturn[key] = []
             self.dates[key] = str(bet.date)
             for e in bet.betEvents:

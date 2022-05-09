@@ -12,7 +12,7 @@ class MatchesApiHandler():
     def __init__(self, dateToCheck=date.today().isoformat()):
         self.dateToCheck = dateToCheck
         self.matchesURL = f"https://tennis-live-data.p.rapidapi.com/matches-by-date/{self.dateToCheck}"
-        self.competitionsURl = "https://unibet.p.rapidapi.com/competitions-by-sport"
+        self.competitionsURL = "https://unibet.p.rapidapi.com/competitions-by-sport"
         self.competitionsQuery = {"sport": "tennis"}
         self.oddsURL = "https://unibet.p.rapidapi.com/matches-by-competition"
         self.matchHeaders = {
@@ -74,7 +74,7 @@ class MatchesApiHandler():
 
     def getTodaysOddsFromAPI(self):
         response = requests.request(
-            "GET", self.competitionsURl, headers=self.oddsHeaders, params=self.competitionsQuery)
+            "GET", self.competitionsURL, headers=self.oddsHeaders, params=self.competitionsQuery)
         if response.ok:
             tournaments = response.json()
             womensTournaments = [t["id"]

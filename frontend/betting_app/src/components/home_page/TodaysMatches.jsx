@@ -52,7 +52,7 @@ export default function TodaysMatches() {
     );
     const data = await response.json();
     data["matches"].map((match) => {
-      let timeString = match["date"];
+      let timeString = match["time"];
       let hours = timeString[0] + timeString[1];
       hours = parseInt(hours) + usersOffset;
       if (hours > 23) {
@@ -61,7 +61,7 @@ export default function TodaysMatches() {
       if (hours === 0) {
         hours = "00";
       }
-      match["date"] = hours.toString() + ":" + timeString[3] + timeString[4];
+      match["time"] = hours.toString() + ":" + timeString[3] + timeString[4];
       return data["matches"];
     });
     console.log(data);
@@ -132,6 +132,9 @@ export default function TodaysMatches() {
             }
           >
             <Textfit mode="single" max={16} className="match-container-span">
+              {"Date"}
+            </Textfit>
+            <Textfit mode="single" max={16} className="match-container-span">
               {"Time"}
             </Textfit>
 
@@ -147,9 +150,7 @@ export default function TodaysMatches() {
             <Textfit mode="single" max={16} className="match-container-span">
               {"Odds 2"}
             </Textfit>
-            <Textfit mode="single" max={16} className="match-container-span">
-              {"Tier"}
-            </Textfit>
+
             <Textfit mode="single" max={16} className="match-container-span">
               {"Round"}
             </Textfit>
@@ -174,14 +175,21 @@ export default function TodaysMatches() {
                     </Textfit>
                     <Textfit
                       mode="single"
-                      max={32}
+                      max={24}
+                      className="match-container-span"
+                    >
+                      {match["time"]}
+                    </Textfit>
+                    <Textfit
+                      mode="single"
+                      max={28}
                       className="match-container-span player-identifier"
                     >
                       {match["firstPlayer"]}
                     </Textfit>
                     <Textfit
                       mode="single"
-                      max={32}
+                      max={28}
                       className="match-container-span player-identifier"
                     >
                       {match["secondPlayer"]}
@@ -200,13 +208,7 @@ export default function TodaysMatches() {
                     >
                       {match["secondOdds"]}
                     </Textfit>
-                    <Textfit
-                      mode="single"
-                      max={24}
-                      className="match-container-span"
-                    >
-                      {match["tier"]}
-                    </Textfit>
+
                     <Textfit
                       mode="single"
                       max={24}

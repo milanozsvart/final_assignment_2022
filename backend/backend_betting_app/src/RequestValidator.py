@@ -27,7 +27,7 @@ class RequestValidator:
     changePasswordSchema = {'token': {'type': 'string', 'required': True}, 'currentPassword': {
         'type': 'string', 'required': True}, 'newPassword': {'type': 'string', 'required': True}}
 
-    betSchema = {'date': {'type': 'string', 'required': True}, 'firstOdds': {'type': 'float', 'coerce': float}, 'firstPlayer': {'type': 'string', 'required': True}, 'id': {'type': 'integer', 'coerce': int}, 'result': {'type': 'string', 'nullable': True}, 'round': {'type': 'string', 'required': True},
+    betSchema = {'date': {'type': 'string', 'required': True}, 'time': {'type': 'string', 'required': True}, 'firstOdds': {'type': 'float', 'coerce': float}, 'firstPlayer': {'type': 'string', 'required': True}, 'id': {'type': 'integer', 'coerce': int}, 'result': {'type': 'string', 'nullable': True}, 'round': {'type': 'string', 'required': True},
                  'secondOdds': {'type': 'float', 'coerce': float}, 'secondPlayer': {'type': 'string', 'required': True}, 'tier': {'type': 'string', 'required': True}, 'pred': {'type': 'dict', 'schema': {'player': {'type': 'string', 'required': True}, 'points': {'type': 'float', 'coerce': float}}}}
 
     addToBetsSchema = {'token': {'type': 'string', 'required': True}, 'betsName': {

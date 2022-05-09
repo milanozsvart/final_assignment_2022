@@ -22,8 +22,8 @@ from backend_betting_app import routes
 from backend_betting_app.routes import get_todays_matches_from_api, get_today_odds
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(get_today_odds, 'interval', hours=3)
+sched.add_job(get_today_odds, 'interval', hours=3, misfire_grace_time=1000)
 sched.add_job(lambda: get_todays_matches_from_api(
-    date.today().isoformat()), 'interval', hours=6)
+    date.today().isoformat()), 'interval', hours=6, misfire_grace_time=1000)
 sched.start()
 atexit.register(lambda: sched.shutdown(wait=False))

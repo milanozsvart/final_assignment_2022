@@ -36,7 +36,7 @@ class MatchesDatabaseHandler():
 
     def createMatchesData(self, match, playerGetter):
         matchData = {"id": match.id, "result": match.result,
-                     "tier": match.tier, "round": match.round, "date": match.time.isoformat()[:5], "firstPlayer": match.firstPlayer,
+                     "tier": match.tier, "round": match.round, "date": match.date.strftime("%Y.%m.%d"), "time": match.time.isoformat()[:5], "firstPlayer": match.firstPlayer,
                      "secondPlayer": match.secondPlayer, "firstOdds": match.firstOdds, "secondOdds": match.secondOdds}
         player1 = self.removeSpecialCharacters(match.firstPlayer)
         player2 = self.removeSpecialCharacters(match.secondPlayer)
@@ -72,10 +72,9 @@ class MatchesDatabaseHandler():
                 returnMatches = self.getMatchesFromDb(dateToCheck, dateInDb)
         else:
             returnMatches = self.getDataFromApis(dateToCheck)
-        returnMatches["matches"].sort(key=lambda item: item["date"])
+        returnMatches["matches"].sort(key=lambda item: item["time"])
         dateInDb.checked = True
         db.session.commit()
-        print(returnMatches)
         return jsonify(returnMatches)
 
     def getMatchesFromDb(self, dateToCheck, dateInDb):

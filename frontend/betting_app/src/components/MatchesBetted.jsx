@@ -6,7 +6,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function MatchesBetted(props) {
   let odds = 1;
-
+  console.log(props.matches);
   const calculateIcon = (match) => {
     if (match["result"] === null) {
       return faQuestionCircle;
@@ -18,11 +18,11 @@ export default function MatchesBetted(props) {
   };
   const calculateStyle = (match) => {
     if (match["result"] === null) {
-      return { backgroundColor: "lightyellow" };
+      return { backgroundColor: "lightyellow", color: "grey" };
     } else if (match["result"] !== match["bettedOn"]) {
-      return { backgroundColor: "red" };
+      return { backgroundColor: "red", color: "rgb(86, 0, 0)" };
     } else {
-      return { backgroundColor: "greenyellow" };
+      return { backgroundColor: "greenyellow", color: "darkgreen" };
     }
   };
   return (
@@ -49,7 +49,9 @@ export default function MatchesBetted(props) {
               style={
                 m["bettedOn"].includes(m["firstPlayer"]) ||
                 m["firstPlayer"].includes(m["bettedOn"])
-                  ? { color: "purple" }
+                  ? {
+                      borderBottom: "2px solid black",
+                    }
                   : {}
               }
             >
@@ -59,7 +61,7 @@ export default function MatchesBetted(props) {
               style={
                 m["bettedOn"].includes(m["secondPlayer"]) ||
                 m["secondPlayer"].includes(m["bettedOn"])
-                  ? { color: "purple" }
+                  ? { borderBottom: "2px solid black" }
                   : {}
               }
             >
@@ -69,7 +71,7 @@ export default function MatchesBetted(props) {
               style={
                 m["bettedOn"].includes(m["firstPlayer"]) ||
                 m["firstPlayer"].includes(m["bettedOn"])
-                  ? { color: "purple" }
+                  ? { borderBottom: "2px solid black" }
                   : {}
               }
             >
@@ -79,16 +81,13 @@ export default function MatchesBetted(props) {
               style={
                 m["bettedOn"].includes(m["secondPlayer"]) ||
                 m["secondPlayer"].includes(m["bettedOn"])
-                  ? { color: "purple" }
+                  ? { borderBottom: "2px solid black" }
                   : {}
               }
             >
               {m["secondOdds"]}
             </span>
-            <FontAwesomeIcon
-              icon={calculateIcon(m)}
-              className="question-mark"
-            />
+            <FontAwesomeIcon icon={calculateIcon(m)} />
           </div>
         );
       })}

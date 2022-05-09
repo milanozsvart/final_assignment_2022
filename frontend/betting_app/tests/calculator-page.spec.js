@@ -118,6 +118,54 @@ test.describe("toggler", () => {
       parseInt(allMatchesPlayed) - parseInt(wonMatches) + 1
     );
   });
+
+  test("compare - errors - not found", async ({ page }) => {
+    await page.locator("text=Compare").click();
+    await expect(page.locator("text=Compare")).toHaveCSS(
+      "backgroundColor",
+      "rgb(100, 149, 237)"
+    );
+    await expect(page.locator("text=Individual")).toHaveCSS(
+      "backgroundColor",
+      "rgb(255, 255, 255)"
+    );
+    const inputs = page.locator("#player-name-text-input");
+    await expect(inputs).toHaveCount(2);
+    await page.fill("#player-name-text-input >> nth=0", "lebron james");
+
+    await page.fill("#player-name-text-input >> nth=1", "cristiano ronaldo");
+    await page.locator("text=Submit").click();
+    await expect(
+      page.locator(".wrapper-calculator-form-properties")
+    ).toBeVisible();
+    await page.locator("text=Submit").click();
+    await expect(
+      page.locator("text=Could not find these players")
+    ).toBeVisible();
+  });
+
+  test("compare - errors - same names", async ({ page }) => {
+    await page.locator("text=Compare").click();
+    await expect(page.locator("text=Compare")).toHaveCSS(
+      "backgroundColor",
+      "rgb(100, 149, 237)"
+    );
+    await expect(page.locator("text=Individual")).toHaveCSS(
+      "backgroundColor",
+      "rgb(255, 255, 255)"
+    );
+    const inputs = page.locator("#player-name-text-input");
+    await expect(inputs).toHaveCount(2);
+    await page.fill("#player-name-text-input >> nth=0", "lebron james");
+
+    await page.fill("#player-name-text-input >> nth=1", "lebron james");
+    await page.locator("text=Submit").click();
+    await expect(
+      page.locator(".wrapper-calculator-form-properties")
+    ).toBeVisible();
+    await page.locator("text=Submit").click();
+    await expect(page.locator("text=cannot be the same")).toBeVisible();
+  });
   // INDIVIDUAL TEST
   test("individual", async ({ page }) => {
     await expect(page.locator("text=Individual")).toHaveCSS(
@@ -218,4 +266,17 @@ test.describe("toggler", () => {
       parseInt(allMatchesPlayed) - parseInt(wonMatches) + 1
     );
   });
+
+  test("individual - errors", async ({ page }) => {
+    await expect(page.locator("#player-name-text-input")).toBeVisible();
+    await page.fill("#player-name-text-input", "lebron james");
+    await page.locator("text=Submit").click();
+    await expect(
+      page.locator(".wrapper-calculator-form-properties")
+    ).toBeVisible();
+    await page.locator("text=Submit").click();
+    await expect(
+      page.locator("text=Could not find these players")
+    ).toBeVisible();
+  }); 
 });

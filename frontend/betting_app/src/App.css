@@ -26,10 +26,17 @@ nav {
   display: block;
   height: 3rem;
   width: auto;
-  margin: 1rem 3rem;
+  padding: 1rem 3rem;
+  margin: 0.25rem;
   font-size: 2rem;
   cursor: pointer;
   color: cornflowerblue;
+}
+
+#selected-nav-button, .nav-button:hover{
+  color: white;
+  background-color: cornflowerblue;
+  box-shadow: 0.2rem 0.2rem 0.2rem 0.1rem rgba(0, 0, 0, 0.75);
 }
 
 main {
@@ -462,7 +469,7 @@ main {
   font-size: 1.5rem;
   display: grid;
   align-items: center;
-  grid-template-columns: 17% 17% 14.5% 14.5% 17% 10% 10%;
+  grid-template-columns: 13% 10% 20% 20% 10% 10% 17%;
   padding: 1rem 0;
   border: 2px solid cornflowerblue;
 }
@@ -474,7 +481,6 @@ main {
 }
 
 .player-identifier {
-  font-size: 2rem;
   color: white;
   border-bottom: 5px solid white;
 }
@@ -848,6 +854,8 @@ main {
   padding-bottom: 6rem;
 }
 
+
+
 #error-screen-players {
   text-align: center;
   font-size: 2rem;
@@ -888,7 +896,7 @@ main {
   margin: 0.5rem 0;
 }
 
-#bets-btns-container div{
+.bettype{
   display: block;
   width: fit-content;
   min-width: 10%;
@@ -901,6 +909,12 @@ main {
   color: cornflowerblue;
   border-radius: 0.25rem;
   cursor: pointer;
+}
+
+#selected-bettype, .bettype:hover {
+  background-color: rgb(124, 162, 233);
+  color: white;
+  box-shadow: 0.1rem 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.6);
 }
 
 .bet-item {

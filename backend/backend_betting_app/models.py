@@ -55,9 +55,3 @@ class Bet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     date = db.Column(db.DateTime, default=datetime.now())
     betName = db.Column(db.String(50), nullable=True)
-
-
-class ApiChecks(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    oddsChecked = db.Column(db.DateTime)
-    matchesChecked = db.Column(db.DateTime)
