@@ -37,7 +37,6 @@ export default function Bets(props) {
     );
     const data = await response.json();
     setBetType(betType);
-    console.log(data);
     setBetsOnMatches(data);
   }
   const { setIsOpen } = useContext(MainContext);

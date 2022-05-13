@@ -6,7 +6,6 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 export default function MatchesBetted(props) {
   let odds = 1;
-  console.log(props.matches);
   const calculateIcon = (match) => {
     if (match["result"] === null) {
       return faQuestionCircle;

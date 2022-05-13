@@ -31,7 +31,6 @@ export default function CalculatorForm() {
     );
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
       if (Array.isArray(player)) {
         setComparePlayerStats(data);
       } else {

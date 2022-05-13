@@ -13,7 +13,7 @@ export default function CalculatorNameFetcher(props) {
         {players.map((player) => (
           <div
             className="calculator-name-fetcher-player"
-            key={player.split(",")[0].trim()}
+            key={player}
             onClick={() => {
               setPlayer(player.split(",")[0].trim());
               props.handleSubmitButton();

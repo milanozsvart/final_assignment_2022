@@ -9,7 +9,7 @@ from flask_cors import CORS
 from backend_betting_app import app
 from backend_betting_app import db
 from StatsCalculator import StatsCalculator
-from datetime import date, time, datetime
+from datetime import date, time, datetime, timedelta
 from flask import request, jsonify
 import json
 from RequestValidator import RequestValidator
@@ -125,7 +125,6 @@ def get_historic_ranks_data():
         data["additionalProps"]["tournament"] = 'All'
         data["additionalProps"]["round"] = 'All'
         s = StatsCalculator(data["playerName"], data["additionalProps"])
-        print(s.getHistoricRanksForPlayer())
         return s.getHistoricRanksForPlayer()
     else:
         return {"message": "Bad request"}, 400
@@ -139,7 +138,6 @@ def add_bet_to_user():
         betHandler = BetHandling()
         return betHandler.addBetToUser(data["token"], data["bets"], data["betsName"])
     else:
-        print(r.getErrors())
         return {"message": "Bad request"}, 400
 
 
@@ -147,12 +145,10 @@ def add_bet_to_user():
 def get_users_bets():
     data = request.get_json(force=True)
     r = RequestValidator()
-    print(data)
     if r.validate(data, r.getUserBets):
         betHandler = BetHandling()
         return betHandler.getPlayerBets(data["token"], data["betType"])
     else:
-        print(r.getErrors())
         return {"message": "Bad request"}, 400
 
 
@@ -174,7 +170,7 @@ def sample_matches():
 
 @app.route("/sample_matches_yesterday", methods=["GET"])
 def sample_matches_yesterday():
-    #matches = Match.query.filter_by(date=date.today() - timedelta(days=1))
+    matches = Match.query.filter_by(date=date.today() - timedelta(days=1))
     dateInDb = Dates.query.filter_by(date=date.today()).first()
     dateInDb.checked = False
     db.session.commit()
@@ -182,7 +178,7 @@ def sample_matches_yesterday():
     for match in matches:
         db.session.delete(match)
     db.session.commit()
-    """match1 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
+    match1 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
                    firstPlayer="Anisimova A.", secondPlayer="Zidansek T.", firstOdds=1.8, secondOdds=1.8, result='Anisimova A.')
     match2 = Match(date=date.today() - timedelta(days=1), time=time(10, 0), round="1/16", tier="WTA1000",
                    firstPlayer="Swiatek I.", secondPlayer="Pliskova K.", firstOdds=1.78, secondOdds=1.9, result='Swiatek I.')
@@ -191,7 +187,7 @@ def sample_matches_yesterday():
     db.session.add(match1)
     db.session.add(match2)
     db.session.add(match3)
-    db.session.commit()"""
+    db.session.commit()
 
 
 @app.route("/sample_bets", methods=["GET"])
@@ -225,9 +221,3 @@ def sample_bets_won():
         db.session.add(betEvent)
     db.session.commit()
 
-
-@app.route("/today_match", methods=["GET"])
-def today_match():
-    matches = Match.query.filter_by(date=date.today())
-    for m in matches:
-        print(m)

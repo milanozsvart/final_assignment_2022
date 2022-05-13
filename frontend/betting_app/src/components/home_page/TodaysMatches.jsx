@@ -64,7 +64,6 @@ export default function TodaysMatches() {
       match["time"] = hours.toString() + ":" + timeString[3] + timeString[4];
       return data["matches"];
     });
-    console.log(data);
     setTodaysMatches(data["matches"]);
     setFinished(true);
   }

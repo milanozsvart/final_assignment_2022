@@ -56,7 +56,6 @@ export default function RegisterForm(props) {
       messageRef.current.id = "error-message";
     }
   }
-  console.log(errors);
   return (
     <div
       style={

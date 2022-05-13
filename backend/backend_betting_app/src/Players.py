@@ -59,6 +59,8 @@ class Players():
             if playerNamePart in str(index).lower():
                 self.selectNamesToReturn(index)
                 if len(self.namesWithPart['values']) > 2:
+                    self.namesWithPart['values'] = list(
+                        set(self.namesWithPart['values']))
                     return self.namesWithPart
         return self.namesWithPart
 

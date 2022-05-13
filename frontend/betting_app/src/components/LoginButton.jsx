@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 export default function LoginButton(props) {
   const { betsLength } = useContext(MainContext);
   const location = useLocation();
-  console.log(location.pathname);
   if (!props.token) {
     return (
       <div
